@@ -2,1909 +2,712 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>OCROWN FINANCE — Smart Digital Banking</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://js.paystack.co/v1/inline.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCROWN PAY - Smart Digital Bill Payments</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --b9:#0A1628;--b8:#0D1F3C;--b7:#112952;--b6:#1A3A6B;--b5:#1E4D8C;
-  --b4:#2563EB;--b3:#3B82F6;--b2:#93C5FD;--b1:#DBEAFE;--b0:#EFF6FF;
-  --gold:#F59E0B;--goldl:#FCD34D;
-  --green:#10B981;--greenl:#D1FAE5;
-  --red:#EF4444;--redl:#FEE2E2;
-  --orange:#F97316;--orangel:#FFEDD5;
-  --purple:#8B5CF6;--purplel:#EDE9FE;
-  --g0:#F9FAFB;--g1:#F3F4F6;--g2:#E5E7EB;--g3:#D1D5DB;
-  --g4:#9CA3AF;--g5:#6B7280;--g6:#4B5563;--g7:#374151;--g8:#1F2937;
-  --sxl:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
-  --slg:0 10px 15px -3px rgba(0,0,0,.1);
-  --r:12px;--rl:20px;--rxl:28px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:#F4F6FB;color:#111827;overflow-x:hidden}
-.page{display:none;min-height:100vh}
-.page.active{display:block}
-
-/* ── LOADER ── */
-#gloader{position:fixed;inset:0;background:var(--b9);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
-#gloader.gone{display:none}
-.gl-logo{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff}
-.gl-logo span{color:var(--b3)}
-.gl-ring{width:44px;height:44px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--b4);border-radius:50%;animation:spin .75s linear infinite}
-.gl-msg{color:rgba(255,255,255,.4);font-size:13px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── TOAST ── */
-#toast{position:fixed;top:20px;right:20px;z-index:9998;transform:translateX(130%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);max-width:340px}
-#toast.in{transform:translateX(0)}
-.toast-body{padding:14px 18px;border-radius:var(--r);display:flex;align-items:center;gap:12px;box-shadow:var(--sxl);font-size:14px;font-weight:500;color:#fff}
-.toast-s{background:linear-gradient(135deg,#059669,#10B981)}
-.toast-e{background:linear-gradient(135deg,#DC2626,#EF4444)}
-.toast-i{background:linear-gradient(135deg,#1D4ED8,#2563EB)}
-.toast-w{background:linear-gradient(135deg,#D97706,#F59E0B)}
-
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;border:none;text-decoration:none;white-space:nowrap;outline:none}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:linear-gradient(135deg,var(--b4),var(--b5));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.35)}
-.btn-primary:hover{box-shadow:0 6px 20px rgba(37,99,235,.45);transform:translateY(-1px)}
-.btn-outline{background:transparent;border:1.5px solid var(--g2);color:var(--g7)}
-.btn-outline:hover{border-color:var(--b4);color:var(--b4)}
-.btn-ghost{background:var(--g1);color:var(--g7)}
-.btn-ghost:hover{background:var(--g2)}
-.btn-success{background:linear-gradient(135deg,#059669,var(--green));color:#fff;box-shadow:0 4px 12px rgba(16,185,129,.3)}
-.btn-danger{background:linear-gradient(135deg,#DC2626,var(--red));color:#fff;box-shadow:0 4px 12px rgba(239,68,68,.3)}
-.btn-gold{background:linear-gradient(135deg,#D97706,var(--gold));color:#fff;box-shadow:0 4px 12px rgba(245,158,11,.3)}
-.btn-lg{padding:13px 30px;font-size:15px;border-radius:14px}
-.btn-xl{padding:15px 36px;font-size:16px;border-radius:16px}
-.btn-full{width:100%}
-.btn-sm{padding:7px 14px;font-size:12px;border-radius:8px}
-.btn-xs{padding:5px 10px;font-size:11px;border-radius:7px}
-
-/* ══════════ HOME PAGE ══════════ */
-#home-page{background:#fff}
-.navbar{position:sticky;top:0;z-index:500;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--g1);padding:0 5%}
-.nav-inner{max-width:1200px;margin:0 auto;height:66px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
-.logo-mark{width:38px;height:38px;background:linear-gradient(135deg,var(--b4),var(--b6));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;font-family:'Syne',sans-serif}
-.logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--b9);letter-spacing:-.3px}
-.logo-name span{color:var(--b4)}
-.nav-links{display:flex;align-items:center;gap:28px}
-.nav-links a{text-decoration:none;color:var(--g5);font-size:14px;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--b4)}
-.nav-actions{display:flex;gap:10px}
-
+:root{--blue:#0057FF;--bdk:#0040CC;--bli:#E8F0FF;--navy:#050F2C;--off:#F4F7FF;--gray:#6B7A9A;--bdr:#D6E0FF;--grn:#00C48C;--org:#FF7A00;--red:#FF3B3B;}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;color:#050F2C;overflow-x:hidden;}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid #D6E0FF;}
+.nav-in{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 5vw;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:#0057FF;text-decoration:none;}
+.logo em{color:#050F2C;font-style:normal;}
+.nl{display:flex;gap:28px;list-style:none;}
+.nl a{text-decoration:none;font-size:.9rem;font-weight:500;color:#050F2C;}
+.nl a:hover{color:#0057FF;}
+.nc{display:flex;gap:8px;}
+.bo{padding:8px 18px;border:1.5px solid #0057FF;border-radius:50px;color:#0057FF;font-size:.86rem;font-weight:600;cursor:pointer;background:none;font-family:'DM Sans',sans-serif;}
+.bo:hover{background:#E8F0FF;}
+.bs{padding:8px 20px;border:none;border-radius:50px;background:#0057FF;color:#fff;font-size:.86rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.bs:hover{background:#0040CC;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+.ham span{display:block;width:24px;height:2px;background:#050F2C;border-radius:2px;}
+.mob{display:none;position:fixed;top:64px;left:0;right:0;background:#fff;border-bottom:1px solid #D6E0FF;padding:18px 5vw 24px;z-index:998;flex-direction:column;}
+.mob.on{display:flex;}
+.mob a{display:block;padding:12px 0;font-size:.95rem;font-weight:500;color:#050F2C;text-decoration:none;border-bottom:1px solid #D6E0FF;}
+.mb2{display:flex;gap:8px;margin-top:16px;}
 /* HERO */
-.hero{max-width:1200px;margin:0 auto;padding:90px 5% 70px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.hero-pill{display:inline-flex;align-items:center;gap:8px;background:var(--b0);color:var(--b5);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;border:1px solid var(--b1);margin-bottom:22px;letter-spacing:.3px}
-.pill-dot{width:6px;height:6px;background:var(--b4);border-radius:50%;animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(40px,4.5vw,62px);font-weight:800;line-height:1.1;letter-spacing:-2px;color:var(--b9);margin-bottom:18px}
-.hero h1 em{font-style:normal;color:var(--b4)}
-.hero p{font-size:17px;color:var(--g5);line-height:1.75;margin-bottom:34px;max-width:440px}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
-.hero-trust{display:flex;align-items:center;gap:16px;margin-top:40px;padding-top:32px;border-top:1px solid var(--g1)}
-.trust-avatars{display:flex}
-.trust-av{width:32px;height:32px;border-radius:50%;border:2px solid #fff;margin-left:-8px;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff}
-.trust-av:first-child{margin-left:0}
-.trust-text{font-size:13px;color:var(--g5);font-weight:500}
-.trust-text strong{color:var(--b9)}
-.hero-stats{display:flex;gap:0;margin-top:24px}
-.hstat{text-align:center;padding:0 24px;border-right:1px solid var(--g2)}
-.hstat:first-child{padding-left:0}
-.hstat:last-child{border-right:none}
-.hstat-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--b9);letter-spacing:-1px}
-.hstat-label{font-size:12px;color:var(--g4);font-weight:500;margin-top:2px}
-
-/* PHONE MOCKUP */
-.hero-visual{position:relative;display:flex;justify-content:center}
-.phone-wrap{position:relative}
-.phone-frame{background:linear-gradient(150deg,var(--b9) 0%,#0F2847 60%,#0A1E40 100%);border-radius:36px;padding:28px 24px;width:300px;box-shadow:0 48px 80px rgba(10,22,40,.3),0 0 0 1px rgba(255,255,255,.05),inset 0 1px 0 rgba(255,255,255,.08);position:relative;overflow:hidden}
-.phone-frame::before{content:'';position:absolute;top:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(37,99,235,.25),transparent 65%)}
-.phone-frame::after{content:'';position:absolute;bottom:-60px;left:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(245,158,11,.12),transparent 65%)}
-.pf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;position:relative;z-index:1}
-.pf-logo-txt{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:#fff}
-.pf-logo-txt span{color:var(--b3)}
-.pf-av{width:34px;height:34px;background:linear-gradient(135deg,var(--b4),var(--gold));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
-.pf-card{background:linear-gradient(135deg,var(--b4) 0%,#1641C5 100%);border-radius:18px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;z-index:1}
-.pf-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.08);border-radius:50%}
-.pf-card-lbl{color:rgba(255,255,255,.65);font-size:11px;font-weight:500;margin-bottom:4px}
-.pf-card-amt{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-.5px}
-.pf-card-sub{color:rgba(255,255,255,.5);font-size:10px;margin-top:6px;display:flex;justify-content:space-between}
-.pf-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;position:relative;z-index:1}
-.pf-act{background:rgba(255,255,255,.07);border-radius:12px;padding:11px 6px;text-align:center;border:1px solid rgba(255,255,255,.06);cursor:pointer;transition:background .2s}
-.pf-act:hover{background:rgba(255,255,255,.12)}
-.pf-act-ico{font-size:16px;margin-bottom:4px}
-.pf-act-lbl{color:rgba(255,255,255,.6);font-size:10px;font-weight:500}
-.pf-txns{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1}
-.pf-txn{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border-radius:10px;padding:9px 12px}
-.pf-txn-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.pf-txn-ico.cr{background:rgba(16,185,129,.2)}
-.pf-txn-ico.db{background:rgba(239,68,68,.2)}
-.pf-txn-info{flex:1}
-.pf-txn-name{color:rgba(255,255,255,.8);font-size:11px;font-weight:500}
-.pf-txn-date{color:rgba(255,255,255,.35);font-size:10px;margin-top:1px}
-.pf-txn-amt{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
-.pf-txn-amt.cr{color:#34D399}
-.pf-txn-amt.db{color:#F87171}
-
-/* FLOATING CHIPS */
-.chip{position:absolute;background:#fff;border-radius:12px;padding:9px 14px;box-shadow:var(--sxl);display:flex;align-items:center;gap:9px;animation:chipFloat 3s ease-in-out infinite}
-.chip-1{top:-16px;right:-48px;animation-delay:0s}
-.chip-2{bottom:30px;left:-52px;animation-delay:1.5s}
-@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.chip-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px}
-.chip-ico.g{background:#D1FAE5}
-.chip-ico.b{background:#DBEAFE}
-.chip-title{font-size:11px;font-weight:700;color:var(--g8)}
-.chip-sub{font-size:10px;color:var(--g4);margin-top:1px}
-
-/* SECTION SHARED */
-.section{padding:80px 5%}
-.sec-inner{max-width:1200px;margin:0 auto}
-.sec-tag{display:inline-block;background:var(--b0);color:var(--b5);padding:4px 13px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border:1px solid var(--b1);margin-bottom:14px}
-.sec-title{font-family:'Syne',sans-serif;font-size:clamp(30px,3.5vw,46px);font-weight:800;letter-spacing:-1.5px;color:var(--b9);margin-bottom:14px;line-height:1.15}
-.sec-sub{font-size:16px;color:var(--g5);line-height:1.7;max-width:500px}
-
-/* FEATURES */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.feat-card{background:#fff;border-radius:var(--rl);padding:30px;border:1px solid var(--g2);transition:all .3s;position:relative;overflow:hidden;cursor:default}
-.feat-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--b0),transparent);opacity:0;transition:opacity .3s}
-.feat-card:hover{transform:translateY(-5px);box-shadow:var(--sxl);border-color:var(--b1)}
-.feat-card:hover::after{opacity:1}
-.feat-card>*{position:relative;z-index:1}
-.feat-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
-.feat-ico.blue{background:var(--b0)}
-.feat-ico.green{background:var(--greenl)}
-.feat-ico.gold{background:#FEF3C7}
-.feat-ico.purple{background:var(--purplel)}
-.feat-ico.orange{background:var(--orangel)}
-.feat-ico.red{background:var(--redl)}
-.feat-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--b9);margin-bottom:10px}
-.feat-desc{font-size:13px;color:var(--g5);line-height:1.7}
-
-/* HOW IT WORKS */
-.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.how-step{text-align:center;padding:28px 20px}
-.how-num{width:52px;height:52px;background:linear-gradient(135deg,var(--b4),var(--b5));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin:0 auto 16px}
-.how-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--b9);margin-bottom:8px}
-.how-desc{font-size:13px;color:var(--g5);line-height:1.6}
-.how-connector{display:none}
-
-/* SECURITY */
-.sec-band{background:var(--b9);border-radius:var(--rxl);padding:64px;overflow:hidden;position:relative}
-.sec-band::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(37,99,235,.2),transparent 65%)}
-.sec-band::after{content:'';position:absolute;bottom:-80px;left:20%;width:300px;height:300px;background:radial-gradient(circle,rgba(245,158,11,.1),transparent 65%)}
-.sec-band-inner{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;z-index:1}
-.sec-list{margin-top:28px;display:flex;flex-direction:column;gap:18px}
-.sec-item{display:flex;gap:14px}
-.sec-check{width:28px;height:28px;background:rgba(37,99,235,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--b3);font-size:13px;flex-shrink:0;margin-top:2px}
-.sec-ititle{color:#fff;font-weight:600;font-size:14px;margin-bottom:3px}
-.sec-idesc{color:rgba(255,255,255,.45);font-size:12px;line-height:1.6}
-.sec-visual{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:32px}
-.sec-shield{font-size:56px;text-align:center;margin-bottom:12px}
-.sec-score-label{text-align:center;color:rgba(255,255,255,.6);font-size:12px;margin-bottom:4px}
-.sec-score{text-align:center;font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:var(--green);line-height:1}
-.sec-score-sub{text-align:center;color:rgba(255,255,255,.3);font-size:11px;margin-top:4px;margin-bottom:20px}
-.sec-metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.sec-metric{background:rgba(255,255,255,.05);border-radius:12px;padding:14px;text-align:center}
-.sm-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff}
-.sm-lbl{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px}
-
-/* TESTIMONIALS */
-.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.test-card{background:#fff;border-radius:var(--rl);padding:28px;border:1px solid var(--g2)}
-.test-stars{color:var(--gold);font-size:14px;margin-bottom:14px;letter-spacing:2px}
-.test-text{font-size:14px;color:var(--g6);line-height:1.7;margin-bottom:18px;font-style:italic}
-.test-author{display:flex;align-items:center;gap:12px}
-.test-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}
-.test-name{font-weight:700;font-size:14px;color:var(--b9)}
-.test-role{font-size:12px;color:var(--g4)}
-
-/* CTA BAND */
-.cta-band{background:linear-gradient(135deg,var(--b4) 0%,var(--b5) 50%,var(--b6) 100%);padding:80px 5%;text-align:center;position:relative;overflow:hidden}
-.cta-band::before{content:'';position:absolute;top:-80px;left:10%;width:300px;height:300px;background:rgba(255,255,255,.06);border-radius:50%}
-.cta-band h2{font-family:'Syne',sans-serif;font-size:clamp(32px,4vw,50px);font-weight:800;letter-spacing:-1.5px;color:#fff;margin-bottom:14px;position:relative;z-index:1}
-.cta-band p{font-size:17px;color:rgba(255,255,255,.75);margin-bottom:32px;position:relative;z-index:1}
-.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.btn-white{background:#fff;color:var(--b6);font-weight:700}
-.btn-white:hover{background:var(--b0);transform:translateY(-2px)}
-.btn-outline-white{background:transparent;border:1.5px solid rgba(255,255,255,.4);color:#fff}
-.btn-outline-white:hover{background:rgba(255,255,255,.1)}
-
+.hero{min-height:100vh;background:linear-gradient(135deg,#050F2C,#0A2060,#0d3080);display:flex;align-items:center;padding:100px 5vw 60px;overflow:hidden;position:relative;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:480px;height:480px;background:radial-gradient(circle,rgba(0,87,255,.3),transparent 70%);pointer-events:none;}
+.hgrid{max-width:1200px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:5px 14px;font-size:.78rem;color:rgba(255,255,255,.85);margin-bottom:20px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#00C48C;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);opacity:.5;}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:18px;}
+.hero h1 span{color:#60A5FA;}
+.hero p{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.7;margin-bottom:30px;max-width:430px;}
+.hbtns{display:flex;gap:12px;flex-wrap:wrap;}
+.bh1{padding:13px 28px;background:#0057FF;border:none;border-radius:50px;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 24px rgba(0,87,255,.4);}
+.bh1:hover{background:#0040CC;transform:translateY(-2px);}
+.bh2{padding:13px 28px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.3);border-radius:50px;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.bh2:hover{background:rgba(255,255,255,.18);}
+.hstats{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap;}
+.stn{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;}
+.stl{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;}
+/* MOCK CARD */
+.mock{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:22px;max-width:340px;width:100%;backdrop-filter:blur(10px);}
+.mk-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.mk-gt{color:rgba(255,255,255,.55);font-size:.76rem;}
+.mk-nm{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
+.mk-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0057FF,#60A5FA);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;}
+.mk-bal{background:linear-gradient(135deg,#0057FF,#3B82F6);border-radius:14px;padding:18px;margin-bottom:14px;}
+.mk-bl{color:rgba(255,255,255,.7);font-size:.76rem;margin-bottom:5px;}
+.mk-ba{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff;letter-spacing:-1px;}
+.mk-bs{color:rgba(255,255,255,.55);font-size:.72rem;margin-top:3px;}
+.mk-sv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.mk-s{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 4px;text-align:center;}
+.mk-si{font-size:1.2rem;margin-bottom:4px;}
+.mk-sl{color:rgba(255,255,255,.65);font-size:.62rem;}
+.mk-tx{background:rgba(255,255,255,.05);border-radius:10px;padding:12px;}
+.mk-tt{color:rgba(255,255,255,.45);font-size:.72rem;margin-bottom:9px;}
+.mk-ti{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.mk-ti:last-child{border-bottom:none;}
+.mk-tl{display:flex;align-items:center;gap:8px;}
+.mk-td{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;}
+.mk-tn{color:rgba(255,255,255,.82);font-size:.74rem;font-weight:500;}
+.mk-dt{color:rgba(255,255,255,.38);font-size:.64rem;}
+.mk-am{font-size:.78rem;font-weight:600;}
+.ar{color:#FF6B6B;}.ag{color:#4ADE80;}
+/* SECTIONS */
+section{padding:76px 5vw;}
+.sm{max-width:1200px;margin:auto;}
+.sl{display:inline-block;background:#E8F0FF;color:#0057FF;font-size:.76rem;font-weight:700;padding:4px 14px;border-radius:50px;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
+.st{font-family:'Syne',sans-serif;font-size:clamp(1.55rem,2.8vw,2.3rem);font-weight:800;line-height:1.2;margin-bottom:12px;}
+.ss{color:#6B7A9A;font-size:.96rem;line-height:1.7;max-width:500px;}
+/* SERVICES */
+#services{background:#F4F7FF;}
+.sh{text-align:center;margin-bottom:46px;}
+.sh .ss{margin:0 auto;}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;}
+.sc{background:#fff;border-radius:16px;padding:30px 26px;border:1px solid #D6E0FF;box-shadow:0 4px 28px rgba(0,87,255,.08);transition:.22s;cursor:pointer;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0057FF,#60A5FA);transform:scaleX(0);transform-origin:left;transition:.3s;}
+.sc:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(0,87,255,.14);}
+.sc:hover::before{transform:scaleX(1);}
+.si{width:54px;height:54px;border-radius:14px;background:#E8F0FF;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;}
+.sc h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:9px;}
+.sc p{color:#6B7A9A;font-size:.85rem;line-height:1.6;margin-bottom:20px;}
+.sb{display:inline-flex;align-items:center;gap:5px;background:#E8F0FF;color:#0057FF;border:none;border-radius:50px;padding:8px 16px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;}
+.sb:hover{background:#0057FF;color:#fff;}
+/* HOW */
+#how{background:#fff;}
+.hwg{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+.steps{}
+.step{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid #D6E0FF;}
+.step:last-child{border-bottom:none;}
+.snum{width:38px;height:38px;border-radius:50%;background:#0057FF;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px;}
+.step p{color:#6B7A9A;font-size:.85rem;line-height:1.6;}
+.hwv{background:linear-gradient(135deg,#050F2C,#0A2060);border-radius:22px;padding:32px;display:flex;flex-direction:column;gap:14px;}
+.hc{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:16px;display:flex;gap:13px;align-items:flex-start;}
+.hci{width:42px;height:42px;border-radius:11px;background:rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.hc strong{color:#fff;display:block;font-size:.9rem;margin-bottom:3px;}
+.hc p{color:rgba(255,255,255,.58);font-size:.8rem;line-height:1.5;}
+/* FUND */
+#fund{background:#F4F7FF;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+.bkbox{background:#fff;border-radius:16px;padding:26px;border:1px solid #D6E0FF;box-shadow:0 4px 24px rgba(0,87,255,.08);margin-top:26px;}
+.bkbox h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:14px;}
+.br{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #D6E0FF;}
+.br:last-of-type{border-bottom:none;}
+.br span:first-child{color:#6B7A9A;font-size:.83rem;}
+.br span:last-child{font-weight:600;font-size:.85rem;}
+.cpb{background:#E8F0FF;border:none;border-radius:6px;padding:3px 9px;font-size:.73rem;font-weight:600;color:#0057FF;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.cpb:hover{background:#0057FF;color:#fff;}
+.ff{background:#fff;border-radius:16px;padding:32px;border:1px solid #D6E0FF;box-shadow:0 4px 24px rgba(0,87,255,.08);}
+.ff h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;margin-bottom:5px;}
+.fsub{color:#6B7A9A;font-size:.86rem;margin-bottom:22px;display:block;}
+.fst{display:flex;flex-direction:column;gap:11px;margin-bottom:26px;}
+.fstep{display:flex;gap:12px;align-items:flex-start;background:#F4F7FF;border-radius:11px;padding:13px;}
+.fsn{width:26px;height:26px;border-radius:50%;background:#0057FF;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fstep h5{font-weight:600;font-size:.86rem;margin-bottom:2px;}
+.fstep p{color:#6B7A9A;font-size:.78rem;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;}
+.fg input,.fg select{width:100%;padding:11px 14px;border:1.5px solid #D6E0FF;border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#050F2C;outline:none;background:#fff;transition:.2s;}
+.fg input:focus,.fg select:focus{border-color:#0057FF;box-shadow:0 0 0 3px rgba(0,87,255,.12);}
+.fla{border:2px dashed #D6E0FF;border-radius:9px;padding:22px;text-align:center;cursor:pointer;position:relative;}
+.fla:hover{border-color:#0057FF;background:#E8F0FF;}
+.fla input{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.fla p{color:#6B7A9A;font-size:.82rem;}
+.fla span{color:#0057FF;font-weight:600;}
+.bsub{width:100%;padding:14px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;margin-top:8px;transition:.2s;}
+.bsub:hover{background:#0040CC;transform:translateY(-1px);}
+/* DASHBOARD */
+#dashboard{background:#050F2C;padding:76px 5vw;}
+#dashboard .st{color:#fff;}
+#dashboard .ss{color:rgba(255,255,255,.58);}
+#dashboard .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:18px;margin-top:44px;}
+.dc{border-radius:16px;padding:22px;position:relative;overflow:hidden;cursor:pointer;transition:.22s;}
+.dc:hover{transform:translateY(-4px);}
+.dc.bl{background:linear-gradient(135deg,#0057FF,#3B82F6);}
+.dc.gn{background:linear-gradient(135deg,#00A876,#00C48C);}
+.dc.og{background:linear-gradient(135deg,#E85D04,#FF7A00);}
+.dc.pu{background:linear-gradient(135deg,#5B21B6,#7C3AED);}
+.dc.dk{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);}
+.di{font-size:1.75rem;margin-bottom:14px;}
+.dl{color:rgba(255,255,255,.68);font-size:.76rem;margin-bottom:5px;}
+.dv{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;}
+.dsb{color:rgba(255,255,255,.48);font-size:.72rem;margin-top:3px;}
+.da{position:absolute;top:18px;right:18px;color:rgba(255,255,255,.38);font-size:1rem;}
+/* TRANSACTIONS */
+#transactions{background:#fff;}
+.tw{background:#fff;border-radius:16px;border:1px solid #D6E0FF;box-shadow:0 4px 28px rgba(0,87,255,.08);overflow:hidden;margin-top:36px;}
+.th{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 1fr;padding:13px 22px;background:#F4F7FF;border-bottom:1px solid #D6E0FF;}
+.th span{font-size:.76rem;font-weight:700;color:#6B7A9A;text-transform:uppercase;letter-spacing:.5px;}
+.tr{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 1fr;padding:15px 22px;border-bottom:1px solid #D6E0FF;align-items:center;transition:.14s;}
+.tr:last-child{border-bottom:none;}
+.tr:hover{background:#F4F7FF;}
+.tsv{display:flex;align-items:center;gap:11px;}
+.tic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.92rem;flex-shrink:0;}
+.tn{font-weight:600;font-size:.85rem;}
+.tp{font-size:.73rem;color:#6B7A9A;}
+.tc{font-size:.83rem;color:#050F2C;}
+.badge{display:inline-block;padding:3px 11px;border-radius:50px;font-size:.73rem;font-weight:600;}
+.badge.ok{background:#DCFCE7;color:#16A34A;}
+.badge.pn{background:#FEF9C3;color:#854D0E;}
+.ta{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;}
+.tmob{display:none;flex-direction:column;}
+.tmi{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid #D6E0FF;}
+.tmi:last-child{border-bottom:none;}
+.tml{display:flex;align-items:center;gap:11px;}
+.tmi h5{font-size:.86rem;font-weight:600;}
+.tmi p{font-size:.73rem;color:#6B7A9A;margin-top:2px;}
+.tmr{text-align:right;}
+.tmr .ta{display:block;margin-bottom:3px;}
+/* CONTACT */
+#contact{background:linear-gradient(135deg,#050F2C,#0A2060);}
+#contact .st{color:#fff;}
+#contact .ss{color:rgba(255,255,255,.62);}
+#contact .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.78);}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:46px;}
+.cc{display:flex;flex-direction:column;gap:16px;}
+.ccd{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start;}
+.cci{width:44px;height:44px;border-radius:11px;background:rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.ccd h4{color:#fff;font-weight:600;font-size:.92rem;margin-bottom:3px;}
+.ccd p{color:rgba(255,255,255,.58);font-size:.82rem;line-height:1.5;}
+.ccd a{color:#60A5FA;text-decoration:none;font-weight:500;}
+.wab{display:inline-flex;align-items:center;gap:9px;background:#25D366;border:none;border-radius:50px;padding:14px 26px;color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.2s;box-shadow:0 8px 24px rgba(37,211,102,.3);margin-top:14px;}
+.wab:hover{background:#1ebe5a;transform:translateY(-2px);}
+.cfb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:16px;padding:32px;}
+.cfb h3{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:5px;}
+.cfb .fsub{color:rgba(255,255,255,.58);}
+.cfg{margin-bottom:14px;}
+.cfg label{display:block;color:rgba(255,255,255,.68);font-size:.8rem;font-weight:600;margin-bottom:6px;}
+.cfg input,.cfg textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(255,255,255,.14);border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#fff;outline:none;background:rgba(255,255,255,.07);transition:.2s;}
+.cfg input::placeholder,.cfg textarea::placeholder{color:rgba(255,255,255,.32);}
+.cfg input:focus,.cfg textarea:focus{border-color:#0057FF;}
+.cfg textarea{resize:vertical;min-height:95px;}
+.bcf{width:100%;padding:13px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:.2s;margin-top:4px;}
+.bcf:hover{background:#0040CC;}
 /* FOOTER */
-footer{background:var(--b9);padding:56px 5% 28px}
-.footer-inner{max-width:1200px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
-.footer-brand p{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;margin-top:12px;max-width:260px}
-.footer-col h4{color:#fff;font-weight:700;font-size:13px;margin-bottom:16px;font-family:'Syne',sans-serif;letter-spacing:.3px}
-.footer-col a{display:block;color:rgba(255,255,255,.45);text-decoration:none;font-size:13px;margin-bottom:10px;transition:color .2s}
-.footer-col a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.3)}
-.footer-badges{display:flex;gap:10px;margin-top:16px}
-.footer-badge{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 12px;font-size:11px;color:rgba(255,255,255,.5);font-weight:600}
-
-/* ══════════ AUTH PAGES ══════════ */
-.auth-wrap{min-height:100vh;background:linear-gradient(150deg,var(--b9) 0%,#0F2A50 55%,var(--b7) 100%);display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
-.auth-wrap::before{content:'';position:absolute;top:-150px;left:-150px;width:500px;height:500px;background:radial-gradient(circle,rgba(37,99,235,.18),transparent 65%)}
-.auth-wrap::after{content:'';position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(245,158,11,.1),transparent 65%)}
-.auth-card{background:#fff;border-radius:var(--rxl);padding:44px 40px;width:100%;max-width:440px;box-shadow:0 40px 80px rgba(0,0,0,.35);position:relative;z-index:1}
-.auth-logo-block{text-align:center;margin-bottom:28px}
-.auth-logo-ico{width:54px;height:54px;background:linear-gradient(135deg,var(--b4),var(--b6));border-radius:16px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:900;font-family:'Syne',sans-serif;margin:0 auto 10px}
-.auth-logo-txt{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;color:var(--b9)}
-.auth-logo-txt span{color:var(--b4)}
-.auth-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--b9);text-align:center;margin-bottom:6px}
-.auth-sub{text-align:center;color:var(--g5);font-size:13px;margin-bottom:28px;line-height:1.5}
-.form-group{margin-bottom:18px}
-.form-label{display:block;font-size:12px;font-weight:700;color:var(--g7);margin-bottom:7px;letter-spacing:.3px;text-transform:uppercase}
-.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--g2);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--g9,var(--b9));background:var(--g0);transition:all .2s;outline:none}
-.form-input:focus{border-color:var(--b4);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-.form-input::placeholder{color:var(--g3)}
-.form-hint{font-size:11px;color:var(--g4);margin-top:5px}
-.form-err{font-size:12px;color:var(--red);margin-top:5px;display:none}
-.form-err.on{display:block}
-.pin-row{display:flex;gap:10px;justify-content:center}
-.pin-d{width:54px;height:58px;border:1.5px solid var(--g2);border-radius:12px;font-family:'Syne',sans-serif;font-size:20px;font-weight:700;text-align:center;color:var(--b9);background:var(--g0);outline:none;transition:all .2s}
-.pin-d:focus{border-color:var(--b4);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.1);transform:scale(1.05)}
-.auth-footer{text-align:center;margin-top:18px;font-size:13px;color:var(--g5)}
-.auth-footer a{color:var(--b4);font-weight:600;text-decoration:none}
-.auth-footer a:hover{text-decoration:underline}
-.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--g4);font-size:12px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--g2)}
-
-/* ══════════ DASHBOARD LAYOUT ══════════ */
-.dash-layout{display:flex;min-height:100vh;background:#F0F4FF}
-
-/* SIDEBAR */
-.sidebar{width:252px;background:var(--b9);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:300;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-.sb-head{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between}
-.sb-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fff}
-.sb-logo span{color:var(--b3)}
-.sb-nav{padding:16px 12px;flex:1;overflow-y:auto}
-.sb-section{font-size:10px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:1.2px;text-transform:uppercase;padding:0 8px;margin-bottom:6px;margin-top:18px}
-.sb-section:first-child{margin-top:0}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;color:rgba(255,255,255,.55);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;margin-bottom:2px;text-decoration:none;border:none;background:none;width:100%;text-align:left}
-.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.9)}
-.nav-item.active{background:rgba(37,99,235,.3);color:#fff;border-left:3px solid var(--b4)}
-.nav-item.active .ni-ico{color:var(--b3)}
-.ni-ico{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.sb-foot{padding:16px 12px;border-top:1px solid rgba(255,255,255,.07)}
-.sb-user{display:flex;align-items:center;gap:11px;padding:10px 11px;border-radius:10px;cursor:pointer;margin-bottom:10px}
-.sb-av{width:36px;height:36px;background:linear-gradient(135deg,var(--b4),var(--gold));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;flex-shrink:0}
-.sb-uname{color:#fff;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-urole{color:rgba(255,255,255,.35);font-size:11px;margin-top:1px}
-
-/* TOPBAR */
-.main-col{margin-left:252px;display:flex;flex-direction:column;min-height:100vh}
-.topbar{background:#fff;border-bottom:1px solid var(--g1);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
-.tb-left{display:flex;align-items:center;gap:14px}
-.tb-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--b9)}
-.tb-right{display:flex;align-items:center;gap:12px}
-.tb-icon-btn{width:36px;height:36px;background:var(--g1);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:16px;transition:background .2s;position:relative}
-.tb-icon-btn:hover{background:var(--g2)}
-.tb-notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;position:absolute;top:6px;right:6px;border:2px solid #fff}
-.tb-profile{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 10px;border-radius:10px;transition:background .2s}
-.tb-profile:hover{background:var(--g1)}
-.tb-av{width:34px;height:34px;background:linear-gradient(135deg,var(--b4),var(--b6));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
-.tb-uname{font-size:13px;font-weight:600;color:var(--g7)}
-.hamburger{display:none;background:none;border:none;cursor:pointer;font-size:22px;color:var(--g6);padding:4px}
-
-/* PANELS */
-.dash-panel{display:none;padding:28px;flex:1}
-.dash-panel.active{display:block}
-
-/* PAGE HEADER */
-.panel-header{margin-bottom:24px}
-.panel-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--b9)}
-.panel-sub{font-size:14px;color:var(--g5);margin-top:4px}
-
-/* BALANCE HERO */
-.bal-hero{background:linear-gradient(135deg,var(--b4) 0%,#1641C5 50%,var(--b6) 100%);border-radius:var(--rxl);padding:32px;position:relative;overflow:hidden;margin-bottom:24px}
-.bal-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:rgba(255,255,255,.07);border-radius:50%}
-.bal-hero::after{content:'';position:absolute;bottom:-80px;left:25%;width:280px;height:280px;background:rgba(255,255,255,.04);border-radius:50%}
-.bal-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;position:relative;z-index:1}
-.bal-label{color:rgba(255,255,255,.65);font-size:13px;font-weight:500;margin-bottom:8px}
-.bal-amount{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:#fff;letter-spacing:-1px}
-.bal-change{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px}
-.bal-badge{background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:600;color:#fff;display:flex;align-items:center;gap:6px;flex-shrink:0}
-.bal-acc-num{background:rgba(255,255,255,.1);border-radius:10px;padding:8px 14px;display:inline-flex;align-items:center;gap:10px;position:relative;z-index:1;margin-bottom:20px}
-.bal-acc-lbl{color:rgba(255,255,255,.5);font-size:11px}
-.bal-acc-val{font-family:'Syne',sans-serif;color:#fff;font-size:14px;font-weight:700;letter-spacing:2px}
-.bal-actions{display:flex;gap:12px;position:relative;z-index:1;flex-wrap:wrap}
-.bal-act{background:rgba(255,255,255,.13);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:12px 18px;display:flex;align-items:center;gap:9px;cursor:pointer;transition:all .2s;color:#fff;font-size:13px;font-weight:600}
-.bal-act:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
-.bal-act-ico{font-size:16px}
-
-/* STAT CARDS ROW */
-.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:#fff;border-radius:var(--rl);padding:20px;border:1px solid var(--g2);position:relative;overflow:hidden}
-.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--rl) var(--rl)}
-.stat-card.blue::after{background:linear-gradient(90deg,var(--b4),var(--b3))}
-.stat-card.green::after{background:linear-gradient(90deg,#059669,var(--green))}
-.stat-card.gold::after{background:linear-gradient(90deg,#D97706,var(--gold))}
-.stat-card.red::after{background:linear-gradient(90deg,#DC2626,var(--red))}
-.stat-card-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
-.stat-card-ico.blue{background:var(--b0)}
-.stat-card-ico.green{background:var(--greenl)}
-.stat-card-ico.gold{background:#FEF3C7}
-.stat-card-ico.red{background:var(--redl)}
-.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--b9);letter-spacing:-.5px}
-.stat-lbl{font-size:12px;color:var(--g5);font-weight:500;margin-top:3px}
-
-/* PANEL CARD */
-.pcard{background:#fff;border-radius:var(--rl);border:1px solid var(--g2);overflow:hidden;margin-bottom:20px}
-.pcard-head{padding:18px 22px;border-bottom:1px solid var(--g1);display:flex;align-items:center;justify-content:space-between}
-.pcard-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--b9)}
-.pcard-action{font-size:13px;color:var(--b4);font-weight:600;cursor:pointer;background:none;border:none;transition:color .2s}
-.pcard-action:hover{color:var(--b5)}
-
-/* TRANSACTION ITEMS */
-.txn-list{padding:4px 0}
-.txn-item{display:flex;align-items:center;gap:13px;padding:13px 22px;transition:background .15s}
-.txn-item:hover{background:var(--g0)}
-.txn-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.txn-ico.credit{background:var(--greenl);color:var(--green)}
-.txn-ico.debit{background:var(--redl);color:var(--red)}
-.txn-info{flex:1;min-width:0}
-.txn-desc{font-size:14px;font-weight:500;color:var(--g8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.txn-meta{font-size:11px;color:var(--g4);margin-top:2px}
-.txn-right{text-align:right;flex-shrink:0}
-.txn-amount{font-family:'Syne',sans-serif;font-size:15px;font-weight:700}
-.txn-amount.credit{color:var(--green)}
-.txn-amount.debit{color:var(--red)}
-.txn-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;margin-top:3px;display:inline-block;text-transform:uppercase;letter-spacing:.3px}
-.txn-badge.credit{background:var(--greenl);color:var(--green)}
-.txn-badge.debit{background:var(--redl);color:var(--red)}
-.empty-state{text-align:center;padding:40px 20px}
-.empty-ico{font-size:40px;margin-bottom:10px}
-.empty-txt{font-size:13px;color:var(--g4);font-weight:500}
-
-/* SEND/DEPOSIT FORM */
-.amount-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.ap{padding:6px 14px;border-radius:8px;background:var(--b0);color:var(--b5);font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--b1);transition:all .2s}
-.ap:hover,.ap.sel{background:var(--b4);color:#fff;border-color:var(--b4)}
-.recipient-preview{background:var(--b0);border:1px solid var(--b1);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px;display:none}
-.rp-av{width:38px;height:38px;background:linear-gradient(135deg,var(--b4),var(--b5));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
-.rp-name{font-weight:700;color:var(--b9);font-size:14px}
-.rp-phone{font-size:12px;color:var(--g5)}
-
-/* PROFILE */
-.profile-banner{background:linear-gradient(135deg,var(--b9),var(--b7));border-radius:var(--rxl);padding:36px;display:flex;align-items:center;gap:22px;margin-bottom:22px;position:relative;overflow:hidden}
-.profile-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.2),transparent 65%)}
-.prof-av{width:70px;height:70px;background:linear-gradient(135deg,var(--b4),var(--gold));border-radius:18px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:26px;flex-shrink:0;position:relative;z-index:1}
-.prof-info{position:relative;z-index:1}
-.prof-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff}
-.prof-email{color:rgba(255,255,255,.55);font-size:13px;margin-top:3px}
-.prof-tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.prof-tag{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,.8)}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.info-box{background:#fff;border-radius:var(--r);padding:18px;border:1px solid var(--g2)}
-.ib-label{font-size:11px;color:var(--g4);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.ib-value{font-size:15px;font-weight:600;color:var(--g8)}
-
-/* MODAL */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
-.modal-bg.hidden{display:none}
-.modal-box{background:#fff;border-radius:var(--rxl);padding:32px;width:100%;max-width:440px;box-shadow:var(--sxl);animation:mIn .3s cubic-bezier(.34,1.56,.64,1)}
-@keyframes mIn{from{transform:scale(.9) translateY(24px);opacity:0}}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.modal-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--b9)}
-.modal-close{width:34px;height:34px;background:var(--g1);border-radius:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:18px;color:var(--g5);transition:all .2s}
-.modal-close:hover{background:var(--g2)}
-
-/* STATUS */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.3px}
-.badge-active{background:var(--greenl);color:var(--green)}
-.badge-suspended{background:var(--redl);color:var(--red)}
-.badge-admin{background:#EDE9FE;color:#7C3AED}
-
-/* SIDEBAR OVERLAY */
-.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:250}
-
-/* ADMIN TABLE */
-.adm-table{width:100%;border-collapse:collapse}
-.adm-table th{background:var(--g0);padding:11px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--g4);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--g2)}
-.adm-table td{padding:13px 14px;border-bottom:1px solid var(--g1);font-size:13px;color:var(--g7)}
-.adm-table tr:hover td{background:var(--g0)}
-.adm-table tr:last-child td{border-bottom:none}
-.tbl-actions{display:flex;gap:5px;flex-wrap:wrap}
-
-/* QUICK ACTIONS GRID */
-.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.qa-card{background:#fff;border-radius:var(--rl);padding:20px;border:1px solid var(--g2);text-align:center;cursor:pointer;transition:all .25s}
-.qa-card:hover{transform:translateY(-3px);box-shadow:var(--slg);border-color:var(--b1)}
-.qa-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 11px}
-.qa-ico.blue{background:var(--b0)}
-.qa-ico.green{background:var(--greenl)}
-.qa-ico.gold{background:#FEF3C7}
-.qa-ico.purple{background:var(--purplel)}
-.qa-title{font-weight:700;font-size:13px;color:var(--b9)}
-.qa-sub{font-size:11px;color:var(--g4);margin-top:3px}
-
-/* MINI CHART */
-.chart-wrap{padding:20px;height:260px;position:relative}
-
-/* TICKER BAND */
-.ticker-band{background:var(--b9);overflow:hidden;height:34px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.06)}
-.ticker-inner{display:flex;gap:48px;animation:ticker 30s linear infinite;white-space:nowrap;padding-left:100%}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.ticker-item{font-size:12px;color:rgba(255,255,255,.5);font-weight:500;display:inline-flex;align-items:center;gap:8px}
-.ticker-item span{color:var(--green)}
-
-/* NOTIFICATION BELL PANEL */
-.notif-panel{position:absolute;top:48px;right:0;width:300px;background:#fff;border-radius:var(--rl);box-shadow:var(--sxl);border:1px solid var(--g2);z-index:400;display:none;overflow:hidden}
-.notif-panel.open{display:block}
-.notif-panel-head{padding:14px 16px;border-bottom:1px solid var(--g1);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--b9)}
-.notif-item{padding:12px 16px;border-bottom:1px solid var(--g1);display:flex;gap:11px;transition:background .15s;cursor:pointer}
-.notif-item:hover{background:var(--g0)}
-.notif-item:last-child{border-bottom:none}
-.notif-dot{width:8px;height:8px;background:var(--b4);border-radius:50%;flex-shrink:0;margin-top:5px}
-.notif-ntxt{font-size:12px;color:var(--g7);line-height:1.5}
-.notif-ntime{font-size:10px;color:var(--g4);margin-top:3px}
-
-/* SCROLLBAR */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--g3);border-radius:100px}
-
-/* ══ RESPONSIVE ══ */
-@media(max-width:1024px){
-  .feat-grid{grid-template-columns:repeat(2,1fr)}
-  .how-grid{grid-template-columns:repeat(2,1fr)}
-  .sec-band-inner{grid-template-columns:1fr;padding:0}
-  .sec-band{padding:44px}
-  .footer-grid{grid-template-columns:1fr 1fr}
-  .hero{grid-template-columns:1fr;gap:40px}
-  .hero-visual{order:-1}
-  .stat-row{grid-template-columns:repeat(2,1fr)}
-  .qa-grid{grid-template-columns:repeat(2,1fr)}
-  .test-grid{grid-template-columns:repeat(2,1fr)}
+footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56px 5vw 28px;}
+.fin{max-width:1200px;margin:auto;}
+.fg3{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px;}
+.fb p{color:rgba(255,255,255,.48);font-size:.84rem;line-height:1.7;margin-top:12px;max-width:250px;}
+.fsp{margin-top:18px;}
+.fsp span{color:rgba(255,255,255,.48);font-size:.8rem;display:block;}
+.fsp strong{color:rgba(255,255,255,.82);font-size:.86rem;display:block;margin-top:3px;}
+.fc h4{font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.92rem;margin-bottom:16px;}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.fc ul a{text-decoration:none;color:rgba(255,255,255,.48);font-size:.84rem;}
+.fc ul a:hover{color:#0057FF;}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.fbot p{color:rgba(255,255,255,.32);font-size:.8rem;}
+.fbdg{display:flex;gap:8px;}
+.fbdg span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 11px;color:rgba(255,255,255,.38);font-size:.72rem;}
+/* TOAST */
+#toast{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:9px;pointer-events:none;}
+.ti{background:#050F2C;color:#fff;padding:13px 18px;border-radius:11px;font-size:.86rem;box-shadow:0 8px 28px rgba(0,0,0,.28);border-left:4px solid #0057FF;animation:si .3s ease;max-width:310px;}
+.ti.g{border-color:#00C48C;}
+.ti.r{border-color:#FF3B3B;}
+@keyframes si{from{transform:translateX(110px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+/* MODALS */
+.ov{display:none;position:fixed;inset:0;background:rgba(5,15,44,.65);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:18px;}
+.ov.on{display:flex;}
+.mb{background:#fff;border-radius:22px;padding:36px;max-width:410px;width:100%;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto;}
+.mc{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:#F4F7FF;border:none;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;color:#6B7A9A;}
+.mc:hover{background:#D6E0FF;}
+.mico{width:60px;height:60px;border-radius:18px;background:#E8F0FF;display:flex;align-items:center;justify-content:center;font-size:1.9rem;margin-bottom:18px;}
+.mb h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;margin-bottom:7px;}
+.mb .fsub{margin-bottom:20px;}
+.mfg{margin-bottom:14px;}
+.mfg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;}
+.mfg input,.mfg select{width:100%;padding:11px 14px;border:1.5px solid #D6E0FF;border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#050F2C;outline:none;transition:.2s;}
+.mfg input:focus,.mfg select:focus{border-color:#0057FF;}
+.mbtn{display:flex;gap:9px;margin-top:8px;}
+.mbc{flex:1;padding:12px;background:#F4F7FF;border:1.5px solid #D6E0FF;border-radius:9px;color:#050F2C;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.mbg{flex:2;padding:12px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
+.mbg:hover{background:#0040CC;}
+.nps{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
+.np{padding:7px 14px;border:1.5px solid #D6E0FF;border-radius:50px;font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;}
+.np:hover,.np.on{background:#0057FF;color:#fff;border-color:#0057FF;}
+.mlink{text-align:center;margin-top:14px;font-size:.82rem;color:#6B7A9A;}
+.mlink a{color:#0057FF;font-weight:600;cursor:pointer;text-decoration:none;}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hgrid,.hwg,.fg2,.cg{grid-template-columns:1fr;}
+  .hvis{display:none;}
+  .fg3{grid-template-columns:1fr 1fr;}
+  .th,.tr{display:none;}
+  .tmob{display:flex;}
 }
-@media(max-width:768px){
-  .nav-links,.nav-actions{display:none}
-  .feat-grid{grid-template-columns:1fr}
-  .how-grid{grid-template-columns:1fr 1fr}
-  .stat-row{grid-template-columns:1fr 1fr}
-  .qa-grid{grid-template-columns:repeat(2,1fr)}
-  .info-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr}
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0)}
-  .sb-overlay.open{display:block}
-  .main-col{margin-left:0}
-  .hamburger{display:flex}
-  .dash-panel{padding:16px}
-  .topbar{padding:0 16px}
-  .bal-hero{padding:22px}
-  .bal-amount{font-size:30px}
-  .bal-actions{flex-direction:column}
-  .bal-top{flex-direction:column;gap:12px;align-items:flex-start}
-  .auth-card{padding:28px 22px}
-  .chip-1,.chip-2{display:none}
-  .test-grid{grid-template-columns:1fr}
-  .modal-box{padding:24px}
-  .profile-banner{flex-direction:column;text-align:center;padding:28px}
-  .adm-table th:nth-child(3),.adm-table td:nth-child(3){display:none}
-  .sec-band{padding:32px 22px}
-}
-@media(max-width:480px){
-  .hero h1{font-size:36px}
-  .stat-row{grid-template-columns:1fr}
-  .how-grid{grid-template-columns:1fr}
+@media(max-width:620px){
+  .nl,.nc{display:none;}
+  .ham{display:flex;}
+  .hbtns{flex-direction:column;align-items:flex-start;}
+  .fg3{grid-template-columns:1fr;}
+  .dg{grid-template-columns:repeat(2,1fr);}
+  .fbot{flex-direction:column;text-align:center;}
+  #toast{bottom:14px;right:14px;left:14px;}
+  .ti{max-width:100%;}
 }
 </style>
 </head>
 <body>
 
-<!-- GLOBAL LOADER -->
-<div id="gloader">
-  <div class="gl-logo">OCROWN <span>FINANCE</span></div>
-  <div class="gl-ring"></div>
-  <div class="gl-msg">Securing your connection…</div>
+<nav>
+  <div class="nav-in">
+    <a href="#home" class="logo">OCROWN<em> PAY</em></a>
+    <ul class="nl">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#fund">Fund Wallet</a></li>
+      <li><a href="#transactions">Transactions</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nc">
+      <button class="bo" onclick="openM('lm')">Login</button>
+      <button class="bs" onclick="openM('sm')">Sign Up</button>
+    </div>
+    <button class="ham" onclick="tM()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mob" id="mobmenu">
+  <a href="#home" onclick="cM()">Home</a>
+  <a href="#services" onclick="cM()">Services</a>
+  <a href="#fund" onclick="cM()">Fund Wallet</a>
+  <a href="#transactions" onclick="cM()">Transactions</a>
+  <a href="#contact" onclick="cM()">Contact</a>
+  <div class="mb2">
+    <button class="bo" style="flex:1" onclick="openM('lm');cM()">Login</button>
+    <button class="bs" style="flex:1" onclick="openM('sm');cM()">Sign Up</button>
+  </div>
 </div>
 
-<!-- TOAST -->
-<div id="toast"><div class="toast-body" id="toast-body"><span id="toast-ico">✓</span><span id="toast-msg">Success</span></div></div>
-
-<!-- ══════════ HOME PAGE ══════════ -->
-<div id="home-page" class="page active">
-  <!-- TICKER -->
-  <div class="ticker-band">
-    <div class="ticker-inner">
-      <div class="ticker-item">💳 Instant Transfers</div>
-      <div class="ticker-item">🔒 Bank-Grade Security</div>
-      <div class="ticker-item">📊 Real-time Analytics</div>
-      <div class="ticker-item">⚡ Zero Downtime</div>
-      <div class="ticker-item">🇳🇬 Built for Nigeria</div>
-      <div class="ticker-item">💰 No Hidden Fees</div>
-      <div class="ticker-item">🛡️ 256-bit Encryption</div>
-      <div class="ticker-item">📱 Mobile Ready</div>
-      <!-- duplicate for seamless loop -->
-      <div class="ticker-item">💳 Instant Transfers</div>
-      <div class="ticker-item">🔒 Bank-Grade Security</div>
-      <div class="ticker-item">📊 Real-time Analytics</div>
-      <div class="ticker-item">⚡ Zero Downtime</div>
-      <div class="ticker-item">🇳🇬 Built for Nigeria</div>
-      <div class="ticker-item">💰 No Hidden Fees</div>
-      <div class="ticker-item">🛡️ 256-bit Encryption</div>
-      <div class="ticker-item">📱 Mobile Ready</div>
-    </div>
-  </div>
-  <nav class="navbar">
-    <div class="nav-inner">
-      <div class="logo" onclick="showPage('home-page')">
-        <div class="logo-mark">₦</div>
-        <span class="logo-name">OCROWN <span>FINANCE</span></span>
-      </div>
-      <div class="nav-links">
-        <a href="#features">Features</a>
-        <a href="#how">How It Works</a>
-        <a href="#security">Security</a>
-        <a href="#" onclick="showPage('contact-page');return false">Contact</a>
-      </div>
-      <div class="nav-actions">
-        <button class="btn btn-outline btn-sm" onclick="showPage('login-page')">Sign In</button>
-        <button class="btn btn-primary btn-sm" onclick="showPage('signup-page')">Open Account →</button>
-      </div>
-    </div>
-  </nav>
-
-  <div class="hero">
+<section class="hero" id="home">
+  <div class="hgrid">
     <div>
-      <div class="hero-pill"><span class="pill-dot"></span> Nigeria's Fastest Growing Digital Bank</div>
-      <h1>Smart Digital Banking <em>Made Simple</em></h1>
-      <p>Send money instantly, manage your wallet, and track every transaction — all secured in one modern platform built for Nigerians.</p>
-      <div class="hero-btns">
-        <button class="btn btn-primary btn-xl" onclick="showPage('signup-page')">🚀 Create Free Account</button>
-        <button class="btn btn-outline btn-lg" onclick="showPage('login-page')">Sign In →</button>
+      <div class="hbadge"><span class="dot"></span>Nigeria's Trusted VTU Platform</div>
+      <h1>Smart Digital<br>Bill Payments<br><span>Made Easy</span></h1>
+      <p>Buy airtime, purchase mobile data, pay electricity bills and manage your wallet in one secure platform. Fast, reliable, and available 24/7.</p>
+      <div class="hbtns">
+        <button class="bh1" onclick="openM('sm')">Create Account</button>
+        <button class="bh2" onclick="openM('lm')">Login</button>
       </div>
-      <div class="hero-trust">
-        <div class="trust-avatars">
-          <div class="trust-av" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)">A</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#059669,#047857)">B</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#D97706,#B45309)">C</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#7C3AED,#6D28D9)">D</div>
-        </div>
-        <div class="trust-text">Trusted by <strong>50,000+</strong> Nigerians nationwide</div>
-      </div>
-      <div class="hero-stats">
-        <div class="hstat"><div class="hstat-val">₦2B+</div><div class="hstat-label">Transferred</div></div>
-        <div class="hstat"><div class="hstat-val">50K+</div><div class="hstat-label">Active Users</div></div>
-        <div class="hstat"><div class="hstat-val">99.9%</div><div class="hstat-label">Uptime</div></div>
-        <div class="hstat"><div class="hstat-val">4.9★</div><div class="hstat-label">User Rating</div></div>
+      <div class="hstats">
+        <div><div class="stn">50K+</div><div class="stl">Active Users</div></div>
+        <div><div class="stn">N500M+</div><div class="stl">Transactions</div></div>
+        <div><div class="stn">99.9%</div><div class="stl">Uptime</div></div>
       </div>
     </div>
-    <div class="hero-visual">
-      <div class="phone-wrap">
-        <div class="phone-frame">
-          <div class="pf-header">
-            <span class="pf-logo-txt">OCROWN <span>FINANCE</span></span>
-            <div class="pf-av">JA</div>
-          </div>
-          <div class="pf-card">
-            <div class="pf-card-lbl">Wallet Balance</div>
-            <div class="pf-card-amt">₦245,800.00</div>
-            <div class="pf-card-sub"><span>**** **** 4521</span><span>Active ✓</span></div>
-          </div>
-          <div class="pf-actions">
-            <div class="pf-act"><div class="pf-act-ico">↑</div><div class="pf-act-lbl">Send</div></div>
-            <div class="pf-act"><div class="pf-act-ico">↓</div><div class="pf-act-lbl">Deposit</div></div>
-            <div class="pf-act"><div class="pf-act-ico">📋</div><div class="pf-act-lbl">History</div></div>
-          </div>
-          <div class="pf-txns">
-            <div style="color:rgba(255,255,255,.4);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Recent Transactions</div>
-            <div class="pf-txn"><div class="pf-txn-ico cr">↓</div><div class="pf-txn-info"><div class="pf-txn-name">Salary Credit</div><div class="pf-txn-date">Today, 09:14 AM</div></div><div class="pf-txn-amt cr">+₦150K</div></div>
-            <div class="pf-txn"><div class="pf-txn-ico db">↑</div><div class="pf-txn-info"><div class="pf-txn-name">Transfer to Bello</div><div class="pf-txn-date">Yesterday</div></div><div class="pf-txn-amt db">-₦25K</div></div>
-            <div class="pf-txn"><div class="pf-txn-ico cr">↓</div><div class="pf-txn-info"><div class="pf-txn-name">Wallet Deposit</div><div class="pf-txn-date">2 days ago</div></div><div class="pf-txn-amt cr">+₦50K</div></div>
-          </div>
+    <div class="hvis" style="display:flex;justify-content:center">
+      <div class="mock">
+        <div class="mk-hd">
+          <div><div class="mk-gt">Good afternoon</div><div class="mk-nm">Welcome back!</div></div>
+          <div class="mk-av">O</div>
         </div>
-        <div class="chip chip-1">
-          <div class="chip-ico g">💸</div>
-          <div><div class="chip-title">Transfer Successful</div><div class="chip-sub">₦50,000 sent instantly</div></div>
+        <div class="mk-bal">
+          <div class="mk-bl">Wallet Balance</div>
+          <div class="mk-ba">N12,450.00</div>
+          <div class="mk-bs">Last funded: Today, 2:14 PM</div>
         </div>
-        <div class="chip chip-2">
-          <div class="chip-ico b">🔒</div>
-          <div><div class="chip-title">Secured & Verified</div><div class="chip-sub">256-bit SSL</div></div>
+        <div class="mk-sv">
+          <div class="mk-s"><div class="mk-si">&#128241;</div><div class="mk-sl">Airtime</div></div>
+          <div class="mk-s"><div class="mk-si">&#128246;</div><div class="mk-sl">Data</div></div>
+          <div class="mk-s"><div class="mk-si">&#9889;</div><div class="mk-sl">Bills</div></div>
+          <div class="mk-s"><div class="mk-si">&#128221;</div><div class="mk-sl">WAEC</div></div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="features" style="padding-top:0">
-    <div class="sec-inner">
-      <div class="sec-tag">Features</div>
-      <h2 class="sec-title">Everything You Need in<br>One Platform</h2>
-      <p class="sec-sub" style="margin-bottom:48px">OCROWN FINANCE gives you complete control of your money with enterprise-grade tools.</p>
-      <div class="feat-grid">
-        <div class="feat-card"><div class="feat-ico blue">⚡</div><h3 class="feat-title">Instant Transfers</h3><p class="feat-desc">Send money to any registered user in seconds using only their phone number. 24/7, zero delays.</p></div>
-        <div class="feat-card"><div class="feat-ico green">💰</div><h3 class="feat-title">Digital Wallet</h3><p class="feat-desc">Auto-created wallet on signup. Fund via Paystack with cards, bank transfer or USSD — start transacting immediately.</p></div>
-        <div class="feat-card"><div class="feat-ico gold">📊</div><h3 class="feat-title">Smart Analytics</h3><p class="feat-desc">Visual charts and insights into your spending patterns, balance trends and transaction history.</p></div>
-        <div class="feat-card"><div class="feat-ico purple">🔐</div><h3 class="feat-title">PIN Security</h3><p class="feat-desc">4-digit PIN required before every transfer. Only you can authorize your transactions — always.</p></div>
-        <div class="feat-card"><div class="feat-ico orange">📱</div><h3 class="feat-title">Mobile Optimized</h3><p class="feat-desc">Pixel-perfect on any screen. Full functionality on phones, tablets and desktops without compromise.</p></div>
-        <div class="feat-card"><div class="feat-ico red">🛡️</div><h3 class="feat-title">Fraud Protection</h3><p class="feat-desc">Real-time fraud detection, admin account suspension, and instant alerts to protect your funds 24/7.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="how" style="background:var(--g0)">
-    <div class="sec-inner">
-      <div style="text-align:center;margin-bottom:48px">
-        <div class="sec-tag">How It Works</div>
-        <h2 class="sec-title" style="text-align:center">Start Banking in<br>Under 2 Minutes</h2>
-      </div>
-      <div class="how-grid">
-        <div class="how-step"><div class="how-num">1</div><h3 class="how-title">Create Account</h3><p class="how-desc">Sign up with your name, email, phone and create a secure 4-digit PIN.</p></div>
-        <div class="how-step"><div class="how-num">2</div><h3 class="how-title">Fund Your Wallet</h3><p class="how-desc">Deposit money via Paystack — cards, bank transfer or USSD. Instant confirmation.</p></div>
-        <div class="how-step"><div class="how-num">3</div><h3 class="how-title">Send & Receive</h3><p class="how-desc">Transfer to anyone with a phone number. Real-time notifications on both ends.</p></div>
-        <div class="how-step"><div class="how-num">4</div><h3 class="how-title">Track Everything</h3><p class="how-desc">Full transaction history with amounts, dates, descriptions and credit/debit labels.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="security">
-    <div class="sec-inner">
-      <div class="sec-band">
-        <div class="sec-band-inner">
-          <div>
-            <div class="sec-tag">Bank-Grade Security</div>
-            <h2 class="sec-title" style="color:#fff">Your Money is<br><span style="color:var(--b3)">100% Protected</span></h2>
-            <p style="color:rgba(255,255,255,.5);font-size:15px;line-height:1.7;margin-top:12px">We use the same security infrastructure as major Nigerian banks.</p>
-            <div class="sec-list">
-              <div class="sec-item"><div class="sec-check">✓</div><div><div class="sec-ititle">256-bit SSL Encryption</div><div class="sec-idesc">All data between you and our servers is fully encrypted end-to-end.</div></div></div>
-              <div class="sec-item"><div class="sec-check">✓</div><div><div class="sec-ititle">PIN-Locked Transactions</div><div class="sec-idesc">Every money movement requires your secret PIN for final authorization.</div></div></div>
-              <div class="sec-item"><div class="sec-check">✓</div><div><div class="sec-ititle">Firebase Security Rules</div><div class="sec-idesc">Strict Firestore rules prevent any unauthorized read or write access.</div></div></div>
-              <div class="sec-item"><div class="sec-check">✓</div><div><div class="sec-ititle">Admin Fraud Control</div><div class="sec-idesc">Admins can instantly freeze suspicious accounts and reverse fraudulent transactions.</div></div></div>
-              <div class="sec-item"><div class="sec-check">✓</div><div><div class="sec-ititle">Paystack PCI DSS</div><div class="sec-idesc">Payment processing is certified to the highest card security standards globally.</div></div></div>
-            </div>
+        <div class="mk-tx">
+          <div class="mk-tt">Recent Transactions</div>
+          <div class="mk-ti">
+            <div class="mk-tl"><div class="mk-td" style="background:rgba(0,87,255,.25)">&#128241;</div><div><div class="mk-tn">MTN Airtime</div><div class="mk-dt">Today</div></div></div>
+            <div class="mk-am ar">-N500</div>
           </div>
-          <div class="sec-visual">
-            <div class="sec-shield">🛡️</div>
-            <div class="sec-score-label">Platform Security Score</div>
-            <div class="sec-score">98</div>
-            <div class="sec-score-sub">out of 100 — Excellent</div>
-            <div class="sec-metrics">
-              <div class="sec-metric"><div class="sm-val">AES-256</div><div class="sm-lbl">Encryption</div></div>
-              <div class="sec-metric"><div class="sm-val">PCI DSS</div><div class="sm-lbl">Compliance</div></div>
-              <div class="sec-metric"><div class="sm-val">24/7</div><div class="sm-lbl">Monitoring</div></div>
-              <div class="sec-metric"><div class="sm-val">0</div><div class="sm-lbl">Data Breaches</div></div>
-            </div>
+          <div class="mk-ti">
+            <div class="mk-tl"><div class="mk-td" style="background:rgba(0,196,140,.18)">&#128176;</div><div><div class="mk-tn">Wallet Funded</div><div class="mk-dt">Today</div></div></div>
+            <div class="mk-am ag">+N5,000</div>
+          </div>
+          <div class="mk-ti">
+            <div class="mk-tl"><div class="mk-td" style="background:rgba(255,122,0,.18)">&#9889;</div><div><div class="mk-tn">EKEDC Bill</div><div class="mk-dt">Yesterday</div></div></div>
+            <div class="mk-am ar">-N2,000</div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="section" style="background:var(--g0)" id="testimonials">
-    <div class="sec-inner">
-      <div style="text-align:center;margin-bottom:48px">
-        <div class="sec-tag">Testimonials</div>
-        <h2 class="sec-title" style="text-align:center">Loved by Thousands<br>of Nigerians</h2>
+<section id="services">
+  <div class="sm">
+    <div class="sh">
+      <span class="sl">Our Services</span>
+      <h2 class="st">Everything You Need in One Place</h2>
+      <p class="ss">Fast and reliable digital services for every Nigerian. No queues, no hassle.</p>
+    </div>
+    <div class="sg">
+      <div class="sc">
+        <div class="si">&#128241;</div>
+        <h3>Buy Airtime</h3>
+        <p>Purchase airtime instantly for MTN, Airtel, Glo and 9mobile. Any amount, delivered in seconds to any number.</p>
+        <button class="sb" onclick="openSvc('airtime')">Buy Now &#8594;</button>
       </div>
-      <div class="test-grid">
-        <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"OCROWN FINANCE changed how I handle money. Sending funds to my family in Kano is now instant. Absolutely love it!"</p><div class="test-author"><div class="test-av" style="background:linear-gradient(135deg,#2563EB,#1D4ED8)">AK</div><div><div class="test-name">Aminu Kabiru</div><div class="test-role">Entrepreneur · Abuja</div></div></div></div>
-        <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"The admin panel is so powerful. I can see all transactions, manage wallets and monitor everything in one place."</p><div class="test-author"><div class="test-av" style="background:linear-gradient(135deg,#059669,#047857)">CF</div><div><div class="test-name">Chioma Festus</div><div class="test-role">Business Owner · Lagos</div></div></div></div>
-        <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Very clean and easy to use. Depositing money with Paystack is seamless. My balance updates immediately!"</p><div class="test-author"><div class="test-av" style="background:linear-gradient(135deg,#D97706,#B45309)">BE</div><div><div class="test-name">Babatunde Eze</div><div class="test-role">Software Engineer · PH</div></div></div></div>
+      <div class="sc">
+        <div class="si">&#128246;</div>
+        <h3>Buy Data</h3>
+        <p>Subscribe to affordable mobile data plans across all networks. Daily, weekly, and monthly bundles available.</p>
+        <button class="sb" onclick="openSvc('data')">Buy Now &#8594;</button>
+      </div>
+      <div class="sc">
+        <div class="si">&#9889;</div>
+        <h3>Electricity Payment</h3>
+        <p>Pay electricity bills for EKEDC, IKEDC, AEDC, PHEDC and all supported DISCO providers across Nigeria.</p>
+        <button class="sb" onclick="openSvc('electricity')">Pay Now &#8594;</button>
+      </div>
+      <div class="sc">
+        <div class="si">&#128221;</div>
+        <h3>WAEC Result Checker</h3>
+        <p>Purchase WAEC result checker PIN instantly. Get your scratch card details delivered to your phone immediately.</p>
+        <button class="sb" onclick="openSvc('waec')">Buy Now &#8594;</button>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="cta-band">
-    <div style="max-width:700px;margin:0 auto">
-      <div class="sec-tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)">Get Started Free</div>
-      <h2>Ready to Take Control<br>of Your Finances?</h2>
-      <p>Join 50,000+ Nigerians who trust OCROWN FINANCE for smarter, faster digital banking.</p>
-      <div class="cta-btns">
-        <button class="btn btn-white btn-xl" onclick="showPage('signup-page')">🎉 Open Free Account</button>
-        <button class="btn btn-outline-white btn-lg" onclick="showPage('contact-page')">Talk to Support</button>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="logo"><div class="logo-mark" style="background:rgba(255,255,255,.1)">₦</div><span class="logo-name" style="color:#fff">OCROWN <span>FINANCE</span></span></div>
-          <p>Smart digital banking for every Nigerian. Send, receive and manage your money with confidence and security.</p>
-          <div class="footer-badges">
-            <div class="footer-badge">🔒 SSL Secured</div>
-            <div class="footer-badge">✓ PCI DSS</div>
-            <div class="footer-badge">🇳🇬 Nigeria CBN</div>
-          </div>
-        </div>
-        <div class="footer-col"><h4>Product</h4><a href="#">Digital Wallet</a><a href="#">Send Money</a><a href="#">Deposit</a><a href="#">Transaction History</a><a href="#">Analytics</a></div>
-        <div class="footer-col"><h4>Company</h4><a href="#">About Us</a><a href="#">Careers</a><a href="#" onclick="showPage('contact-page');return false">Contact</a><a href="#">Blog</a><a href="#">Press</a></div>
-        <div class="footer-col"><h4>Legal & Support</h4><a href="#">Privacy Policy</a><a href="#">Terms of Service</a><a href="#">Cookie Policy</a><a href="#">Security</a><a href="#">Help Center</a></div>
-      </div>
-      <div class="footer-bottom"><span>© 2025 OCROWN FINANCE. All rights reserved.</span><span>Licensed Digital Payment Platform · Nigeria</span></div>
-    </div>
-  </footer>
-</div><!-- /home-page -->
-
-<!-- ══════════ SIGNUP PAGE ══════════ -->
-<div id="signup-page" class="page">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo-block">
-        <div class="auth-logo-ico">₦</div>
-        <div class="auth-logo-txt">OCROWN <span>FINANCE</span></div>
-      </div>
-      <h2 class="auth-title">Create Your Account</h2>
-      <p class="auth-sub">Join OCROWN FINANCE and start banking smarter today. It's completely free.</p>
-      <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <input type="text" class="form-input" id="reg-name" placeholder="e.g. Adebayo Johnson" autocomplete="name">
-        <div class="form-err" id="e-reg-name">Please enter your full name</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Email Address</label>
-        <input type="email" class="form-input" id="reg-email" placeholder="you@email.com" autocomplete="email">
-        <div class="form-err" id="e-reg-email">Please enter a valid email address</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Phone Number</label>
-        <input type="tel" class="form-input" id="reg-phone" placeholder="08012345678" autocomplete="tel">
-        <div class="form-err" id="e-reg-phone">Enter a valid Nigerian phone number (min 10 digits)</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="display:block;text-align:center">Create 4-Digit Transaction PIN</label>
-        <div class="pin-row">
-          <input type="password" class="pin-d" maxlength="1" id="rp1" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="rp2" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="rp3" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="rp4" inputmode="numeric">
-        </div>
-        <div class="form-hint" style="text-align:center">Use this PIN to confirm all transactions</div>
-        <div class="form-err" id="e-reg-pin" style="text-align:center">Please enter all 4 PIN digits</div>
-      </div>
-      <button class="btn btn-primary btn-full btn-lg" onclick="doSignup()">Create Account →</button>
-      <div class="auth-footer" style="margin-top:14px">Already have an account? <a href="#" onclick="showPage('login-page');return false">Sign In</a></div>
-      <div class="auth-footer" style="margin-top:6px"><a href="#" onclick="showPage('home-page');return false">← Back to Home</a></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ LOGIN PAGE ══════════ -->
-<div id="login-page" class="page">
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo-block">
-        <div class="auth-logo-ico">₦</div>
-        <div class="auth-logo-txt">OCROWN <span>FINANCE</span></div>
-      </div>
-      <h2 class="auth-title">Welcome Back</h2>
-      <p class="auth-sub">Sign in to your OCROWN FINANCE account to access your wallet.</p>
-      <div class="form-group">
-        <label class="form-label">Phone Number</label>
-        <input type="tel" class="form-input" id="log-phone" placeholder="08012345678" autocomplete="tel">
-        <div class="form-err" id="e-log-phone">Please enter your phone number</div>
-      </div>
-      <div class="form-group">
-        <label class="form-label" style="display:block;text-align:center">Your 4-Digit PIN</label>
-        <div class="pin-row">
-          <input type="password" class="pin-d" maxlength="1" id="lp1" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="lp2" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="lp3" inputmode="numeric">
-          <input type="password" class="pin-d" maxlength="1" id="lp4" inputmode="numeric">
-        </div>
-        <div class="form-err" id="e-log-pin" style="text-align:center">Please enter your 4-digit PIN</div>
-      </div>
-      <button class="btn btn-primary btn-full btn-lg" onclick="doLogin()">Sign In to Dashboard →</button>
-      <div class="auth-footer" style="margin-top:14px">New to OCROWN? <a href="#" onclick="showPage('signup-page');return false">Create free account</a></div>
-      <div class="auth-footer" style="margin-top:6px"><a href="#" onclick="showPage('home-page');return false">← Back to Home</a></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ USER DASHBOARD ══════════ -->
-<div id="dashboard-page" class="page">
-  <div class="dash-layout">
-    <div class="sb-overlay" id="sb-overlay" onclick="closeSB()"></div>
-    <aside class="sidebar" id="sidebar">
-      <div class="sb-head">
-        <div class="sb-logo">OCROWN <span>FINANCE</span></div>
-      </div>
-      <nav class="sb-nav">
-        <div class="sb-section">Main</div>
-        <button class="nav-item active" onclick="goPanel('overview')"><span class="ni-ico">🏠</span> Overview</button>
-        <button class="nav-item" onclick="goPanel('send')"><span class="ni-ico">↑</span> Send Money</button>
-        <button class="nav-item" onclick="goPanel('deposit')"><span class="ni-ico">💳</span> Deposit</button>
-        <button class="nav-item" onclick="goPanel('transactions')"><span class="ni-ico">📋</span> Transactions</button>
-        <div class="sb-section">Account</div>
-        <button class="nav-item" onclick="goPanel('profile')"><span class="ni-ico">👤</span> My Profile</button>
-        <button class="nav-item" onclick="goPanel('settings')"><span class="ni-ico">⚙️</span> Settings</button>
-      </nav>
-      <div class="sb-foot">
-        <div class="sb-user">
-          <div class="sb-av" id="sb-av">?</div>
-          <div><div class="sb-uname" id="sb-name">Loading…</div><div class="sb-urole">Personal Account</div></div>
-        </div>
-        <button class="btn btn-danger btn-full btn-sm" onclick="doLogout()">🚪 Sign Out</button>
-      </div>
-    </aside>
-
-    <div class="main-col">
-      <div class="topbar">
-        <div class="tb-left">
-          <button class="hamburger" onclick="openSB()">☰</button>
-          <span class="tb-title" id="tb-title">Overview</span>
-        </div>
-        <div class="tb-right" style="position:relative">
-          <div style="position:relative">
-            <button class="tb-icon-btn" onclick="toggleNotifPanel()" id="notif-btn">🔔<div class="tb-notif-dot"></div></button>
-            <div class="notif-panel" id="notif-panel">
-              <div class="notif-panel-head">🔔 Notifications</div>
-              <div class="notif-item"><div class="notif-dot"></div><div><div class="notif-ntxt">Welcome to OCROWN FINANCE! Your wallet is ready.</div><div class="notif-ntime">Just now</div></div></div>
-              <div class="notif-item"><div class="notif-dot" style="background:var(--green)"></div><div><div class="notif-ntxt">Your account has been verified successfully.</div><div class="notif-ntime">Account setup</div></div></div>
-            </div>
-          </div>
-          <div class="tb-profile" onclick="goPanel('profile')">
-            <div class="tb-av" id="tb-av">?</div>
-            <span class="tb-uname" id="tb-uname">User</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- OVERVIEW PANEL -->
-      <div class="dash-panel active" id="panel-overview">
-        <div class="panel-header">
-          <div class="panel-title">Good day 👋 <span id="greeting-name">User</span></div>
-          <div class="panel-sub">Here's your financial overview</div>
-        </div>
-        <div class="bal-hero">
-          <div class="bal-top">
-            <div>
-              <div class="bal-label">Total Wallet Balance</div>
-              <div class="bal-amount" id="hero-bal">₦0.00</div>
-              <div class="bal-change">Available for instant transfers</div>
-            </div>
-            <div class="bal-badge"><span style="color:var(--green)">●</span> Active & Verified</div>
-          </div>
-          <div class="bal-acc-num">
-            <div class="bal-acc-lbl">Account Ref</div>
-            <div class="bal-acc-val" id="acc-ref">OCROWN-****</div>
-          </div>
-          <div class="bal-actions">
-            <div class="bal-act" onclick="goPanel('send')"><span class="bal-act-ico">↑</span> Send Money</div>
-            <div class="bal-act" onclick="goPanel('deposit')"><span class="bal-act-ico">💳</span> Deposit</div>
-            <div class="bal-act" onclick="goPanel('transactions')"><span class="bal-act-ico">📋</span> History</div>
-            <div class="bal-act" onclick="goPanel('profile')"><span class="bal-act-ico">👤</span> Profile</div>
-          </div>
-        </div>
-
-        <div class="qa-grid">
-          <div class="qa-card" onclick="goPanel('send')"><div class="qa-ico blue">↑</div><div class="qa-title">Send Money</div><div class="qa-sub">Transfer to anyone</div></div>
-          <div class="qa-card" onclick="goPanel('deposit')"><div class="qa-ico green">💳</div><div class="qa-title">Fund Wallet</div><div class="qa-sub">Via Paystack</div></div>
-          <div class="qa-card" onclick="goPanel('transactions')"><div class="qa-ico gold">📊</div><div class="qa-title">Analytics</div><div class="qa-sub">View spending</div></div>
-          <div class="qa-card" onclick="goPanel('profile')"><div class="qa-ico purple">🔐</div><div class="qa-title">Security</div><div class="qa-sub">PIN & profile</div></div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px" id="mini-stats-grid">
-          <div class="pcard">
-            <div class="pcard-head"><span class="pcard-title">💹 Total Received</span></div>
-            <div style="padding:20px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--green)" id="ov-total-in">₦0.00</div><div style="font-size:12px;color:var(--g4);margin-top:4px">All-time credits</div></div>
-          </div>
-          <div class="pcard">
-            <div class="pcard-head"><span class="pcard-title">📤 Total Sent</span></div>
-            <div style="padding:20px;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--red)" id="ov-total-out">₦0.00</div><div style="font-size:12px;color:var(--g4);margin-top:4px">All-time debits</div></div>
-          </div>
-        </div>
-
-        <div class="pcard">
-          <div class="pcard-head">
-            <span class="pcard-title">Recent Transactions</span>
-            <button class="pcard-action" onclick="goPanel('transactions')">View All →</button>
-          </div>
-          <div class="txn-list" id="ov-txn-list">
-            <div class="empty-state"><div class="empty-ico">💸</div><div class="empty-txt">No transactions yet. Send or receive money to get started!</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SEND MONEY PANEL -->
-      <div class="dash-panel" id="panel-send">
-        <div class="panel-header"><div class="panel-title">↑ Send Money</div><div class="panel-sub">Transfer funds to any registered OCROWN user</div></div>
-        <div style="max-width:520px">
-          <div class="pcard">
-            <div class="pcard-head"><span class="pcard-title">New Transfer</span></div>
-            <div style="padding:24px">
-              <div style="background:var(--b0);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;margin-bottom:22px;align-items:center">
-                <div style="font-size:12px;color:var(--g5);font-weight:500">Available Balance</div>
-                <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--b5)" id="send-bal-display">₦0.00</div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Recipient Phone Number</label>
-                <input type="tel" class="form-input" id="s-phone" placeholder="08012345678" oninput="lookupRecipient()">
-                <div class="form-err" id="e-s-phone">Enter recipient phone number</div>
-              </div>
-              <div class="recipient-preview" id="recipient-preview">
-                <div class="rp-av" id="rp-av">?</div>
-                <div><div class="rp-name" id="rp-name">—</div><div class="rp-phone" id="rp-phone">—</div></div>
-                <div style="margin-left:auto"><span class="badge badge-active">✓ Found</span></div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Amount (₦)</label>
-                <div class="amount-presets">
-                  <span class="ap" onclick="setAmt('send-amount',1000,this)">₦1K</span>
-                  <span class="ap" onclick="setAmt('send-amount',5000,this)">₦5K</span>
-                  <span class="ap" onclick="setAmt('send-amount',10000,this)">₦10K</span>
-                  <span class="ap" onclick="setAmt('send-amount',50000,this)">₦50K</span>
-                  <span class="ap" onclick="setAmt('send-amount',100000,this)">₦100K</span>
-                </div>
-                <input type="number" class="form-input" id="send-amount" placeholder="Enter amount" min="1">
-                <div class="form-err" id="e-s-amt">Enter a valid amount greater than 0</div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Description (optional)</label>
-                <input type="text" class="form-input" id="send-desc" placeholder="e.g. Rent payment, School fees…">
-              </div>
-              <div class="form-group">
-                <label class="form-label" style="display:block;text-align:center">Confirm with Your PIN</label>
-                <div class="pin-row">
-                  <input type="password" class="pin-d" maxlength="1" id="sp1" inputmode="numeric">
-                  <input type="password" class="pin-d" maxlength="1" id="sp2" inputmode="numeric">
-                  <input type="password" class="pin-d" maxlength="1" id="sp3" inputmode="numeric">
-                  <input type="password" class="pin-d" maxlength="1" id="sp4" inputmode="numeric">
-                </div>
-                <div class="form-err" id="e-s-pin" style="text-align:center">Enter your 4-digit PIN</div>
-              </div>
-              <button class="btn btn-primary btn-full btn-lg" onclick="initSend()">Review Transfer →</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DEPOSIT PANEL -->
-      <div class="dash-panel" id="panel-deposit">
-        <div class="panel-header"><div class="panel-title">💳 Deposit Money</div><div class="panel-sub">Fund your wallet securely via Paystack</div></div>
-        <div style="max-width:520px">
-          <div class="pcard">
-            <div style="padding:24px">
-              <div style="background:linear-gradient(135deg,var(--b0),#EEF2FF);border-radius:16px;padding:24px;text-align:center;margin-bottom:22px;border:1px solid var(--b1)">
-                <div style="font-size:40px;margin-bottom:10px">💰</div>
-                <div style="font-weight:700;color:var(--b9);font-size:16px;margin-bottom:6px">Fund Your OCROWN Wallet</div>
-                <div style="font-size:13px;color:var(--g5)">Cards · Bank Transfer · USSD · All accepted</div>
-                <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-                  <span style="background:#fff;border:1px solid var(--g2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--g6)">💳 Visa</span>
-                  <span style="background:#fff;border:1px solid var(--g2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--g6)">💳 Mastercard</span>
-                  <span style="background:#fff;border:1px solid var(--g2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--g6)">🏦 Bank Transfer</span>
-                  <span style="background:#fff;border:1px solid var(--g2);border-radius:8px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--g6)">📱 USSD</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Amount to Deposit (₦)</label>
-                <div class="amount-presets">
-                  <span class="ap" onclick="setAmt('dep-amount',1000,this)">₦1K</span>
-                  <span class="ap" onclick="setAmt('dep-amount',5000,this)">₦5K</span>
-                  <span class="ap" onclick="setAmt('dep-amount',10000,this)">₦10K</span>
-                  <span class="ap" onclick="setAmt('dep-amount',50000,this)">₦50K</span>
-                </div>
-                <input type="number" class="form-input" id="dep-amount" placeholder="Minimum ₦100" min="100">
-              </div>
-              <button class="btn btn-gold btn-full btn-lg" onclick="doDeposit()">💳 Proceed to Payment</button>
-              <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px">
-                <span style="font-size:12px;color:var(--g4)">🔒 Secured by</span>
-                <span style="font-weight:700;color:#01BF80;font-size:14px">Paystack</span>
-                <span style="font-size:12px;color:var(--g4)">· PCI DSS Certified</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TRANSACTIONS PANEL -->
-      <div class="dash-panel" id="panel-transactions">
-        <div class="panel-header">
-          <div class="panel-title">📋 Transaction History</div>
-          <div class="panel-sub" id="txn-count-sub">Loading your transactions…</div>
-        </div>
-        <div class="pcard">
-          <div class="pcard-head">
-            <span class="pcard-title">All Transactions</span>
-            <span id="txn-count-badge" style="font-size:12px;color:var(--g4);font-weight:600">0 records</span>
-          </div>
-          <div class="txn-list" id="all-txn-list">
-            <div class="empty-state"><div class="empty-ico">📋</div><div class="empty-txt">Loading…</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PROFILE PANEL -->
-      <div class="dash-panel" id="panel-profile">
-        <div class="panel-header"><div class="panel-title">👤 My Profile</div></div>
-        <div class="profile-banner">
-          <div class="prof-av" id="prof-av-lg">?</div>
-          <div class="prof-info">
-            <div class="prof-name" id="prof-name">Loading…</div>
-            <div class="prof-email" id="prof-email">—</div>
-            <div class="prof-tags">
-              <span class="prof-tag">✓ Verified Account</span>
-              <span class="prof-tag" id="prof-status-tag">Active</span>
-              <span class="prof-tag">🇳🇬 Nigeria</span>
-            </div>
-          </div>
-        </div>
-        <div class="info-grid">
-          <div class="info-box"><div class="ib-label">Full Name</div><div class="ib-value" id="pf-name">—</div></div>
-          <div class="info-box"><div class="ib-label">Email Address</div><div class="ib-value" id="pf-email">—</div></div>
-          <div class="info-box"><div class="ib-label">Phone Number</div><div class="ib-value" id="pf-phone">—</div></div>
-          <div class="info-box"><div class="ib-label">Wallet Balance</div><div class="ib-value" id="pf-balance" style="color:var(--b4);font-family:'Syne',sans-serif;font-size:20px;font-weight:800">₦0.00</div></div>
-          <div class="info-box"><div class="ib-label">Account Status</div><div class="ib-value" id="pf-status">—</div></div>
-          <div class="info-box"><div class="ib-label">Member Since</div><div class="ib-value" id="pf-joined">—</div></div>
-        </div>
-      </div>
-
-      <!-- SETTINGS PANEL -->
-      <div class="dash-panel" id="panel-settings">
-        <div class="panel-header"><div class="panel-title">⚙️ Settings</div></div>
-        <div style="max-width:500px;display:flex;flex-direction:column;gap:14px">
-          <div class="pcard"><div style="padding:20px 22px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-weight:700;color:var(--b9);font-size:14px">Email Notifications</div><div style="font-size:12px;color:var(--g4);margin-top:3px">Receive alerts for every transaction</div></div><div style="width:44px;height:24px;background:var(--b4);border-radius:100px;position:relative;cursor:pointer"><div style="position:absolute;right:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div></div></div>
-          <div class="pcard"><div style="padding:20px 22px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-weight:700;color:var(--b9);font-size:14px">Transaction Alerts</div><div style="font-size:12px;color:var(--g4);margin-top:3px">Get SMS after every transfer</div></div><div style="width:44px;height:24px;background:var(--b4);border-radius:100px;position:relative;cursor:pointer"><div style="position:absolute;right:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div></div></div>
-          <div class="pcard"><div style="padding:20px 22px;display:flex;align-items:center;justify-content:space-between"><div><div style="font-weight:700;color:var(--b9);font-size:14px">Two-Factor Authentication</div><div style="font-size:12px;color:var(--g4);margin-top:3px">Add extra security to your account</div></div><div style="width:44px;height:24px;background:var(--g2);border-radius:100px;position:relative;cursor:pointer"><div style="position:absolute;left:2px;top:2px;width:20px;height:20px;background:#fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.2)"></div></div></div></div>
-          <button class="btn btn-danger btn-lg" onclick="doLogout()" style="width:fit-content">🚪 Sign Out of Account</button>
-        </div>
-      </div>
-    </div><!-- /main-col -->
-  </div>
-</div><!-- /dashboard-page -->
-
-<!-- ══════════ ADMIN DASHBOARD ══════════ -->
-<div id="admin-page" class="page">
-  <div class="dash-layout">
-    <div class="sb-overlay" id="asb-overlay" onclick="closeASB()"></div>
-    <aside class="sidebar" id="admin-sidebar">
-      <div class="sb-head">
-        <div class="sb-logo" style="font-size:16px">OCROWN <span style="color:var(--goldl)">ADMIN</span></div>
-      </div>
-      <nav class="sb-nav">
-        <div class="sb-section">Admin Controls</div>
-        <button class="nav-item active" onclick="goAdminPanel('adm-overview')"><span class="ni-ico">📊</span> Dashboard</button>
-        <button class="nav-item" onclick="goAdminPanel('adm-users')"><span class="ni-ico">👥</span> All Users</button>
-        <button class="nav-item" onclick="goAdminPanel('adm-transactions')"><span class="ni-ico">📋</span> Transactions</button>
-        <button class="nav-item" onclick="goAdminPanel('adm-analytics')"><span class="ni-ico">📈</span> Analytics</button>
-        <button class="nav-item" onclick="goAdminPanel('adm-wallet')"><span class="ni-ico">💰</span> Wallet Manager</button>
-      </nav>
-      <div class="sb-foot">
-        <div class="sb-user">
-          <div class="sb-av" style="background:linear-gradient(135deg,var(--gold),#D97706)">A</div>
-          <div><div class="sb-uname">Administrator</div><div class="sb-urole">Super Admin</div></div>
-        </div>
-        <button class="btn btn-danger btn-full btn-sm" onclick="doLogout()">🚪 Sign Out</button>
-      </div>
-    </aside>
-
-    <div class="main-col">
-      <div class="topbar">
-        <div class="tb-left">
-          <button class="hamburger" onclick="openASB()">☰</button>
-          <span class="tb-title" id="adm-tb-title">Admin Dashboard</span>
-        </div>
-        <div class="tb-right">
-          <div style="background:linear-gradient(135deg,var(--gold),#D97706);color:#fff;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.5px">ADMIN PANEL</div>
-        </div>
-      </div>
-
-      <!-- ADM OVERVIEW -->
-      <div class="dash-panel active" id="admin-panel-adm-overview">
-        <div class="panel-header"><div class="panel-title">Platform Dashboard</div><div class="panel-sub">Real-time overview of all activity</div></div>
-        <div class="stat-row">
-          <div class="stat-card blue"><div class="stat-card-ico blue">👥</div><div class="stat-val" id="a-stat-users">0</div><div class="stat-lbl">Total Users</div></div>
-          <div class="stat-card green"><div class="stat-card-ico green">💸</div><div class="stat-val" id="a-stat-txns">0</div><div class="stat-lbl">Transactions</div></div>
-          <div class="stat-card gold"><div class="stat-card-ico gold">₦</div><div class="stat-val" id="a-stat-money">₦0</div><div class="stat-lbl">Money Moved</div></div>
-          <div class="stat-card red"><div class="stat-card-ico red">🚫</div><div class="stat-val" id="a-stat-suspended">0</div><div class="stat-lbl">Suspended</div></div>
-        </div>
-        <div class="pcard">
-          <div class="pcard-head"><span class="pcard-title">Latest Platform Transactions</span><button class="pcard-action" onclick="goAdminPanel('adm-transactions')">View All →</button></div>
-          <div class="txn-list" id="adm-ov-txns">
-            <div class="empty-state"><div class="empty-ico">📊</div><div class="empty-txt">Loading…</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADM USERS -->
-      <div class="dash-panel" id="admin-panel-adm-users">
-        <div class="panel-header"><div class="panel-title">👥 All Registered Users</div><div class="panel-sub" id="adm-user-sub">Loading…</div></div>
-        <div class="pcard">
-          <div style="overflow-x:auto">
-            <table class="adm-table">
-              <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody id="adm-users-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADM TRANSACTIONS -->
-      <div class="dash-panel" id="admin-panel-adm-transactions">
-        <div class="panel-header"><div class="panel-title">📋 All Transactions</div></div>
-        <div class="pcard">
-          <div style="overflow-x:auto">
-            <table class="adm-table">
-              <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th><th>User ID</th></tr></thead>
-              <tbody id="adm-txns-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- ADM ANALYTICS -->
-      <div class="dash-panel" id="admin-panel-adm-analytics">
-        <div class="panel-header"><div class="panel-title">📈 Platform Analytics</div></div>
-        <div class="stat-row" id="adm-analytics-stats">
-          <div class="stat-card blue"><div class="stat-card-ico blue">👥</div><div class="stat-val" id="an-users">0</div><div class="stat-lbl">Total Users</div></div>
-          <div class="stat-card green"><div class="stat-card-ico green">💸</div><div class="stat-val" id="an-txns">0</div><div class="stat-lbl">Transactions</div></div>
-          <div class="stat-card gold"><div class="stat-card-ico gold">₦</div><div class="stat-val" id="an-money">₦0</div><div class="stat-lbl">Total Volume</div></div>
-          <div class="stat-card red"><div class="stat-card-ico red">📤</div><div class="stat-val" id="an-debits">₦0</div><div class="stat-lbl">Total Debits</div></div>
-        </div>
-        <div class="pcard"><div class="pcard-head"><span class="pcard-title">Transaction Volume Chart (Last 7 Days)</span></div><div class="chart-wrap"><canvas id="admChart"></canvas></div></div>
-        <div class="pcard"><div class="pcard-head"><span class="pcard-title">Credit vs Debit Ratio</span></div><div style="padding:24px;display:flex;justify-content:center"><div style="height:220px;width:220px;position:relative"><canvas id="admPieChart"></canvas></div></div></div>
-      </div>
-
-      <!-- ADM WALLET MANAGER -->
-      <div class="dash-panel" id="admin-panel-adm-wallet">
-        <div class="panel-header"><div class="panel-title">💰 Wallet Manager</div><div class="panel-sub">Credit or debit any user's wallet directly</div></div>
-        <div style="max-width:560px">
-          <div class="pcard">
-            <div class="pcard-head"><span class="pcard-title">Manage User Wallet</span></div>
-            <div style="padding:24px">
-              <div class="form-group">
-                <label class="form-label">Select User</label>
-                <select class="form-input" id="wm-user"><option value="">— Choose a user —</option></select>
-              </div>
-              <div id="wm-user-preview" style="background:var(--b0);border-radius:12px;padding:14px 16px;margin-bottom:16px;display:none">
-                <div style="font-size:12px;color:var(--g5)">Current Balance</div>
-                <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--b5)" id="wm-current-bal">₦0.00</div>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Amount (₦)</label>
-                <div class="amount-presets">
-                  <span class="ap" onclick="setAmt('wm-amount',1000,this)">₦1K</span>
-                  <span class="ap" onclick="setAmt('wm-amount',5000,this)">₦5K</span>
-                  <span class="ap" onclick="setAmt('wm-amount',10000,this)">₦10K</span>
-                  <span class="ap" onclick="setAmt('wm-amount',50000,this)">₦50K</span>
-                </div>
-                <input type="number" class="form-input" id="wm-amount" placeholder="Enter amount">
-              </div>
-              <div class="form-group">
-                <label class="form-label">Description / Reason</label>
-                <input type="text" class="form-input" id="wm-desc" placeholder="e.g. Admin credit, Reversal, Bonus">
-              </div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                <button class="btn btn-success btn-lg" onclick="admCredit()">↑ Credit Wallet</button>
-                <button class="btn btn-danger btn-lg" onclick="admDebit()">↓ Debit Wallet</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div><!-- /admin-page -->
-
-<!-- ══════════ CONTACT PAGE ══════════ -->
-<div id="contact-page" class="page">
-  <nav class="navbar"><div class="nav-inner"><div class="logo" onclick="showPage('home-page')"><div class="logo-mark">₦</div><span class="logo-name">OCROWN <span>FINANCE</span></span></div><div class="nav-actions"><button class="btn btn-outline btn-sm" onclick="showPage('login-page')">Sign In</button><button class="btn btn-primary btn-sm" onclick="showPage('signup-page')">Open Account</button></div></div></nav>
-  <div style="max-width:1100px;margin:0 auto;padding:80px 5%">
-    <div class="sec-tag">Support</div>
-    <h2 class="sec-title">Contact & Help Center</h2>
-    <p class="sec-sub" style="margin-bottom:52px">Our team is ready to help 24/7. Reach out any way you prefer.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
+<section id="how">
+  <div class="sm">
+    <div class="hwg">
       <div>
-        <div style="display:flex;flex-direction:column;gap:20px">
-          <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;padding:20px;border:1px solid var(--g2)"><div style="width:46px;height:46px;background:var(--b0);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📧</div><div><div style="font-weight:700;color:var(--b9);margin-bottom:4px">Email Support</div><div style="font-size:13px;color:var(--g5);line-height:1.6">support@ocrownfinance.com<br>Response within 2 hours</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;padding:20px;border:1px solid var(--g2)"><div style="width:46px;height:46px;background:var(--greenl);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📞</div><div><div style="font-weight:700;color:var(--b9);margin-bottom:4px">Phone Support</div><div style="font-size:13px;color:var(--g5);line-height:1.6">+234 700 OCROWN 0<br>Mon–Sat, 8AM – 8PM WAT</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;padding:20px;border:1px solid var(--g2)"><div style="width:46px;height:46px;background:#FEF3C7;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📍</div><div><div style="font-weight:700;color:var(--b9);margin-bottom:4px">Head Office</div><div style="font-size:13px;color:var(--g5);line-height:1.6">14 Fintech Hub Avenue<br>Victoria Island, Lagos, Nigeria</div></div></div>
-          <div style="display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:16px;padding:20px;border:1px solid var(--g2)"><div style="width:46px;height:46px;background:var(--purplel);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">💬</div><div><div style="font-weight:700;color:var(--b9);margin-bottom:4px">Live Chat</div><div style="font-size:13px;color:var(--g5);line-height:1.6">Available in-app 24/7<br>Avg. response: under 3 minutes</div></div></div>
+        <span class="sl">How It Works</span>
+        <h2 class="st">Simple. Fast.<br>Reliable.</h2>
+        <p class="ss" style="margin-bottom:32px">Getting started with OCROWN PAY takes less than 2 minutes.</p>
+        <div class="steps">
+          <div class="step"><div class="snum">1</div><div><h4>Create Your Account</h4><p>Sign up with your phone number and email. Verification is instant.</p></div></div>
+          <div class="step"><div class="snum">2</div><div><h4>Fund Your Wallet</h4><p>Transfer money to our bank account and submit your payment confirmation.</p></div></div>
+          <div class="step"><div class="snum">3</div><div><h4>Make Payments</h4><p>Buy airtime, data, pay bills and more instantly from your wallet balance.</p></div></div>
+          <div class="step"><div class="snum">4</div><div><h4>Track Everything</h4><p>View your full transaction history in your personal dashboard anytime.</p></div></div>
         </div>
       </div>
-      <div style="background:#fff;border-radius:var(--rxl);padding:36px;box-shadow:var(--sxl);border:1px solid var(--g2)">
-        <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--b9);margin-bottom:22px">Send a Message</h3>
-        <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" placeholder="Your full name"></div>
-        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" placeholder="your@email.com"></div>
-        <div class="form-group"><label class="form-label">Subject</label><input type="text" class="form-input" placeholder="How can we help?"></div>
-        <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" rows="4" placeholder="Describe your issue or question…" style="resize:vertical"></textarea></div>
-        <button class="btn btn-primary btn-full btn-lg" onclick="toast('s','✓','Message sent! We\'ll reply within 2 hours.')">Send Message →</button>
+      <div class="hwv">
+        <div class="hc"><div class="hci">&#128274;</div><div><strong>Bank-Level Security</strong><p>Your transactions and wallet are protected with advanced encryption.</p></div></div>
+        <div class="hc"><div class="hci">&#9889;</div><div><strong>Instant Delivery</strong><p>Airtime and data delivered to any Nigerian network in seconds.</p></div></div>
+        <div class="hc"><div class="hci">&#128336;</div><div><strong>24/7 Availability</strong><p>Platform is online round the clock. Make payments anytime, anywhere.</p></div></div>
+        <div class="hc"><div class="hci">&#128222;</div><div><strong>Dedicated Support</strong><p>Real human support via WhatsApp whenever you need help.</p></div></div>
+        <div class="hc"><div class="hci">&#128179;</div><div><strong>Wallet System</strong><p>Fund once, pay multiple times without repeating bank details.</p></div></div>
       </div>
     </div>
   </div>
-  <footer style="background:var(--b9);padding:28px 5%;text-align:center;color:rgba(255,255,255,.4);font-size:13px;margin-top:60px">© 2025 OCROWN FINANCE · <a href="#" onclick="showPage('home-page');return false" style="color:var(--b3);text-decoration:none">Back to Home</a></footer>
+</section>
+
+<section id="fund">
+  <div class="sm">
+    <div class="fg2">
+      <div>
+        <span class="sl">Fund Wallet</span>
+        <h2 class="st">Top Up Your<br>Wallet Balance</h2>
+        <p class="ss">We use a secure manual bank transfer system. No card details required.</p>
+        <div class="fst" style="margin-top:24px">
+          <div class="fstep"><div class="fsn">1</div><div><h5>Make Bank Transfer</h5><p>Transfer the exact amount to the OCROWN PAY bank account shown below.</p></div></div>
+          <div class="fstep"><div class="fsn">2</div><div><h5>Submit Confirmation</h5><p>Fill the form with your transfer details and upload your payment receipt screenshot.</p></div></div>
+          <div class="fstep"><div class="fsn">3</div><div><h5>Wallet Credited</h5><p>Admin reviews and approves. Your wallet is credited within minutes.</p></div></div>
+        </div>
+        <div class="bkbox">
+          <h4>&#127970; Bank Account Details</h4>
+          <div class="br"><span>Bank Name</span><span>Opay / PalmPay</span></div>
+          <div class="br"><span>Account Number</span><span>07080951392 <button class="cpb" onclick="cpTxt('07080951392')">Copy</button></span></div>
+          <div class="br"><span>Account Name</span><span>OCROWN PAY</span></div>
+          <div class="br"><span>Minimum Amount</span><span>N500</span></div>
+        </div>
+      </div>
+      <div class="ff">
+        <h3>Submit Payment Confirmation</h3>
+        <span class="fsub">Already transferred? Fill this form to notify us.</span>
+        <div class="fg"><label>Your Full Name</label><input type="text" id="fn_n" placeholder="e.g. Oladeji Opeyemi"></div>
+        <div class="fg"><label>Phone Number</label><input type="tel" id="fn_p" placeholder="e.g. 08012345678"></div>
+        <div class="fg"><label>Amount Paid (N)</label><input type="number" id="fn_a" placeholder="e.g. 5000"></div>
+        <div class="fg"><label>Bank Name Used</label><input type="text" id="fn_b" placeholder="e.g. GTBank, Access Bank"></div>
+        <div class="fg"><label>Transaction Reference</label><input type="text" id="fn_r" placeholder="e.g. TRF/2025001234"></div>
+        <div class="fg">
+          <label>Upload Payment Screenshot</label>
+          <div class="fla">
+            <input type="file" accept="image/*">
+            <p>&#128206; Tap to upload screenshot<br><span>JPEG, PNG supported</span></p>
+          </div>
+        </div>
+        <button class="bsub" onclick="subFund()">Submit Payment Confirmation</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard">
+  <div class="sm">
+    <div style="text-align:center">
+      <span class="sl">Dashboard</span>
+      <h2 class="st">Your Personal Dashboard</h2>
+      <p class="ss" style="margin:0 auto">Everything at a glance - balance, services, and transaction history in one clean view.</p>
+    </div>
+    <div class="dg">
+      <div class="dc bl"><div class="da">&#8594;</div><div class="di">&#128176;</div><div class="dl">Wallet Balance</div><div class="dv">N12,450.00</div><div class="dsb">Tap to fund wallet</div></div>
+      <div class="dc gn"><div class="da">&#8594;</div><div class="di">&#128241;</div><div class="dl">Buy Airtime</div><div class="dv">All Networks</div><div class="dsb">MTN Airtel Glo 9mobile</div></div>
+      <div class="dc og"><div class="da">&#8594;</div><div class="di">&#128246;</div><div class="dl">Buy Data</div><div class="dv">Data Plans</div><div class="dsb">From N200 per bundle</div></div>
+      <div class="dc pu"><div class="da">&#8594;</div><div class="di">&#9889;</div><div class="dl">Pay Bills</div><div class="dv">Electricity</div><div class="dsb">All DISCO providers</div></div>
+      <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#128221;</div><div class="dl">WAEC Checker</div><div class="dv">Result PIN</div><div class="dsb">Instant delivery</div></div>
+      <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#129534;</div><div class="dl">Transactions</div><div class="dv">History</div><div class="dsb">View all activity</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="transactions">
+  <div class="sm">
+    <span class="sl">Transaction History</span>
+    <h2 class="st">Recent Transactions</h2>
+    <p class="ss">Sample records. Your full history is available after login.</p>
+    <div class="tw">
+      <div class="th"><span>Service</span><span>Date &amp; Time</span><span>Amount</span><span>Status</span><span>Reference</span></div>
+      <div class="tr"><div class="tsv"><div class="tic" style="background:#EFF6FF">&#128241;</div><div><div class="tn">MTN Airtime</div><div class="tp">08012345678</div></div></div><div class="tc">Today, 2:14 PM</div><div class="ta" style="color:#FF3B3B">-N500</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00231</div></div>
+      <div class="tr"><div class="tsv"><div class="tic" style="background:#F0FFF4">&#128176;</div><div><div class="tn">Wallet Funded</div><div class="tp">Bank Transfer</div></div></div><div class="tc">Today, 1:50 PM</div><div class="ta" style="color:#00C48C">+N5,000</div><div><span class="badge ok">Approved</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00230</div></div>
+      <div class="tr"><div class="tsv"><div class="tic" style="background:#FFF7ED">&#9889;</div><div><div class="tn">EKEDC Electricity</div><div class="tp">04010012345</div></div></div><div class="tc">Yesterday, 4:22 PM</div><div class="ta" style="color:#FF3B3B">-N2,000</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00229</div></div>
+      <div class="tr"><div class="tsv"><div class="tic" style="background:#F5F3FF">&#128246;</div><div><div class="tn">Airtel 1GB Data</div><div class="tp">08098765432</div></div></div><div class="tc">Yesterday, 11:05 AM</div><div class="ta" style="color:#FF3B3B">-N350</div><div><span class="badge pn">Pending</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00228</div></div>
+      <div class="tr"><div class="tsv"><div class="tic" style="background:#FFF1F2">&#128221;</div><div><div class="tn">WAEC Result PIN</div><div class="tp">Single PIN</div></div></div><div class="tc">2 days ago</div><div class="ta" style="color:#FF3B3B">-N1,000</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00227</div></div>
+      <div class="tmob">
+        <div class="tmi"><div class="tml"><div class="tic" style="background:#EFF6FF">&#128241;</div><div><h5>MTN Airtime</h5><p>Today, 2:14 PM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N500</span><span class="badge ok">Success</span></div></div>
+        <div class="tmi"><div class="tml"><div class="tic" style="background:#F0FFF4">&#128176;</div><div><h5>Wallet Funded</h5><p>Today, 1:50 PM</p></div></div><div class="tmr"><span class="ta" style="color:#00C48C">+N5,000</span><span class="badge ok">Approved</span></div></div>
+        <div class="tmi"><div class="tml"><div class="tic" style="background:#FFF7ED">&#9889;</div><div><h5>EKEDC Electricity</h5><p>Yesterday, 4:22 PM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N2,000</span><span class="badge ok">Success</span></div></div>
+        <div class="tmi"><div class="tml"><div class="tic" style="background:#F5F3FF">&#128246;</div><div><h5>Airtel 1GB Data</h5><p>Yesterday, 11:05 AM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N350</span><span class="badge pn">Pending</span></div></div>
+        <div class="tmi"><div class="tml"><div class="tic" style="background:#FFF1F2">&#128221;</div><div><h5>WAEC Result PIN</h5><p>2 days ago</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N1,000</span><span class="badge ok">Success</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sm">
+    <span class="sl">Support</span>
+    <h2 class="st">We Are Here to Help</h2>
+    <p class="ss">Need help with your transaction or wallet funding? Contact our support team anytime via WhatsApp.</p>
+    <div class="cg">
+      <div>
+        <div class="cc">
+          <div class="ccd"><div class="cci">&#128172;</div><div><h4>WhatsApp Support</h4><p>Chat with us directly for the fastest response to any issue.</p><a href="https://wa.me/2347080951392" target="_blank">07080951392</a></div></div>
+          <div class="ccd"><div class="cci">&#128222;</div><div><h4>Phone Support</h4><p>Call us directly for urgent transaction or wallet funding queries.</p><a href="tel:07080951392">07080951392</a></div></div>
+          <div class="ccd"><div class="cci">&#128336;</div><div><h4>24/7 Availability</h4><p>Our support team is available every day including weekends and public holidays.</p></div></div>
+        </div>
+        <a href="https://wa.me/2347080951392" target="_blank" class="wab">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chat on WhatsApp
+        </a>
+      </div>
+      <div class="cfb">
+        <h3>Send Us a Message</h3>
+        <span class="fsub" style="color:rgba(255,255,255,.58)">Fill the form and we will reply via WhatsApp.</span>
+        <div class="cfg"><label>Your Name</label><input type="text" id="cf_n" placeholder="Oladeji Opeyemi"></div>
+        <div class="cfg"><label>Phone Number</label><input type="tel" id="cf_p" placeholder="08012345678"></div>
+        <div class="cfg"><label>Subject</label><input type="text" id="cf_s" placeholder="e.g. Wallet not credited"></div>
+        <div class="cfg"><label>Message</label><textarea id="cf_m" placeholder="Describe your issue..."></textarea></div>
+        <button class="bcf" onclick="subContact()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="fin">
+    <div class="fg3">
+      <div class="fb">
+        <a href="#home" class="logo" style="font-size:1.3rem">OCROWN<em style="color:#fff;font-style:normal"> PAY</em></a>
+        <p>Nigeria's trusted VTU and bill payment platform. Fast, secure, and available 24/7.</p>
+        <div class="fsp">
+          <span>Customer Support</span>
+          <strong>07080951392</strong>
+          <span style="color:#00C48C;margin-top:3px">&#9679; 24/7 Available</span>
+        </div>
+      </div>
+      <div class="fc">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#fund">Fund Wallet</a></li>
+          <li><a href="#transactions">Transactions</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Buy Airtime</a></li>
+          <li><a href="#services">Buy Data</a></li>
+          <li><a href="#services">Electricity Bill</a></li>
+          <li><a href="#services">WAEC Checker</a></li>
+        </ul>
+      </div>
+      <div class="fc">
+        <h4>Networks</h4>
+        <ul>
+          <li><a href="#">MTN Nigeria</a></li>
+          <li><a href="#">Airtel Nigeria</a></li>
+          <li><a href="#">Glo Mobile</a></li>
+          <li><a href="#">9mobile</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbot">
+      <p>&#169; 2025 OCROWN PAY. All rights reserved. Built with love in Nigeria.</p>
+      <div class="fbdg">
+        <span>&#128274; Secure</span>
+        <span>&#9889; Fast</span>
+        <span>&#127475;&#127468; Nigerian</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<!-- SERVICE MODAL -->
+<div class="ov" id="svcM">
+  <div class="mb">
+    <button class="mc" onclick="closeM('svcM')">&#10005;</button>
+    <div class="mico" id="si">&#128241;</div>
+    <h3 id="st2">Buy Airtime</h3>
+    <span class="fsub" id="sd">Purchase airtime for any Nigerian network instantly.</span>
+    <div id="sb2"></div>
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('svcM')">Cancel</button>
+      <button class="mbg" onclick="procSvc()">Proceed</button>
+    </div>
+  </div>
 </div>
 
-<!-- CONFIRM TRANSFER MODAL -->
-<div class="modal-bg hidden" id="confirm-modal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <span class="modal-title">Confirm Transfer</span>
-      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+<!-- LOGIN MODAL -->
+<div class="ov" id="lm">
+  <div class="mb">
+    <button class="mc" onclick="closeM('lm')">&#10005;</button>
+    <div class="mico">&#128272;</div>
+    <h3>Login to OCROWN PAY</h3>
+    <span class="fsub">Access your wallet and manage your transactions.</span>
+    <div class="mfg"><label>Phone Number or Email</label><input type="text" id="li" placeholder="08012345678 or email@example.com"></div>
+    <div class="mfg"><label>Password</label><input type="password" id="lp" placeholder="Enter your password"></div>
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('lm')">Cancel</button>
+      <button class="mbg" onclick="doLogin()">Login</button>
     </div>
-    <div style="background:linear-gradient(135deg,var(--b0),#EEF2FF);border-radius:16px;padding:24px;text-align:center;margin-bottom:22px;border:1px solid var(--b1)">
-      <div style="font-size:13px;color:var(--g5);margin-bottom:6px">You're sending</div>
-      <div style="font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--b9)" id="cm-amount">₦0</div>
-      <div style="font-size:14px;color:var(--g5);margin-top:8px">to <strong id="cm-name" style="color:var(--b9)">—</strong></div>
-      <div style="font-size:12px;color:var(--g4);margin-top:4px" id="cm-phone">—</div>
+    <p class="mlink">No account? <a onclick="closeM('lm');openM('sm')">Sign Up</a></p>
+  </div>
+</div>
+
+<!-- SIGNUP MODAL -->
+<div class="ov" id="sm">
+  <div class="mb">
+    <button class="mc" onclick="closeM('sm')">&#10005;</button>
+    <div class="mico">&#128100;</div>
+    <h3>Create Account</h3>
+    <span class="fsub">Join OCROWN PAY and start making payments in minutes.</span>
+    <div class="mfg"><label>Full Name</label><input type="text" id="sn2" placeholder="Oladeji Opeyemi"></div>
+    <div class="mfg"><label>Phone Number</label><input type="tel" id="sp" placeholder="08012345678"></div>
+    <div class="mfg"><label>Email Address</label><input type="email" id="se" placeholder="email@example.com"></div>
+    <div class="mfg"><label>Password</label><input type="password" id="sw" placeholder="Create a strong password"></div>
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('sm')">Cancel</button>
+      <button class="mbg" onclick="doSignup()">Create Account</button>
     </div>
-    <div style="background:var(--g0);border-radius:10px;padding:12px 14px;margin-bottom:20px">
-      <div style="font-size:12px;color:var(--g5)">Description: <strong id="cm-desc" style="color:var(--g8)">—</strong></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <button class="btn btn-ghost btn-lg" onclick="closeModal('confirm-modal')">Cancel</button>
-      <button class="btn btn-primary btn-lg" onclick="execTransfer()">Confirm & Send ↑</button>
-    </div>
+    <p class="mlink">Have an account? <a onclick="closeM('sm');openM('lm')">Login</a></p>
   </div>
 </div>
 
 <script>
-// ════════════════ FIREBASE ════════════════
-const fbConfig={
-  apiKey:"AIzaSyAozsH2cIlpor-X9kCQIMsfCPIRNPRPosQ",
-  authDomain:"ocrownveterinary.firebaseapp.com",
-  databaseURL:"https://ocrownveterinary-default-rtdb.firebaseio.com",
-  projectId:"ocrownveterinary",
-  storageBucket:"ocrownveterinary.firebasestorage.app",
-  messagingSenderId:"946404927243",
-  appId:"1:946404927243:web:c0c873e6a3b5d0b18ea40e"
+function tM(){document.getElementById('mobmenu').classList.toggle('on');}
+function cM(){document.getElementById('mobmenu').classList.remove('on');}
+function openM(id){document.getElementById(id).classList.add('on');}
+function closeM(id){document.getElementById(id).classList.remove('on');}
+document.querySelectorAll('.ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('on');});});
+function toast(msg,t){
+  var c=document.getElementById('toast');
+  var d=document.createElement('div');
+  d.className='ti'+(t?' '+t:'');
+  d.textContent=msg;
+  c.appendChild(d);
+  setTimeout(function(){d.style.cssText='opacity:0;transform:translateX(110px);transition:.3s';setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},320);},3400);
+}
+var svcs={
+  airtime:{i:'&#128241;',t:'Buy Airtime',d:'Purchase airtime for any Nigerian network instantly.',
+    h:'<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div><div class="mfg"><label>Phone Number</label><input type="tel" placeholder="08012345678"></div><div class="mfg"><label>Amount (N)</label><input type="number" placeholder="e.g. 200"></div>'},
+  data:{i:'&#128246;',t:'Buy Data Bundle',d:'Choose your preferred network and data plan.',
+    h:'<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div><div class="mfg"><label>Phone Number</label><input type="tel" placeholder="08012345678"></div><div class="mfg"><label>Select Data Plan</label><select><option>500MB - N200 (1 Day)</option><option>1GB - N350 (1 Day)</option><option>2GB - N600 (7 Days)</option><option>5GB - N1,500 (30 Days)</option><option>10GB - N2,500 (30 Days)</option></select></div>'},
+  electricity:{i:'&#9889;',t:'Pay Electricity Bill',d:'Pay electricity bills for all DISCO providers in Nigeria.',
+    h:'<div class="mfg"><label>Select DISCO</label><select><option>EKEDC (Eko Electricity)</option><option>IKEDC (Ikeja Electricity)</option><option>AEDC (Abuja Electricity)</option><option>PHEDC (Port Harcourt)</option><option>KEDCO (Kano Electricity)</option><option>IBEDC (Ibadan Electricity)</option></select></div><div class="mfg"><label>Meter Number</label><input type="text" placeholder="04010012345"></div><div class="mfg"><label>Amount (N)</label><input type="number" placeholder="e.g. 2000"></div>'},
+  waec:{i:'&#128221;',t:'WAEC Result Checker',d:'Purchase WAEC result checker PIN instantly.',
+    h:'<div class="mfg"><label>Number of PINs</label><select><option>1 PIN - N1,000</option><option>2 PINs - N2,000</option><option>3 PINs - N3,000</option></select></div><div class="mfg"><label>Phone Number (to receive PIN)</label><input type="tel" placeholder="08012345678"></div>'}
 };
-firebase.initializeApp(fbConfig);
-const db=firebase.firestore();
-
-// ════════════════ ADMIN CREDENTIALS ════════════════
-const ADMIN_PHONE="07080951392";
-const ADMIN_PIN="1990";
-
-// ════════════════ STATE ════════════════
-let CU=null; // current user
-let pendingTransfer=null;
-let admChartBar=null, admChartPie=null;
-let recipientLookupTimer=null;
-let recipientData=null;
-
-// ════════════════ UTILS ════════════════
-const fmt=n=>'₦'+Number(n||0).toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmtShort=n=>{const v=Number(n||0);if(v>=1000000)return'₦'+( v/1000000).toFixed(1)+'M';if(v>=1000)return'₦'+(v/1000).toFixed(1)+'K';return fmt(v);};
-function fmtDate(ts){
-  if(!ts)return'—';
-  try{const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleString('en-NG',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});}
-  catch(e){return'—'}
+var curS='';
+function npk(el){document.querySelectorAll('.np').forEach(function(p){p.classList.remove('on');});el.classList.add('on');}
+function openSvc(type){
+  curS=type;var s=svcs[type];
+  document.getElementById('si').innerHTML=s.i;
+  document.getElementById('st2').textContent=s.t;
+  document.getElementById('sd').textContent=s.d;
+  document.getElementById('sb2').innerHTML=s.h;
+  openM('svcM');
 }
-const initials=n=>(n||'?').trim().split(/\s+/).map(w=>w[0]||'').join('').toUpperCase().slice(0,2)||'?';
-
-// ════════════════ LOADER ════════════════
-const loader=document.getElementById('gloader');
-function showLoader(){loader.classList.remove('gone')}
-function hideLoader(){loader.classList.add('gone')}
-
-// ════════════════ TOAST ════════════════
-let toastTimer;
-function toast(type,ico,msg){
-  clearTimeout(toastTimer);
-  const el=document.getElementById('toast');
-  const body=document.getElementById('toast-body');
-  document.getElementById('toast-ico').textContent=ico;
-  document.getElementById('toast-msg').textContent=msg;
-  body.className='toast-body toast-'+type;
-  el.classList.add('in');
-  toastTimer=setTimeout(()=>el.classList.remove('in'),3800);
+function procSvc(){closeM('svcM');toast(svcs[curS].t+' request submitted! Login to complete.','g');}
+function doLogin(){
+  var i=document.getElementById('li').value.trim();
+  var p=document.getElementById('lp').value.trim();
+  if(!i||!p){toast('Please fill all fields.','r');return;}
+  closeM('lm');toast('Login successful! Welcome back.','g');
 }
-
-// ════════════════ PAGE NAV ════════════════
-function showPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-  // close notif panel if open
-  const np=document.getElementById('notif-panel');
-  if(np)np.classList.remove('open');
+function doSignup(){
+  var n=document.getElementById('sn2').value.trim();
+  var p=document.getElementById('sp').value.trim();
+  var e=document.getElementById('se').value.trim();
+  var w=document.getElementById('sw').value.trim();
+  if(!n||!p||!e||!w){toast('Please fill all fields.','r');return;}
+  closeM('sm');toast('Account created for '+n+'! Fund your wallet to get started.','g');
 }
-
-// ════════════════ SIDEBAR ════════════════
-function openSB(){document.getElementById('sidebar').classList.add('open');document.getElementById('sb-overlay').classList.add('open')}
-function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sb-overlay').classList.remove('open')}
-function openASB(){document.getElementById('admin-sidebar').classList.add('open');document.getElementById('asb-overlay').classList.add('open')}
-function closeASB(){document.getElementById('admin-sidebar').classList.remove('open');document.getElementById('asb-overlay').classList.remove('open')}
-
-// ════════════════ MODALS ════════════════
-function closeModal(id){document.getElementById(id).classList.add('hidden')}
-
-// ════════════════ NOTIFICATIONS PANEL ════════════════
-function toggleNotifPanel(){document.getElementById('notif-panel').classList.toggle('open')}
-document.addEventListener('click',e=>{
-  const np=document.getElementById('notif-panel');
-  const nb=document.getElementById('notif-btn');
-  if(np&&nb&&!np.contains(e.target)&&!nb.contains(e.target)){np.classList.remove('open')}
+function subFund(){
+  var n=document.getElementById('fn_n').value.trim();
+  var p=document.getElementById('fn_p').value.trim();
+  var a=document.getElementById('fn_a').value.trim();
+  var b=document.getElementById('fn_b').value.trim();
+  var r=document.getElementById('fn_r').value.trim();
+  if(!n||!p||!a||!b||!r){toast('Please fill all required fields.','r');return;}
+  toast('Confirmation of N'+Number(a).toLocaleString()+' submitted! Admin will credit your wallet shortly.','g');
+  ['fn_n','fn_p','fn_a','fn_b','fn_r'].forEach(function(id){document.getElementById(id).value='';});
+}
+function subContact(){
+  var n=document.getElementById('cf_n').value.trim();
+  var p=document.getElementById('cf_p').value.trim();
+  var m=document.getElementById('cf_m').value.trim();
+  if(!n||!p||!m){toast('Please fill all fields.','r');return;}
+  toast('Message sent! Support team will reply via WhatsApp.','g');
+  ['cf_n','cf_p','cf_s','cf_m'].forEach(function(id){document.getElementById(id).value='';});
+}
+function cpTxt(t){
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast('Account number copied!','g');});}
+  else{toast('Account: '+t);}
+}
+window.addEventListener('scroll',function(){
+  var c='';
+  document.querySelectorAll('section[id]').forEach(function(s){if(window.scrollY>=s.offsetTop-90)c=s.id;});
+  document.querySelectorAll('.nl a').forEach(function(a){a.style.color=a.getAttribute('href')==='#'+c?'#0057FF':'';});
 });
-
-// ════════════════ PIN INPUTS ════════════════
-function setupPins(ids){
-  ids.forEach((id,i)=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.addEventListener('input',e=>{
-      e.target.value=e.target.value.replace(/\D/g,'');
-      if(e.target.value&&i<ids.length-1)document.getElementById(ids[i+1])?.focus();
-    });
-    el.addEventListener('keydown',e=>{
-      if(e.key==='Backspace'&&!e.target.value&&i>0)document.getElementById(ids[i-1])?.focus();
-    });
-  });
-}
-setupPins(['rp1','rp2','rp3','rp4']);
-setupPins(['lp1','lp2','lp3','lp4']);
-setupPins(['sp1','sp2','sp3','sp4']);
-
-const getPin=ids=>ids.map(id=>document.getElementById(id)?.value||'').join('');
-const clearPins=ids=>ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
-
-// ════════════════ AMOUNT PRESETS ════════════════
-function setAmt(fieldId,val,btn){
-  document.getElementById(fieldId).value=val;
-  // highlight selected
-  const parent=btn.parentElement;
-  parent.querySelectorAll('.ap').forEach(a=>a.classList.remove('sel'));
-  btn.classList.add('sel');
-}
-
-// ════════════════ PANEL SWITCHING ════════════════
-const panelTitles={overview:'Overview',send:'Send Money',deposit:'Deposit',transactions:'Transactions',profile:'My Profile',settings:'Settings'};
-function goPanel(name){
-  document.querySelectorAll('#dashboard-page .dash-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('#dashboard-page .nav-item').forEach(n=>n.classList.remove('active'));
-  const panel=document.getElementById('panel-'+name);
-  if(panel)panel.classList.add('active');
-  document.getElementById('tb-title').textContent=panelTitles[name]||name;
-  closeSB();
-  // load data
-  if(name==='overview'){refreshBalance();loadOvTxns();}
-  if(name==='send'){document.getElementById('send-bal-display').textContent=fmt(CU?.walletBalance||0);}
-  if(name==='transactions')loadAllTxns();
-  if(name==='profile')renderProfile();
-}
-
-const admPanelTitles={'adm-overview':'Admin Dashboard','adm-users':'All Users','adm-transactions':'All Transactions','adm-analytics':'Analytics','adm-wallet':'Wallet Manager'};
-function goAdminPanel(name){
-  document.querySelectorAll('#admin-page .dash-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('#admin-page .nav-item').forEach(n=>n.classList.remove('active'));
-  const panel=document.getElementById('admin-panel-'+name);
-  if(panel)panel.classList.add('active');
-  document.getElementById('adm-tb-title').textContent=admPanelTitles[name]||name;
-  closeASB();
-  if(name==='adm-overview')loadAdmOverview();
-  if(name==='adm-users')loadAdmUsers();
-  if(name==='adm-transactions')loadAdmTxns();
-  if(name==='adm-analytics')loadAdmAnalytics();
-  if(name==='adm-wallet')loadAdmWalletSelect();
-}
-
-// ════════════════ FORM ERRORS ════════════════
-function showErr(id,on){const el=document.getElementById(id);if(el)el.classList.toggle('on',on)}
-
-// ════════════════ SIGNUP ════════════════
-async function doSignup(){
-  const name=document.getElementById('reg-name').value.trim();
-  const email=document.getElementById('reg-email').value.trim();
-  const phone=document.getElementById('reg-phone').value.trim().replace(/\s/g,'');
-  const pin=getPin(['rp1','rp2','rp3','rp4']);
-  let ok=true;
-  const emailOK=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  showErr('e-reg-name',!name);if(!name)ok=false;
-  showErr('e-reg-email',!emailOK);if(!emailOK)ok=false;
-  showErr('e-reg-phone',phone.length<10);if(phone.length<10)ok=false;
-  showErr('e-reg-pin',pin.length!==4);if(pin.length!==4)ok=false;
-  if(!ok)return;
-  showLoader();
-  try{
-    const check=await db.collection('users').where('phone','==',phone).get();
-    if(!check.empty){hideLoader();toast('e','⚠','This phone number is already registered. Please sign in.');return;}
-    await db.collection('users').add({
-      name,email,phone,pin,walletBalance:0,accountStatus:'active',
-      createdAt:firebase.firestore.FieldValue.serverTimestamp()
-    });
-    hideLoader();
-    toast('s','🎉','Account created! Welcome to OCROWN FINANCE.');
-    clearPins(['rp1','rp2','rp3','rp4']);
-    ['reg-name','reg-email','reg-phone'].forEach(id=>document.getElementById(id).value='');
-    setTimeout(()=>showPage('login-page'),1600);
-  }catch(e){hideLoader();toast('e','⚠','Error: '+e.message);}
-}
-
-// ════════════════ LOGIN ════════════════
-async function doLogin(){
-  const phone=document.getElementById('log-phone').value.trim().replace(/\s/g,'');
-  const pin=getPin(['lp1','lp2','lp3','lp4']);
-  showErr('e-log-phone',!phone);
-  showErr('e-log-pin',pin.length!==4);
-  if(!phone||pin.length!==4)return;
-  showLoader();
-  // ADMIN CHECK
-  if(phone===ADMIN_PHONE&&pin===ADMIN_PIN){
-    hideLoader();
-    clearPins(['lp1','lp2','lp3','lp4']);
-    document.getElementById('log-phone').value='';
-    toast('s','👑','Welcome back, Administrator!');
-    loadAdmOverview();
-    showPage('admin-page');
-    return;
-  }
-  try{
-    const snap=await db.collection('users').where('phone','==',phone).where('pin','==',pin).get();
-    if(snap.empty){hideLoader();toast('e','⚠','Wrong phone number or PIN. Please try again.');return;}
-    const doc=snap.docs[0];
-    const data=doc.data();
-    if(data.accountStatus==='suspended'){hideLoader();toast('e','🚫','Your account is suspended. Contact support.');return;}
-    CU={id:doc.id,...data};
-    hideLoader();
-    clearPins(['lp1','lp2','lp3','lp4']);
-    document.getElementById('log-phone').value='';
-    toast('s','✓','Welcome back, '+data.name.split(' ')[0]+'!');
-    initDash();
-    showPage('dashboard-page');
-  }catch(e){hideLoader();toast('e','⚠','Login failed: '+e.message);}
-}
-
-// ════════════════ DASHBOARD INIT ════════════════
-function initDash(){
-  if(!CU)return;
-  const av=initials(CU.name);
-  ['sb-av','tb-av'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=av});
-  document.getElementById('sb-name').textContent=CU.name;
-  document.getElementById('tb-uname').textContent=CU.name.split(' ')[0];
-  document.getElementById('greeting-name').textContent=CU.name.split(' ')[0];
-  const refPart=CU.id.slice(-6).toUpperCase();
-  document.getElementById('acc-ref').textContent='OCROWN-'+refPart;
-  refreshBalance();
-  loadOvTxns();
-}
-
-async function refreshBalance(){
-  if(!CU)return;
-  try{
-    const doc=await db.collection('users').doc(CU.id).get();
-    if(doc.exists){
-      const d=doc.data();
-      CU={...CU,...d};
-      document.getElementById('hero-bal').textContent=fmt(CU.walletBalance);
-      document.getElementById('send-bal-display').textContent=fmt(CU.walletBalance);
-    }
-  }catch(e){}
-}
-
-// ════════════════ LOAD TRANSACTIONS (no orderBy to avoid index issues) ════════════════
-async function loadOvTxns(){
-  if(!CU)return;
-  const list=document.getElementById('ov-txn-list');
-  try{
-    // Simple query without orderBy to avoid Firestore index requirement
-    const snap=await db.collection('transactions').where('userId','==',CU.id).get();
-    if(snap.empty){
-      list.innerHTML='<div class="empty-state"><div class="empty-ico">💸</div><div class="empty-txt">No transactions yet. Send or receive money!</div></div>';
-      return;
-    }
-    // Sort client-side
-    const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    docs.sort((a,b)=>{
-      const ta=a.date?.toDate?a.date.toDate():new Date(a.date||0);
-      const tb=b.date?.toDate?b.date.toDate():new Date(b.date||0);
-      return tb-ta;
-    });
-    let totalIn=0,totalOut=0;
-    docs.forEach(t=>{if(t.type==='credit')totalIn+=t.amount;else totalOut+=t.amount;});
-    document.getElementById('ov-total-in').textContent=fmt(totalIn);
-    document.getElementById('ov-total-out').textContent=fmt(totalOut);
-    list.innerHTML='';
-    docs.slice(0,5).forEach(t=>list.innerHTML+=txnHTML(t));
-  }catch(e){
-    list.innerHTML='<div class="empty-state"><div class="empty-ico">⚠️</div><div class="empty-txt">Could not load transactions</div></div>';
-  }
-}
-
-async function loadAllTxns(){
-  if(!CU)return;
-  const list=document.getElementById('all-txn-list');
-  list.innerHTML='<div class="empty-state"><div class="empty-ico">⏳</div><div class="empty-txt">Loading your transactions…</div></div>';
-  try{
-    const snap=await db.collection('transactions').where('userId','==',CU.id).get();
-    const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    docs.sort((a,b)=>{
-      const ta=a.date?.toDate?a.date.toDate():new Date(a.date||0);
-      const tb=b.date?.toDate?b.date.toDate():new Date(b.date||0);
-      return tb-ta;
-    });
-    const countBadge=document.getElementById('txn-count-badge');
-    const countSub=document.getElementById('txn-count-sub');
-    countBadge.textContent=docs.length+' records';
-    countSub.textContent='Showing all '+docs.length+' transaction'+(docs.length!==1?'s':'');
-    if(docs.length===0){list.innerHTML='<div class="empty-state"><div class="empty-ico">📋</div><div class="empty-txt">No transactions yet</div></div>';return;}
-    list.innerHTML='';
-    docs.forEach(t=>list.innerHTML+=txnHTML(t));
-  }catch(e){
-    list.innerHTML='<div class="empty-state"><div class="empty-ico">⚠️</div><div class="empty-txt">Could not load transactions</div></div>';
-  }
-}
-
-function txnHTML(t){
-  const isCredit=t.type==='credit';
-  const ico=isCredit?'↓':'↑';
-  const amtStr=(isCredit?'+':'-')+fmt(t.amount);
-  return`<div class="txn-item">
-    <div class="txn-ico ${t.type}">${ico}</div>
-    <div class="txn-info">
-      <div class="txn-desc">${t.description||'Transaction'}</div>
-      <div class="txn-meta">${fmtDate(t.date)}</div>
-    </div>
-    <div class="txn-right">
-      <div class="txn-amount ${t.type}">${amtStr}</div>
-      <span class="txn-badge ${t.type}">${isCredit?'Credit':'Debit'}</span>
-    </div>
-  </div>`;
-}
-
-// ════════════════ RECIPIENT LOOKUP ════════════════
-function lookupRecipient(){
-  clearTimeout(recipientLookupTimer);
-  const phone=document.getElementById('s-phone').value.trim();
-  const preview=document.getElementById('recipient-preview');
-  if(phone.length<10){preview.style.display='none';recipientData=null;return;}
-  recipientLookupTimer=setTimeout(async()=>{
-    try{
-      const snap=await db.collection('users').where('phone','==',phone).get();
-      if(!snap.empty){
-        const d=snap.docs[0].data();
-        recipientData={id:snap.docs[0].id,...d};
-        document.getElementById('rp-av').textContent=initials(d.name);
-        document.getElementById('rp-name').textContent=d.name;
-        document.getElementById('rp-phone').textContent=d.phone;
-        preview.style.display='flex';
-      }else{preview.style.display='none';recipientData=null;}
-    }catch(e){preview.style.display='none';}
-  },600);
-}
-
-// ════════════════ SEND MONEY ════════════════
-async function initSend(){
-  const phone=document.getElementById('s-phone').value.trim();
-  const amount=parseFloat(document.getElementById('send-amount').value)||0;
-  const desc=document.getElementById('send-desc').value.trim()||'Transfer';
-  const pin=getPin(['sp1','sp2','sp3','sp4']);
-  let ok=true;
-  showErr('e-s-phone',!phone);if(!phone)ok=false;
-  showErr('e-s-amt',amount<=0);if(amount<=0)ok=false;
-  showErr('e-s-pin',pin.length!==4);if(pin.length!==4)ok=false;
-  if(!ok)return;
-  if(pin!==CU.pin){toast('e','🔒','Incorrect PIN. Please try again.');return;}
-  if(amount>CU.walletBalance){toast('e','💸','Insufficient balance. Please deposit more funds.');return;}
-  if(phone===CU.phone){toast('e','⚠','You cannot transfer to yourself.');return;}
-  showLoader();
-  try{
-    let recipient=recipientData;
-    if(!recipient||recipient.phone!==phone){
-      const snap=await db.collection('users').where('phone','==',phone).get();
-      if(snap.empty){hideLoader();toast('e','⚠','Recipient not found. Check the phone number.');return;}
-      recipient={id:snap.docs[0].id,...snap.docs[0].data()};
-    }
-    pendingTransfer={recipientId:recipient.id,recipientName:recipient.name,recipientPhone:phone,amount,desc};
-    hideLoader();
-    document.getElementById('cm-amount').textContent=fmt(amount);
-    document.getElementById('cm-name').textContent=recipient.name;
-    document.getElementById('cm-phone').textContent=phone;
-    document.getElementById('cm-desc').textContent=desc;
-    document.getElementById('confirm-modal').classList.remove('hidden');
-  }catch(e){hideLoader();toast('e','⚠','Error: '+e.message);}
-}
-
-async function execTransfer(){
-  if(!pendingTransfer)return;
-  closeModal('confirm-modal');
-  showLoader();
-  const{recipientId,recipientName,recipientPhone,amount,desc}=pendingTransfer;
-  const now=firebase.firestore.Timestamp.now();
-  try{
-    const batch=db.batch();
-    batch.update(db.collection('users').doc(CU.id),{walletBalance:firebase.firestore.FieldValue.increment(-amount)});
-    batch.update(db.collection('users').doc(recipientId),{walletBalance:firebase.firestore.FieldValue.increment(amount)});
-    batch.set(db.collection('transactions').doc(),{userId:CU.id,type:'debit',amount,description:'Transfer to '+recipientName,date:now});
-    batch.set(db.collection('transactions').doc(),{userId:recipientId,type:'credit',amount,description:'Transfer from '+CU.name,date:now});
-    await batch.commit();
-    CU.walletBalance-=amount;
-    hideLoader();
-    toast('s','✅',fmt(amount)+' sent to '+recipientName+' successfully!');
-    clearPins(['sp1','sp2','sp3','sp4']);
-    ['s-phone','send-amount','send-desc'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('recipient-preview').style.display='none';
-    recipientData=null;
-    pendingTransfer=null;
-    goPanel('overview');
-  }catch(e){hideLoader();toast('e','⚠','Transfer failed: '+e.message);}
-}
-
-// ════════════════ DEPOSIT ════════════════
-function doDeposit(){
-  const amount=parseFloat(document.getElementById('dep-amount').value)||0;
-  if(amount<100){toast('w','⚠','Minimum deposit is ₦100');return;}
-  if(!CU?.email){toast('e','⚠','User email not found');return;}
-  try{
-    const handler=PaystackPop.setup({
-      key:'pk_test_28a11f626c0b53bd1307cb18e42d21929c88b0b0',
-      email:CU.email,amount:Math.round(amount*100),currency:'NGN',
-      ref:'OCROWN_'+Date.now()+'_'+Math.random().toString(36).slice(2,7).toUpperCase(),
-      metadata:{custom_fields:[{display_name:'User',variable_name:'user',value:CU.name}]},
-      callback:async function(res){
-        showLoader();
-        try{
-          const now=firebase.firestore.Timestamp.now();
-          const batch=db.batch();
-          batch.update(db.collection('users').doc(CU.id),{walletBalance:firebase.firestore.FieldValue.increment(amount)});
-          batch.set(db.collection('transactions').doc(),{userId:CU.id,type:'credit',amount,description:'Wallet Deposit via Paystack',date:now,ref:res.reference});
-          await batch.commit();
-          CU.walletBalance+=amount;
-          hideLoader();
-          toast('s','💰',fmt(amount)+' deposited to your wallet!');
-          document.getElementById('dep-amount').value='';
-          goPanel('overview');
-        }catch(e){hideLoader();toast('e','⚠','Deposit recording failed: '+e.message);}
-      },
-      onClose:()=>toast('i','ℹ','Payment window was closed.')
-    });
-    handler.openIframe();
-  }catch(e){toast('e','⚠','Payment failed to initialize. Try again.');}
-}
-
-// ════════════════ PROFILE ════════════════
-function renderProfile(){
-  if(!CU)return;
-  const av=initials(CU.name);
-  document.getElementById('prof-av-lg').textContent=av;
-  document.getElementById('prof-name').textContent=CU.name;
-  document.getElementById('prof-email').textContent=CU.email;
-  document.getElementById('pf-name').textContent=CU.name;
-  document.getElementById('pf-email').textContent=CU.email;
-  document.getElementById('pf-phone').textContent=CU.phone;
-  document.getElementById('pf-balance').textContent=fmt(CU.walletBalance);
-  const active=CU.accountStatus!=='suspended';
-  document.getElementById('pf-status').innerHTML=`<span class="badge ${active?'badge-active':'badge-suspended'}">${active?'✓ Active':'✗ Suspended'}</span>`;
-  document.getElementById('prof-status-tag').textContent=active?'Active':'Suspended';
-  if(CU.createdAt){
-    try{const d=CU.createdAt.toDate?CU.createdAt.toDate():new Date(CU.createdAt);document.getElementById('pf-joined').textContent=d.toLocaleDateString('en-NG',{day:'2-digit',month:'long',year:'numeric'});}
-    catch(e){document.getElementById('pf-joined').textContent='—'}
-  }
-}
-
-// ════════════════ LOGOUT ════════════════
-function doLogout(){
-  CU=null;pendingTransfer=null;recipientData=null;
-  toast('i','👋','You have been signed out. Goodbye!');
-  setTimeout(()=>showPage('home-page'),1200);
-}
-
-// ════════════════ ADMIN FUNCTIONS ════════════════
-async function loadAdmOverview(){
-  try{
-    const[uSnap,tSnap]=await Promise.all([db.collection('users').get(),db.collection('transactions').get()]);
-    let money=0,suspended=0,latestTxns=[];
-    tSnap.forEach(d=>{const t=d.data();money+=t.amount||0;latestTxns.push(t);});
-    uSnap.forEach(d=>{if(d.data().accountStatus==='suspended')suspended++;});
-    // sort client-side
-    latestTxns.sort((a,b)=>{
-      const ta=a.date?.toDate?a.date.toDate():new Date(a.date||0);
-      const tb=b.date?.toDate?b.date.toDate():new Date(b.date||0);
-      return tb-ta;
-    });
-    document.getElementById('a-stat-users').textContent=uSnap.size;
-    document.getElementById('a-stat-txns').textContent=tSnap.size;
-    document.getElementById('a-stat-money').textContent=fmtShort(money);
-    document.getElementById('a-stat-suspended').textContent=suspended;
-    const list=document.getElementById('adm-ov-txns');
-    if(latestTxns.length===0){list.innerHTML='<div class="empty-state"><div class="empty-ico">📊</div><div class="empty-txt">No transactions yet</div></div>';return;}
-    list.innerHTML='';
-    latestTxns.slice(0,8).forEach(t=>list.innerHTML+=txnHTML(t));
-  }catch(e){console.error('loadAdmOverview',e);}
-}
-
-async function loadAdmUsers(){
-  const tbody=document.getElementById('adm-users-body');
-  tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--g4)">Loading…</td></tr>';
-  try{
-    const snap=await db.collection('users').get();
-    document.getElementById('adm-user-sub').textContent=snap.size+' registered user'+(snap.size!==1?'s':'');
-    tbody.innerHTML='';
-    snap.forEach(doc=>{
-      const d=doc.data();
-      const active=d.accountStatus!=='suspended';
-      tbody.innerHTML+=`<tr>
-        <td><strong>${d.name}</strong></td>
-        <td>${d.phone}</td>
-        <td style="font-size:12px;color:var(--g5)">${d.email||'—'}</td>
-        <td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--b5)">${fmt(d.walletBalance)}</td>
-        <td><span class="badge ${active?'badge-active':'badge-suspended'}">${active?'Active':'Suspended'}</span></td>
-        <td><div class="tbl-actions">
-          <button class="btn btn-xs ${active?'btn-danger':'btn-success'}" onclick="toggleUser('${doc.id}','${active?'suspended':'active'}')">${active?'Suspend':'Activate'}</button>
-          <button class="btn btn-xs" style="background:var(--b0);color:var(--b5)" onclick="quickCredit('${doc.id}','${d.name}')">+ Credit</button>
-        </div></td>
-      </tr>`;
-    });
-    if(snap.empty)tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px">No users found</td></tr>';
-  }catch(e){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--red)">Error loading users</td></tr>';}
-}
-
-async function toggleUser(uid,newStatus){
-  try{
-    await db.collection('users').doc(uid).update({accountStatus:newStatus});
-    toast('s','✓','User '+newStatus+' successfully.');
-    loadAdmUsers();
-  }catch(e){toast('e','⚠','Error updating user status');}
-}
-
-async function quickCredit(uid,name){
-  const amt=prompt('Enter amount to credit '+name+':', '1000');
-  if(!amt||isNaN(amt)||Number(amt)<=0)return;
-  showLoader();
-  try{
-    const amount=Number(amt);
-    const now=firebase.firestore.Timestamp.now();
-    const batch=db.batch();
-    batch.update(db.collection('users').doc(uid),{walletBalance:firebase.firestore.FieldValue.increment(amount)});
-    batch.set(db.collection('transactions').doc(),{userId:uid,type:'credit',amount,description:'Admin Quick Credit',date:now});
-    await batch.commit();
-    hideLoader();
-    toast('s','✓',fmt(amount)+' credited to '+name);
-    loadAdmUsers();
-  }catch(e){hideLoader();toast('e','⚠','Error: '+e.message);}
-}
-
-async function loadAdmTxns(){
-  const tbody=document.getElementById('adm-txns-body');
-  tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--g4)">Loading…</td></tr>';
-  try{
-    const snap=await db.collection('transactions').get();
-    const docs=snap.docs.map(d=>({id:d.id,...d.data()}));
-    docs.sort((a,b)=>{
-      const ta=a.date?.toDate?a.date.toDate():new Date(a.date||0);
-      const tb=b.date?.toDate?b.date.toDate():new Date(b.date||0);
-      return tb-ta;
-    });
-    tbody.innerHTML='';
-    docs.forEach(t=>{
-      tbody.innerHTML+=`<tr>
-        <td style="font-size:12px">${fmtDate(t.date)}</td>
-        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.description||'—'}</td>
-        <td><span class="txn-badge ${t.type}">${t.type}</span></td>
-        <td style="font-family:'Syne',sans-serif;font-weight:700;color:${t.type==='credit'?'var(--green)':'var(--red)'}">
-          ${(t.type==='credit'?'+':'-')+fmt(t.amount)}
-        </td>
-        <td style="font-size:11px;color:var(--g4)">${(t.userId||'—').slice(0,8)}…</td>
-      </tr>`;
-    });
-    if(docs.length===0)tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px">No transactions yet</td></tr>';
-  }catch(e){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--red)">Error</td></tr>';}
-}
-
-async function loadAdmAnalytics(){
-  try{
-    const[uSnap,tSnap]=await Promise.all([db.collection('users').get(),db.collection('transactions').get()]);
-    let totalMoney=0,totalDebits=0,totalCredits=0;
-    const byDay={};
-    tSnap.forEach(doc=>{
-      const t=doc.data();
-      totalMoney+=t.amount||0;
-      if(t.type==='debit')totalDebits+=t.amount||0;
-      if(t.type==='credit')totalCredits+=t.amount||0;
-      const d=t.date?.toDate?t.date.toDate():new Date();
-      const key=d.toLocaleDateString('en-NG',{month:'short',day:'2-digit'});
-      if(!byDay[key]){byDay[key]={cr:0,db:0}}
-      if(t.type==='credit')byDay[key].cr+=t.amount||0;
-      else byDay[key].db+=t.amount||0;
-    });
-    document.getElementById('an-users').textContent=uSnap.size;
-    document.getElementById('an-txns').textContent=tSnap.size;
-    document.getElementById('an-money').textContent=fmtShort(totalMoney);
-    document.getElementById('an-debits').textContent=fmtShort(totalDebits);
-
-    // get last 7 unique days
-    const days=Object.keys(byDay).slice(-7);
-    const crs=days.map(k=>byDay[k].cr);
-    const dbs=days.map(k=>byDay[k].db);
-
-    setTimeout(()=>{
-      const ctx=document.getElementById('admChart');
-      if(!ctx)return;
-      if(admChartBar)admChartBar.destroy();
-      admChartBar=new Chart(ctx,{
-        type:'bar',
-        data:{labels:days.length?days:['No Data'],datasets:[
-          {label:'Credits (₦)',data:crs.length?crs:[0],backgroundColor:'rgba(16,185,129,.75)',borderRadius:6,borderSkipped:false},
-          {label:'Debits (₦)',data:dbs.length?dbs:[0],backgroundColor:'rgba(239,68,68,.75)',borderRadius:6,borderSkipped:false}
-        ]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:"'DM Sans',sans-serif",size:12}}}},scales:{y:{beginAtZero:true,ticks:{callback:v=>'₦'+Number(v).toLocaleString(),font:{family:"'DM Sans',sans-serif",size:11}},grid:{color:'rgba(0,0,0,.05)'}},x:{ticks:{font:{family:"'DM Sans',sans-serif",size:11}},grid:{display:false}}}}
-      });
-      // PIE
-      const ctx2=document.getElementById('admPieChart');
-      if(!ctx2)return;
-      if(admChartPie)admChartPie.destroy();
-      admChartPie=new Chart(ctx2,{
-        type:'doughnut',
-        data:{labels:['Credits','Debits'],datasets:[{data:[totalCredits||1,totalDebits||1],backgroundColor:['rgba(16,185,129,.8)','rgba(239,68,68,.8)'],borderWidth:0,borderRadius:4}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{family:"'DM Sans',sans-serif",size:12}}}},cutout:'65%'}
-      });
-    },200);
-  }catch(e){console.error('loadAdmAnalytics',e);}
-}
-
-async function loadAdmWalletSelect(){
-  const sel=document.getElementById('wm-user');
-  sel.innerHTML='<option value="">— Choose a user —</option>';
-  try{
-    const snap=await db.collection('users').get();
-    snap.forEach(doc=>{
-      const d=doc.data();
-      sel.innerHTML+=`<option value="${doc.id}" data-bal="${d.walletBalance||0}">${d.name} (${d.phone}) — ${fmt(d.walletBalance)}</option>`;
-    });
-  }catch(e){}
-}
-
-document.getElementById('wm-user')?.addEventListener('change',function(){
-  const sel=this;
-  const opt=sel.options[sel.selectedIndex];
-  const preview=document.getElementById('wm-user-preview');
-  if(sel.value){
-    document.getElementById('wm-current-bal').textContent=fmt(opt.dataset.bal||0);
-    preview.style.display='block';
-  }else{preview.style.display='none';}
-});
-
-async function admCredit(){
-  const uid=document.getElementById('wm-user').value;
-  const amount=parseFloat(document.getElementById('wm-amount').value)||0;
-  const desc=document.getElementById('wm-desc').value.trim()||'Admin Credit';
-  if(!uid){toast('w','⚠','Please select a user');return;}
-  if(amount<=0){toast('w','⚠','Enter a valid amount');return;}
-  showLoader();
-  try{
-    const now=firebase.firestore.Timestamp.now();
-    const batch=db.batch();
-    batch.update(db.collection('users').doc(uid),{walletBalance:firebase.firestore.FieldValue.increment(amount)});
-    batch.set(db.collection('transactions').doc(),{userId:uid,type:'credit',amount,description:desc,date:now});
-    await batch.commit();
-    hideLoader();
-    toast('s','✓',fmt(amount)+' credited successfully!');
-    document.getElementById('wm-amount').value='';
-    document.getElementById('wm-desc').value='';
-    loadAdmWalletSelect();
-  }catch(e){hideLoader();toast('e','⚠','Error: '+e.message);}
-}
-
-async function admDebit(){
-  const uid=document.getElementById('wm-user').value;
-  const amount=parseFloat(document.getElementById('wm-amount').value)||0;
-  const desc=document.getElementById('wm-desc').value.trim()||'Admin Debit';
-  if(!uid){toast('w','⚠','Please select a user');return;}
-  if(amount<=0){toast('w','⚠','Enter a valid amount');return;}
-  showLoader();
-  try{
-    const userDoc=await db.collection('users').doc(uid).get();
-    if(!userDoc.exists||(userDoc.data().walletBalance||0)<amount){hideLoader();toast('e','⚠','Insufficient balance in user wallet');return;}
-    const now=firebase.firestore.Timestamp.now();
-    const batch=db.batch();
-    batch.update(db.collection('users').doc(uid),{walletBalance:firebase.firestore.FieldValue.increment(-amount)});
-    batch.set(db.collection('transactions').doc(),{userId:uid,type:'debit',amount,description:desc,date:now});
-    await batch.commit();
-    hideLoader();
-    toast('s','✓',fmt(amount)+' debited successfully!');
-    document.getElementById('wm-amount').value='';
-    document.getElementById('wm-desc').value='';
-    loadAdmWalletSelect();
-  }catch(e){hideLoader();toast('e','⚠','Error: '+e.message);}
-}
-
-// ════════════════ INIT ════════════════
-window.addEventListener('load',()=>{
-  // Give Firebase a moment to initialize
-  setTimeout(()=>hideLoader(),600);
-});
+setTimeout(function(){toast('Welcome to OCROWN PAY! Fast and Secure Payments.');},1500);
 </script>
 </body>
 </html>
