@@ -3,258 +3,367 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OCROWN PAY - Smart Digital Bill Payments</title>
+<title>OCROWN PAY — Smart Digital Bill Payments</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--blue:#0057FF;--bdk:#0040CC;--bli:#E8F0FF;--navy:#050F2C;--off:#F4F7FF;--gray:#6B7A9A;--bdr:#D6E0FF;--grn:#00C48C;--org:#FF7A00;--red:#FF3B3B;}
+:root{--b:#0057FF;--bd:#0040CC;--bl:#E8F0FF;--bg:rgba(0,87,255,.13);--nv:#050F2C;--nv2:#0A1A3E;--of:#F4F7FF;--gr:#6B7A9A;--br:#D6E0FF;--gn:#00C48C;--og:#FF7A00;--rd:#FF3B3B;--r:16px;--rs:10px;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;color:#050F2C;overflow-x:hidden;}
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid #D6E0FF;}
-.nav-in{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;height:64px;padding:0 5vw;}
-.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;color:#0057FF;text-decoration:none;}
-.logo em{color:#050F2C;font-style:normal;}
-.nl{display:flex;gap:28px;list-style:none;}
-.nl a{text-decoration:none;font-size:.9rem;font-weight:500;color:#050F2C;}
-.nl a:hover{color:#0057FF;}
+body{font-family:'DM Sans',sans-serif;color:var(--nv);overflow-x:hidden;background:#fff;}
+input,select,textarea,button{font-family:'DM Sans',sans-serif;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--b);border-radius:4px;}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);}
+.nav-in{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between;height:62px;padding:0 4vw;}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;color:var(--b);text-decoration:none;}
+.logo em{color:var(--nv);font-style:normal;}
+.nl{display:flex;gap:26px;list-style:none;}
+.nl a{text-decoration:none;font-size:.88rem;font-weight:500;color:var(--nv);}
+.nl a:hover{color:var(--b);}
 .nc{display:flex;gap:8px;}
-.bo{padding:8px 18px;border:1.5px solid #0057FF;border-radius:50px;color:#0057FF;font-size:.86rem;font-weight:600;cursor:pointer;background:none;font-family:'DM Sans',sans-serif;}
-.bo:hover{background:#E8F0FF;}
-.bs{padding:8px 20px;border:none;border-radius:50px;background:#0057FF;color:#fff;font-size:.86rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.bs:hover{background:#0040CC;}
+.bo{padding:7px 17px;border:1.5px solid var(--b);border-radius:50px;color:var(--b);font-size:.84rem;font-weight:600;cursor:pointer;background:none;}
+.bo:hover{background:var(--bl);}
+.bs{padding:7px 18px;border:none;border-radius:50px;background:var(--b);color:#fff;font-size:.84rem;font-weight:600;cursor:pointer;}
+.bs:hover{background:var(--bd);}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
-.ham span{display:block;width:24px;height:2px;background:#050F2C;border-radius:2px;}
-.mob{display:none;position:fixed;top:64px;left:0;right:0;background:#fff;border-bottom:1px solid #D6E0FF;padding:18px 5vw 24px;z-index:998;flex-direction:column;}
+.ham span{display:block;width:23px;height:2px;background:var(--nv);border-radius:2px;}
+.mob{display:none;position:fixed;top:62px;left:0;right:0;background:#fff;border-bottom:1px solid var(--br);padding:16px 4vw 22px;z-index:899;flex-direction:column;}
 .mob.on{display:flex;}
-.mob a{display:block;padding:12px 0;font-size:.95rem;font-weight:500;color:#050F2C;text-decoration:none;border-bottom:1px solid #D6E0FF;}
-.mb2{display:flex;gap:8px;margin-top:16px;}
-/* HERO */
-.hero{min-height:100vh;background:linear-gradient(135deg,#050F2C,#0A2060,#0d3080);display:flex;align-items:center;padding:100px 5vw 60px;overflow:hidden;position:relative;}
-.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:480px;height:480px;background:radial-gradient(circle,rgba(0,87,255,.3),transparent 70%);pointer-events:none;}
-.hgrid{max-width:1200px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
-.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:5px 14px;font-size:.78rem;color:rgba(255,255,255,.85);margin-bottom:20px;}
-.dot{width:8px;height:8px;border-radius:50%;background:#00C48C;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.4);opacity:.5;}}
-.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,4.2vw,3rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:18px;}
+.mob a{display:block;padding:12px 0;font-size:.93rem;font-weight:500;color:var(--nv);text-decoration:none;border-bottom:1px solid var(--br);}
+.mob-btns{display:flex;gap:8px;margin-top:14px;}
+
+/* ===== HERO ===== */
+.hero{min-height:100vh;background:linear-gradient(135deg,#050F2C 0%,#0A2060 55%,#0d3080 100%);display:flex;align-items:center;padding:100px 4vw 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:460px;height:460px;background:radial-gradient(circle,rgba(0,87,255,.32),transparent 70%);pointer-events:none;}
+.hg{max-width:1200px;margin:auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
+.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:5px 13px;font-size:.77rem;color:rgba(255,255,255,.85);margin-bottom:18px;}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--gn);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.45);opacity:.5;}}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.85rem,4vw,2.95rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:16px;}
 .hero h1 span{color:#60A5FA;}
-.hero p{color:rgba(255,255,255,.7);font-size:1rem;line-height:1.7;margin-bottom:30px;max-width:430px;}
-.hbtns{display:flex;gap:12px;flex-wrap:wrap;}
-.bh1{padding:13px 28px;background:#0057FF;border:none;border-radius:50px;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 8px 24px rgba(0,87,255,.4);}
-.bh1:hover{background:#0040CC;transform:translateY(-2px);}
-.bh2{padding:13px 28px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.3);border-radius:50px;color:#fff;font-size:.92rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.hero p{color:rgba(255,255,255,.68);font-size:.97rem;line-height:1.7;margin-bottom:28px;max-width:420px;}
+.hbtns{display:flex;gap:11px;flex-wrap:wrap;}
+.bh1{padding:12px 26px;background:var(--b);border:none;border-radius:50px;color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;box-shadow:0 8px 22px rgba(0,87,255,.4);}
+.bh1:hover{background:var(--bd);transform:translateY(-2px);}
+.bh2{padding:12px 26px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.28);border-radius:50px;color:#fff;font-size:.9rem;font-weight:600;cursor:pointer;}
 .bh2:hover{background:rgba(255,255,255,.18);}
-.hstats{display:flex;gap:28px;margin-top:36px;flex-wrap:wrap;}
-.stn{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;}
-.stl{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:2px;}
-/* MOCK CARD */
-.mock{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:22px;max-width:340px;width:100%;backdrop-filter:blur(10px);}
-.mk-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
-.mk-gt{color:rgba(255,255,255,.55);font-size:.76rem;}
-.mk-nm{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
-.mk-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#0057FF,#60A5FA);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.85rem;}
-.mk-bal{background:linear-gradient(135deg,#0057FF,#3B82F6);border-radius:14px;padding:18px;margin-bottom:14px;}
-.mk-bl{color:rgba(255,255,255,.7);font-size:.76rem;margin-bottom:5px;}
-.mk-ba{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:#fff;letter-spacing:-1px;}
-.mk-bs{color:rgba(255,255,255,.55);font-size:.72rem;margin-top:3px;}
-.mk-sv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
-.mk-s{background:rgba(255,255,255,.08);border-radius:10px;padding:10px 4px;text-align:center;}
-.mk-si{font-size:1.2rem;margin-bottom:4px;}
-.mk-sl{color:rgba(255,255,255,.65);font-size:.62rem;}
-.mk-tx{background:rgba(255,255,255,.05);border-radius:10px;padding:12px;}
-.mk-tt{color:rgba(255,255,255,.45);font-size:.72rem;margin-bottom:9px;}
-.mk-ti{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.hstats{display:flex;gap:26px;margin-top:32px;flex-wrap:wrap;}
+.stn{font-family:'Syne',sans-serif;font-size:1.45rem;font-weight:800;color:#fff;}
+.stl{font-size:.76rem;color:rgba(255,255,255,.48);margin-top:2px;}
+
+/* HERO MOCKUP */
+.mock{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:20px;max-width:320px;width:100%;backdrop-filter:blur(10px);}
+.mk-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.mk-gt{color:rgba(255,255,255,.52);font-size:.74rem;}
+.mk-nm{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;}
+.mk-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--b),#60A5FA);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.82rem;}
+.mk-bal{background:linear-gradient(135deg,var(--b),#3B82F6);border-radius:13px;padding:16px;margin-bottom:13px;}
+.mk-bl{color:rgba(255,255,255,.68);font-size:.74rem;margin-bottom:4px;}
+.mk-ba{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:#fff;letter-spacing:-1px;}
+.mk-bs{color:rgba(255,255,255,.52);font-size:.7rem;margin-top:3px;}
+.mk-sv{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px;}
+.mk-s{background:rgba(255,255,255,.08);border-radius:9px;padding:9px 4px;text-align:center;cursor:pointer;}
+.mk-si{font-size:1.15rem;margin-bottom:3px;}
+.mk-sl{color:rgba(255,255,255,.62);font-size:.6rem;}
+.mk-tx{background:rgba(255,255,255,.05);border-radius:9px;padding:11px;}
+.mk-tt{color:rgba(255,255,255,.42);font-size:.7rem;margin-bottom:8px;}
+.mk-ti{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);}
 .mk-ti:last-child{border-bottom:none;}
-.mk-tl{display:flex;align-items:center;gap:8px;}
-.mk-td{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;}
-.mk-tn{color:rgba(255,255,255,.82);font-size:.74rem;font-weight:500;}
-.mk-dt{color:rgba(255,255,255,.38);font-size:.64rem;}
-.mk-am{font-size:.78rem;font-weight:600;}
+.mk-tl{display:flex;align-items:center;gap:7px;}
+.mk-td{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
+.mk-tn{color:rgba(255,255,255,.8);font-size:.72rem;font-weight:500;}
+.mk-dt{color:rgba(255,255,255,.35);font-size:.62rem;}
+.mk-am{font-size:.76rem;font-weight:600;}
 .ar{color:#FF6B6B;}.ag{color:#4ADE80;}
-/* SECTIONS */
-section{padding:76px 5vw;}
+
+/* ===== SECTIONS ===== */
+section{padding:72px 4vw;}
 .sm{max-width:1200px;margin:auto;}
-.sl{display:inline-block;background:#E8F0FF;color:#0057FF;font-size:.76rem;font-weight:700;padding:4px 14px;border-radius:50px;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;}
-.st{font-family:'Syne',sans-serif;font-size:clamp(1.55rem,2.8vw,2.3rem);font-weight:800;line-height:1.2;margin-bottom:12px;}
-.ss{color:#6B7A9A;font-size:.96rem;line-height:1.7;max-width:500px;}
-/* SERVICES */
-#services{background:#F4F7FF;}
-.sh{text-align:center;margin-bottom:46px;}
-.sh .ss{margin:0 auto;}
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;}
-.sc{background:#fff;border-radius:16px;padding:30px 26px;border:1px solid #D6E0FF;box-shadow:0 4px 28px rgba(0,87,255,.08);transition:.22s;cursor:pointer;position:relative;overflow:hidden;}
-.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#0057FF,#60A5FA);transform:scaleX(0);transform-origin:left;transition:.3s;}
-.sc:hover{transform:translateY(-5px);box-shadow:0 12px 36px rgba(0,87,255,.14);}
+.sl{display:inline-block;background:var(--bl);color:var(--b);font-size:.75rem;font-weight:700;padding:4px 13px;border-radius:50px;margin-bottom:11px;letter-spacing:.5px;text-transform:uppercase;}
+.st{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,2.7vw,2.25rem);font-weight:800;line-height:1.2;margin-bottom:11px;}
+.ss{color:var(--gr);font-size:.93rem;line-height:1.7;max-width:490px;}
+
+/* ===== SERVICES ===== */
+#services{background:var(--of);}
+.sh{text-align:center;margin-bottom:42px;}.sh .ss{margin:0 auto;}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:20px;}
+.sc{background:#fff;border-radius:var(--r);padding:28px 24px;border:1px solid var(--br);box-shadow:0 4px 24px rgba(0,87,255,.07);transition:.22s;cursor:pointer;position:relative;overflow:hidden;}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--b),#60A5FA);transform:scaleX(0);transform-origin:left;transition:.3s;}
+.sc:hover{transform:translateY(-5px);box-shadow:0 10px 32px rgba(0,87,255,.14);}
 .sc:hover::before{transform:scaleX(1);}
-.si{width:54px;height:54px;border-radius:14px;background:#E8F0FF;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:18px;}
-.sc h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:9px;}
-.sc p{color:#6B7A9A;font-size:.85rem;line-height:1.6;margin-bottom:20px;}
-.sb{display:inline-flex;align-items:center;gap:5px;background:#E8F0FF;color:#0057FF;border:none;border-radius:50px;padding:8px 16px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;}
-.sb:hover{background:#0057FF;color:#fff;}
-/* HOW */
-#how{background:#fff;}
-.hwg{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
-.steps{}
-.step{display:flex;gap:18px;padding:22px 0;border-bottom:1px solid #D6E0FF;}
-.step:last-child{border-bottom:none;}
-.snum{width:38px;height:38px;border-radius:50%;background:#0057FF;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.step h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.96rem;margin-bottom:5px;}
-.step p{color:#6B7A9A;font-size:.85rem;line-height:1.6;}
-.hwv{background:linear-gradient(135deg,#050F2C,#0A2060);border-radius:22px;padding:32px;display:flex;flex-direction:column;gap:14px;}
-.hc{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:16px;display:flex;gap:13px;align-items:flex-start;}
-.hci{width:42px;height:42px;border-radius:11px;background:rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
-.hc strong{color:#fff;display:block;font-size:.9rem;margin-bottom:3px;}
-.hc p{color:rgba(255,255,255,.58);font-size:.8rem;line-height:1.5;}
-/* FUND */
-#fund{background:#F4F7FF;}
-.fg2{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
-.bkbox{background:#fff;border-radius:16px;padding:26px;border:1px solid #D6E0FF;box-shadow:0 4px 24px rgba(0,87,255,.08);margin-top:26px;}
-.bkbox h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.92rem;margin-bottom:14px;}
-.br{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #D6E0FF;}
-.br:last-of-type{border-bottom:none;}
-.br span:first-child{color:#6B7A9A;font-size:.83rem;}
-.br span:last-child{font-weight:600;font-size:.85rem;}
-.cpb{background:#E8F0FF;border:none;border-radius:6px;padding:3px 9px;font-size:.73rem;font-weight:600;color:#0057FF;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.cpb:hover{background:#0057FF;color:#fff;}
-.ff{background:#fff;border-radius:16px;padding:32px;border:1px solid #D6E0FF;box-shadow:0 4px 24px rgba(0,87,255,.08);}
-.ff h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;margin-bottom:5px;}
-.fsub{color:#6B7A9A;font-size:.86rem;margin-bottom:22px;display:block;}
-.fst{display:flex;flex-direction:column;gap:11px;margin-bottom:26px;}
-.fstep{display:flex;gap:12px;align-items:flex-start;background:#F4F7FF;border-radius:11px;padding:13px;}
-.fsn{width:26px;height:26px;border-radius:50%;background:#0057FF;color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.78rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.fstep h5{font-weight:600;font-size:.86rem;margin-bottom:2px;}
-.fstep p{color:#6B7A9A;font-size:.78rem;}
-.fg{margin-bottom:14px;}
-.fg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;}
-.fg input,.fg select{width:100%;padding:11px 14px;border:1.5px solid #D6E0FF;border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#050F2C;outline:none;background:#fff;transition:.2s;}
-.fg input:focus,.fg select:focus{border-color:#0057FF;box-shadow:0 0 0 3px rgba(0,87,255,.12);}
-.fla{border:2px dashed #D6E0FF;border-radius:9px;padding:22px;text-align:center;cursor:pointer;position:relative;}
-.fla:hover{border-color:#0057FF;background:#E8F0FF;}
+.si{width:52px;height:52px;border-radius:13px;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:1.45rem;margin-bottom:16px;}
+.sc h3{font-family:'Syne',sans-serif;font-size:1.02rem;font-weight:700;margin-bottom:8px;}
+.sc p{color:var(--gr);font-size:.83rem;line-height:1.6;margin-bottom:18px;}
+.sb{display:inline-flex;align-items:center;gap:5px;background:var(--bl);color:var(--b);border:none;border-radius:50px;padding:7px 15px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.2s;}
+.sb:hover{background:var(--b);color:#fff;}
+
+/* ===== FUND ===== */
+#fund{background:#fff;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;}
+.bkbox{background:#fff;border-radius:var(--r);padding:24px;border:1px solid var(--br);box-shadow:0 4px 22px rgba(0,87,255,.07);margin-top:22px;}
+.bkbox h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:13px;}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--br);}
+.brow:last-of-type{border-bottom:none;}
+.brow span:first-child{color:var(--gr);font-size:.82rem;}
+.brow span:last-child{font-weight:600;font-size:.83rem;}
+.cpb{background:var(--bl);border:none;border-radius:5px;padding:3px 8px;font-size:.72rem;font-weight:600;color:var(--b);cursor:pointer;}
+.cpb:hover{background:var(--b);color:#fff;}
+.ff{background:#fff;border-radius:var(--r);padding:30px;border:1px solid var(--br);box-shadow:0 4px 22px rgba(0,87,255,.07);}
+.ff h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:5px;}
+.sub{color:var(--gr);font-size:.84rem;margin-bottom:20px;display:block;}
+.fst{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.fstep{display:flex;gap:11px;align-items:flex-start;background:var(--of);border-radius:10px;padding:12px;}
+.fsn{width:25px;height:25px;border-radius:50%;background:var(--b);color:#fff;font-family:'Syne',sans-serif;font-weight:800;font-size:.76rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fstep h5{font-weight:600;font-size:.84rem;margin-bottom:1px;}
+.fstep p{color:var(--gr);font-size:.77rem;}
+.fg{margin-bottom:13px;}
+.fg label{display:block;font-size:.8rem;font-weight:600;margin-bottom:5px;}
+.fg input,.fg select{width:100%;padding:10px 13px;border:1.5px solid var(--br);border-radius:var(--rs);font-size:.87rem;color:var(--nv);outline:none;background:#fff;transition:.2s;}
+.fg input:focus,.fg select:focus{border-color:var(--b);box-shadow:0 0 0 3px var(--bg);}
+.fla{border:2px dashed var(--br);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;position:relative;}
+.fla:hover{border-color:var(--b);background:var(--bl);}
 .fla input{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.fla p{color:#6B7A9A;font-size:.82rem;}
-.fla span{color:#0057FF;font-weight:600;}
-.bsub{width:100%;padding:14px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;margin-top:8px;transition:.2s;}
-.bsub:hover{background:#0040CC;transform:translateY(-1px);}
-/* DASHBOARD */
-#dashboard{background:#050F2C;padding:76px 5vw;}
+.fla p{color:var(--gr);font-size:.8rem;}
+.fla span{color:var(--b);font-weight:600;}
+.bsub{width:100%;padding:13px;background:var(--b);border:none;border-radius:var(--rs);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:7px;transition:.2s;}
+.bsub:hover{background:var(--bd);transform:translateY(-1px);}
+
+/* ===== DASHBOARD ===== */
+#dashboard{background:var(--nv);padding:72px 4vw;}
 #dashboard .st{color:#fff;}
-#dashboard .ss{color:rgba(255,255,255,.58);}
-#dashboard .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
-.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:18px;margin-top:44px;}
-.dc{border-radius:16px;padding:22px;position:relative;overflow:hidden;cursor:pointer;transition:.22s;}
+#dashboard .ss{color:rgba(255,255,255,.56);}
+#dashboard .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.76);}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:16px;margin-top:40px;}
+.dc{border-radius:var(--r);padding:22px;position:relative;overflow:hidden;cursor:pointer;transition:.22s;}
 .dc:hover{transform:translateY(-4px);}
-.dc.bl{background:linear-gradient(135deg,#0057FF,#3B82F6);}
-.dc.gn{background:linear-gradient(135deg,#00A876,#00C48C);}
-.dc.og{background:linear-gradient(135deg,#E85D04,#FF7A00);}
+.dc.bl{background:linear-gradient(135deg,var(--b),#3B82F6);}
+.dc.gn{background:linear-gradient(135deg,#00A876,var(--gn));}
+.dc.og{background:linear-gradient(135deg,#E85D04,var(--og));}
 .dc.pu{background:linear-gradient(135deg,#5B21B6,#7C3AED);}
 .dc.dk{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);}
-.di{font-size:1.75rem;margin-bottom:14px;}
-.dl{color:rgba(255,255,255,.68);font-size:.76rem;margin-bottom:5px;}
-.dv{font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:#fff;}
-.dsb{color:rgba(255,255,255,.48);font-size:.72rem;margin-top:3px;}
-.da{position:absolute;top:18px;right:18px;color:rgba(255,255,255,.38);font-size:1rem;}
-/* TRANSACTIONS */
-#transactions{background:#fff;}
-.tw{background:#fff;border-radius:16px;border:1px solid #D6E0FF;box-shadow:0 4px 28px rgba(0,87,255,.08);overflow:hidden;margin-top:36px;}
-.th{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 1fr;padding:13px 22px;background:#F4F7FF;border-bottom:1px solid #D6E0FF;}
-.th span{font-size:.76rem;font-weight:700;color:#6B7A9A;text-transform:uppercase;letter-spacing:.5px;}
-.tr{display:grid;grid-template-columns:2fr 1.5fr 1fr 1fr 1fr;padding:15px 22px;border-bottom:1px solid #D6E0FF;align-items:center;transition:.14s;}
-.tr:last-child{border-bottom:none;}
-.tr:hover{background:#F4F7FF;}
-.tsv{display:flex;align-items:center;gap:11px;}
-.tic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.92rem;flex-shrink:0;}
-.tn{font-weight:600;font-size:.85rem;}
-.tp{font-size:.73rem;color:#6B7A9A;}
-.tc{font-size:.83rem;color:#050F2C;}
-.badge{display:inline-block;padding:3px 11px;border-radius:50px;font-size:.73rem;font-weight:600;}
+.di{font-size:1.7rem;margin-bottom:13px;}
+.dl{color:rgba(255,255,255,.66);font-size:.75rem;margin-bottom:4px;}
+.dv{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;}
+.dsb{color:rgba(255,255,255,.46);font-size:.7rem;margin-top:3px;}
+.da{position:absolute;top:16px;right:16px;color:rgba(255,255,255,.36);font-size:.95rem;}
+
+/* ===== TRANSACTIONS ===== */
+#transactions{background:var(--of);}
+.tw{background:#fff;border-radius:var(--r);border:1px solid var(--br);box-shadow:0 4px 24px rgba(0,87,255,.07);overflow:hidden;margin-top:32px;}
+.txh{display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 1fr;padding:12px 20px;background:var(--of);border-bottom:1px solid var(--br);}
+.txh span{font-size:.74rem;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.5px;}
+.txr{display:grid;grid-template-columns:2fr 1.4fr 1fr 1fr 1fr;padding:14px 20px;border-bottom:1px solid var(--br);align-items:center;transition:.13s;}
+.txr:last-child{border-bottom:none;}
+.txr:hover{background:var(--of);}
+.tsv{display:flex;align-items:center;gap:10px;}
+.tic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.tn{font-weight:600;font-size:.84rem;}
+.tp{font-size:.72rem;color:var(--gr);}
+.tc{font-size:.82rem;color:var(--nv);}
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:600;}
 .badge.ok{background:#DCFCE7;color:#16A34A;}
 .badge.pn{background:#FEF9C3;color:#854D0E;}
-.ta{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;}
+.badge.fl{background:#FEE2E2;color:#DC2626;}
+.ta{font-family:'Syne',sans-serif;font-weight:700;font-size:.86rem;}
 .tmob{display:none;flex-direction:column;}
-.tmi{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid #D6E0FF;}
+.tmi{display:flex;justify-content:space-between;align-items:center;padding:14px 17px;border-bottom:1px solid var(--br);}
 .tmi:last-child{border-bottom:none;}
-.tml{display:flex;align-items:center;gap:11px;}
-.tmi h5{font-size:.86rem;font-weight:600;}
-.tmi p{font-size:.73rem;color:#6B7A9A;margin-top:2px;}
+.tml{display:flex;align-items:center;gap:10px;}
+.tmi h5{font-size:.84rem;font-weight:600;}
+.tmi p{font-size:.71rem;color:var(--gr);margin-top:1px;}
 .tmr{text-align:right;}
 .tmr .ta{display:block;margin-bottom:3px;}
-/* CONTACT */
-#contact{background:linear-gradient(135deg,#050F2C,#0A2060);}
+
+/* ===== CONTACT ===== */
+#contact{background:linear-gradient(135deg,var(--nv),#0A2060);}
 #contact .st{color:#fff;}
-#contact .ss{color:rgba(255,255,255,.62);}
-#contact .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.78);}
-.cg{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;margin-top:46px;}
-.cc{display:flex;flex-direction:column;gap:16px;}
-.ccd{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start;}
-.cci{width:44px;height:44px;border-radius:11px;background:rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
-.ccd h4{color:#fff;font-weight:600;font-size:.92rem;margin-bottom:3px;}
-.ccd p{color:rgba(255,255,255,.58);font-size:.82rem;line-height:1.5;}
+#contact .ss{color:rgba(255,255,255,.6);}
+#contact .sl{background:rgba(255,255,255,.1);color:rgba(255,255,255,.76);}
+.cg{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;margin-top:42px;}
+.cc{display:flex;flex-direction:column;gap:14px;}
+.ccd{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:18px;display:flex;gap:13px;align-items:flex-start;}
+.cci{width:42px;height:42px;border-radius:10px;background:rgba(0,87,255,.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.ccd h4{color:#fff;font-weight:600;font-size:.9rem;margin-bottom:3px;}
+.ccd p{color:rgba(255,255,255,.56);font-size:.8rem;line-height:1.5;}
 .ccd a{color:#60A5FA;text-decoration:none;font-weight:500;}
-.wab{display:inline-flex;align-items:center;gap:9px;background:#25D366;border:none;border-radius:50px;padding:14px 26px;color:#fff;font-size:.92rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;transition:.2s;box-shadow:0 8px 24px rgba(37,211,102,.3);margin-top:14px;}
+.wab{display:inline-flex;align-items:center;gap:8px;background:#25D366;border:none;border-radius:50px;padding:13px 24px;color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;text-decoration:none;transition:.2s;box-shadow:0 8px 22px rgba(37,211,102,.28);margin-top:13px;}
 .wab:hover{background:#1ebe5a;transform:translateY(-2px);}
-.cfb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:16px;padding:32px;}
-.cfb h3{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:5px;}
-.cfb .fsub{color:rgba(255,255,255,.58);}
-.cfg{margin-bottom:14px;}
-.cfg label{display:block;color:rgba(255,255,255,.68);font-size:.8rem;font-weight:600;margin-bottom:6px;}
-.cfg input,.cfg textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(255,255,255,.14);border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#fff;outline:none;background:rgba(255,255,255,.07);transition:.2s;}
-.cfg input::placeholder,.cfg textarea::placeholder{color:rgba(255,255,255,.32);}
-.cfg input:focus,.cfg textarea:focus{border-color:#0057FF;}
-.cfg textarea{resize:vertical;min-height:95px;}
-.bcf{width:100%;padding:13px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:.2s;margin-top:4px;}
-.bcf:hover{background:#0040CC;}
-/* FOOTER */
-footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56px 5vw 28px;}
+.cfb{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:var(--r);padding:30px;}
+.cfb h3{color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:1.08rem;margin-bottom:5px;}
+.cfg{margin-bottom:13px;}
+.cfg label{display:block;color:rgba(255,255,255,.66);font-size:.79rem;font-weight:600;margin-bottom:5px;}
+.cfg input,.cfg textarea{width:100%;padding:10px 13px;border:1.5px solid rgba(255,255,255,.14);border-radius:var(--rs);font-size:.86rem;color:#fff;outline:none;background:rgba(255,255,255,.07);transition:.2s;}
+.cfg input::placeholder,.cfg textarea::placeholder{color:rgba(255,255,255,.3);}
+.cfg input:focus,.cfg textarea:focus{border-color:var(--b);}
+.cfg textarea{resize:vertical;min-height:90px;}
+.bcf{width:100%;padding:12px;background:var(--b);border:none;border-radius:var(--rs);color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:4px;}
+.bcf:hover{background:var(--bd);}
+
+/* ===== FOOTER ===== */
+footer{background:var(--nv2);border-top:1px solid rgba(255,255,255,.07);padding:52px 4vw 26px;}
 .fin{max-width:1200px;margin:auto;}
-.fg3{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:44px;}
-.fb p{color:rgba(255,255,255,.48);font-size:.84rem;line-height:1.7;margin-top:12px;max-width:250px;}
-.fsp{margin-top:18px;}
-.fsp span{color:rgba(255,255,255,.48);font-size:.8rem;display:block;}
-.fsp strong{color:rgba(255,255,255,.82);font-size:.86rem;display:block;margin-top:3px;}
-.fc h4{font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.92rem;margin-bottom:16px;}
-.fc ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
-.fc ul a{text-decoration:none;color:rgba(255,255,255,.48);font-size:.84rem;}
-.fc ul a:hover{color:#0057FF;}
-.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-.fbot p{color:rgba(255,255,255,.32);font-size:.8rem;}
-.fbdg{display:flex;gap:8px;}
-.fbdg span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:3px 11px;color:rgba(255,255,255,.38);font-size:.72rem;}
-/* TOAST */
-#toast{position:fixed;bottom:28px;right:28px;z-index:9999;display:flex;flex-direction:column;gap:9px;pointer-events:none;}
-.ti{background:#050F2C;color:#fff;padding:13px 18px;border-radius:11px;font-size:.86rem;box-shadow:0 8px 28px rgba(0,0,0,.28);border-left:4px solid #0057FF;animation:si .3s ease;max-width:310px;}
-.ti.g{border-color:#00C48C;}
-.ti.r{border-color:#FF3B3B;}
-@keyframes si{from{transform:translateX(110px);opacity:0;}to{transform:translateX(0);opacity:1;}}
-/* MODALS */
-.ov{display:none;position:fixed;inset:0;background:rgba(5,15,44,.65);backdrop-filter:blur(6px);z-index:2000;align-items:center;justify-content:center;padding:18px;}
+.fg3{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;}
+.fb p{color:rgba(255,255,255,.44);font-size:.83rem;line-height:1.7;margin-top:11px;max-width:240px;}
+.fsp{margin-top:16px;}
+.fsp span{color:rgba(255,255,255,.44);font-size:.78rem;display:block;}
+.fsp strong{color:rgba(255,255,255,.8);font-size:.84rem;display:block;margin-top:3px;}
+.fc h4{font-family:'Syne',sans-serif;font-weight:700;color:#fff;font-size:.9rem;margin-bottom:14px;}
+.fc ul{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.fc ul a{text-decoration:none;color:rgba(255,255,255,.44);font-size:.83rem;}
+.fc ul a:hover{color:var(--b);}
+.fbot{border-top:1px solid rgba(255,255,255,.07);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:11px;}
+.fbot p{color:rgba(255,255,255,.3);font-size:.78rem;}
+.fbdg{display:flex;gap:7px;}
+.fbdg span{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:3px 10px;color:rgba(255,255,255,.36);font-size:.7rem;}
+
+/* ===== TOAST ===== */
+#toast{position:fixed;bottom:26px;right:26px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+.ti{background:var(--nv);color:#fff;padding:12px 17px;border-radius:10px;font-size:.84rem;box-shadow:0 8px 26px rgba(0,0,0,.26);border-left:4px solid var(--b);animation:si .28s ease;max-width:300px;}
+.ti.g{border-color:var(--gn);}
+.ti.r{border-color:var(--rd);}
+@keyframes si{from{transform:translateX(100px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+
+/* ===== MODALS ===== */
+.ov{display:none;position:fixed;inset:0;background:rgba(5,15,44,.65);backdrop-filter:blur(5px);z-index:1000;align-items:center;justify-content:center;padding:16px;}
 .ov.on{display:flex;}
-.mb{background:#fff;border-radius:22px;padding:36px;max-width:410px;width:100%;position:relative;box-shadow:0 24px 70px rgba(0,0,0,.22);max-height:90vh;overflow-y:auto;}
-.mc{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:#F4F7FF;border:none;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;color:#6B7A9A;}
-.mc:hover{background:#D6E0FF;}
-.mico{width:60px;height:60px;border-radius:18px;background:#E8F0FF;display:flex;align-items:center;justify-content:center;font-size:1.9rem;margin-bottom:18px;}
-.mb h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.25rem;margin-bottom:7px;}
-.mb .fsub{margin-bottom:20px;}
-.mfg{margin-bottom:14px;}
-.mfg label{display:block;font-size:.82rem;font-weight:600;margin-bottom:6px;}
-.mfg input,.mfg select{width:100%;padding:11px 14px;border:1.5px solid #D6E0FF;border-radius:9px;font-size:.88rem;font-family:'DM Sans',sans-serif;color:#050F2C;outline:none;transition:.2s;}
-.mfg input:focus,.mfg select:focus{border-color:#0057FF;}
-.mbtn{display:flex;gap:9px;margin-top:8px;}
-.mbc{flex:1;padding:12px;background:#F4F7FF;border:1.5px solid #D6E0FF;border-radius:9px;color:#050F2C;font-size:.88rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.mbg{flex:2;padding:12px;background:#0057FF;border:none;border-radius:9px;color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;}
-.mbg:hover{background:#0040CC;}
-.nps{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
-.np{padding:7px 14px;border:1.5px solid #D6E0FF;border-radius:50px;font-size:.8rem;font-weight:600;cursor:pointer;background:#fff;}
-.np:hover,.np.on{background:#0057FF;color:#fff;border-color:#0057FF;}
-.mlink{text-align:center;margin-top:14px;font-size:.82rem;color:#6B7A9A;}
-.mlink a{color:#0057FF;font-weight:600;cursor:pointer;text-decoration:none;}
+.mb{background:#fff;border-radius:20px;padding:34px;max-width:400px;width:100%;position:relative;box-shadow:0 22px 64px rgba(0,0,0,.2);max-height:92vh;overflow-y:auto;}
+.mc{position:absolute;top:13px;right:13px;width:28px;height:28px;border-radius:50%;background:var(--of);border:none;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;color:var(--gr);}
+.mc:hover{background:var(--br);}
+.mico{width:56px;height:56px;border-radius:16px;background:var(--bl);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:16px;}
+.mb h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:6px;}
+.mb .sub{margin-bottom:18px;}
+.mfg{margin-bottom:13px;}
+.mfg label{display:block;font-size:.8rem;font-weight:600;margin-bottom:5px;}
+.mfg input,.mfg select{width:100%;padding:10px 13px;border:1.5px solid var(--br);border-radius:var(--rs);font-size:.86rem;color:var(--nv);outline:none;transition:.2s;background:#fff;}
+.mfg input:focus,.mfg select:focus{border-color:var(--b);box-shadow:0 0 0 3px var(--bg);}
+.mbtn{display:flex;gap:8px;margin-top:7px;}
+.mbc{flex:1;padding:11px;background:var(--of);border:1.5px solid var(--br);border-radius:var(--rs);color:var(--nv);font-size:.86rem;font-weight:600;cursor:pointer;}
+.mbg{flex:2;padding:11px;background:var(--b);border:none;border-radius:var(--rs);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer;}
+.mbg:hover{background:var(--bd);}
+.nps{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px;}
+.np{padding:6px 13px;border:1.5px solid var(--br);border-radius:50px;font-size:.79rem;font-weight:600;cursor:pointer;background:#fff;}
+.np:hover,.np.on{background:var(--b);color:#fff;border-color:var(--b);}
+.mlink{text-align:center;margin-top:12px;font-size:.8rem;color:var(--gr);}
+.mlink a{color:var(--b);font-weight:600;cursor:pointer;text-decoration:none;}
+.err{color:var(--rd);font-size:.78rem;margin-top:4px;display:none;}
+
+/* ===== USER DASHBOARD PAGE ===== */
+.page{display:none;min-height:100vh;background:var(--of);padding:80px 4vw 40px;}
+.page.on{display:block;}
+.udash{max-width:1100px;margin:auto;}
+.udash-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.udash-head h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem;}
+.udash-head p{color:var(--gr);font-size:.88rem;}
+.logout-btn{padding:8px 18px;border:1.5px solid var(--rd);border-radius:50px;color:var(--rd);background:none;cursor:pointer;font-size:.83rem;font-weight:600;}
+.logout-btn:hover{background:#FEE2E2;}
+.bal-card{background:linear-gradient(135deg,var(--b),#3B82F6);border-radius:18px;padding:28px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.bal-l .lbl{color:rgba(255,255,255,.7);font-size:.8rem;margin-bottom:6px;}
+.bal-l .amt{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-1px;}
+.bal-l .sub2{color:rgba(255,255,255,.55);font-size:.76rem;margin-top:4px;}
+.fund-now-btn{padding:11px 22px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);border-radius:50px;color:#fff;font-size:.86rem;font-weight:600;cursor:pointer;}
+.fund-now-btn:hover{background:rgba(255,255,255,.25);}
+.usvc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:13px;margin-bottom:24px;}
+.usvc{background:#fff;border-radius:13px;padding:18px 14px;text-align:center;cursor:pointer;border:1px solid var(--br);box-shadow:0 3px 14px rgba(0,87,255,.06);transition:.2s;}
+.usvc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,87,255,.12);border-color:var(--b);}
+.usvc-ic{font-size:1.6rem;margin-bottom:8px;}
+.usvc-lb{font-size:.8rem;font-weight:600;color:var(--nv);}
+.utxn-box{background:#fff;border-radius:var(--r);border:1px solid var(--br);overflow:hidden;}
+.utxn-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--br);}
+.utxn-head h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;}
+.utxn-list{display:flex;flex-direction:column;}
+.utx-item{display:flex;justify-content:space-between;align-items:center;padding:13px 20px;border-bottom:1px solid var(--br);}
+.utx-item:last-child{border-bottom:none;}
+.utx-l{display:flex;align-items:center;gap:11px;}
+.utx-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+.utx-nm{font-weight:600;font-size:.84rem;}
+.utx-dt{font-size:.72rem;color:var(--gr);margin-top:1px;}
+.utx-r{text-align:right;}
+.utx-amt{font-family:'Syne',sans-serif;font-weight:700;font-size:.88rem;}
+.utx-st{font-size:.72rem;margin-top:2px;}
+.empty-state{padding:40px;text-align:center;color:var(--gr);font-size:.88rem;}
+
+/* ===== ADMIN PANEL ===== */
+.adm-page{display:none;min-height:100vh;background:#F0F4FF;}
+.adm-page.on{display:flex;}
+.adm-sidebar{width:240px;background:var(--nv);min-height:100vh;padding:24px 0;display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.adm-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.15rem;color:var(--b);padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+.adm-logo em{color:#fff;font-style:normal;}
+.adm-logo small{display:block;color:rgba(255,255,255,.38);font-size:.68rem;font-weight:400;margin-top:2px;}
+.adm-nav{display:flex;flex-direction:column;padding:16px 10px;flex:1;gap:3px;}
+.anav{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.56);font-size:.84rem;font-weight:500;cursor:pointer;transition:.18s;}
+.anav:hover{background:rgba(255,255,255,.08);color:#fff;}
+.anav.on{background:rgba(0,87,255,.35);color:#fff;}
+.anav-ic{font-size:1rem;width:20px;text-align:center;}
+.adm-logout{margin:auto 10px 10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.45);font-size:.82rem;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:9px;border:none;background:none;width:calc(100% - 20px);}
+.adm-logout:hover{color:var(--rd);background:rgba(255,59,59,.1);}
+.adm-main{flex:1;padding:28px;overflow-x:hidden;}
+.adm-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.adm-top h2{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;}
+.adm-top p{color:var(--gr);font-size:.84rem;margin-top:2px;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:13px;padding:20px;border:1px solid var(--br);box-shadow:0 2px 14px rgba(0,87,255,.06);}
+.stat-card .sc-ic{font-size:1.6rem;margin-bottom:10px;}
+.stat-card .sc-lbl{color:var(--gr);font-size:.76rem;margin-bottom:4px;}
+.stat-card .sc-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;}
+.stat-card .sc-sub{font-size:.72rem;color:var(--gr);margin-top:3px;}
+.adm-section{background:#fff;border-radius:var(--r);border:1px solid var(--br);overflow:hidden;margin-bottom:20px;}
+.adm-sec-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--br);}
+.adm-sec-head h4{font-family:'Syne',sans-serif;font-weight:700;font-size:.93rem;}
+.adm-table{width:100%;border-collapse:collapse;}
+.adm-table th{text-align:left;padding:11px 16px;font-size:.73rem;font-weight:700;color:var(--gr);text-transform:uppercase;letter-spacing:.4px;background:var(--of);border-bottom:1px solid var(--br);}
+.adm-table td{padding:12px 16px;font-size:.83rem;border-bottom:1px solid var(--br);vertical-align:middle;}
+.adm-table tr:last-child td{border-bottom:none;}
+.adm-table tr:hover td{background:var(--of);}
+.act-btn{padding:5px 12px;border-radius:6px;border:none;font-size:.76rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.act-btn.approve{background:#DCFCE7;color:#16A34A;}
+.act-btn.approve:hover{background:#16A34A;color:#fff;}
+.act-btn.reject{background:#FEE2E2;color:#DC2626;}
+.act-btn.reject:hover{background:#DC2626;color:#fff;}
+.act-btn.view{background:var(--bl);color:var(--b);}
+.act-btn.view:hover{background:var(--b);color:#fff;}
+.act-btn.cr{background:#F5F3FF;color:#7C3AED;}
+.act-btn.cr:hover{background:#7C3AED;color:#fff;}
+.act-btn.del{background:#FEF9C3;color:#854D0E;}
+.act-btn.del:hover{background:#854D0E;color:#fff;}
+.adm-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:20px;}
+.adm-form-grid.single{grid-template-columns:1fr;}
+.adm-fg{margin-bottom:0;}
+.adm-fg label{display:block;font-size:.79rem;font-weight:600;margin-bottom:5px;color:var(--nv);}
+.adm-fg input,.adm-fg select,.adm-fg textarea{width:100%;padding:9px 12px;border:1.5px solid var(--br);border-radius:var(--rs);font-size:.84rem;color:var(--nv);outline:none;background:#fff;transition:.2s;}
+.adm-fg input:focus,.adm-fg select:focus,.adm-fg textarea:focus{border-color:var(--b);box-shadow:0 0 0 3px var(--bg);}
+.adm-fg textarea{resize:vertical;min-height:75px;}
+.adm-form-foot{padding:0 20px 20px;display:flex;gap:9px;}
+.a-save{padding:10px 22px;background:var(--b);border:none;border-radius:var(--rs);color:#fff;font-size:.86rem;font-weight:700;cursor:pointer;}
+.a-save:hover{background:var(--bd);}
+.a-cancel{padding:10px 18px;background:var(--of);border:1.5px solid var(--br);border-radius:var(--rs);color:var(--nv);font-size:.86rem;font-weight:600;cursor:pointer;}
+.pin-overlay{display:none;position:fixed;inset:0;background:rgba(5,15,44,.8);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center;}
+.pin-overlay.on{display:flex;}
+.pin-box{background:#fff;border-radius:22px;padding:36px;max-width:360px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.22);}
+.pin-box .mico{margin:0 auto 16px;}
+.pin-box h3{font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;margin-bottom:6px;}
+.pin-box p{color:var(--gr);font-size:.86rem;margin-bottom:22px;}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px;}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--br);transition:.15s;}
+.pin-dot.filled{background:var(--b);}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:220px;margin:0 auto;}
+.pp-btn{padding:14px;background:var(--of);border:1.5px solid var(--br);border-radius:11px;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;cursor:pointer;transition:.15s;}
+.pp-btn:hover{background:var(--bl);border-color:var(--b);}
+.pp-btn.del-k{font-size:.85rem;font-weight:600;}
+.pin-err{color:var(--rd);font-size:.8rem;margin-top:10px;min-height:18px;}
+
+/* USER WALLET MODAL */
+.uw-modal .mb{max-width:440px;}
+
 /* RESPONSIVE */
-@media(max-width:900px){
-  .hgrid,.hwg,.fg2,.cg{grid-template-columns:1fr;}
+@media(max-width:960px){
+  .hg,.fg2,.cg{grid-template-columns:1fr;}
   .hvis{display:none;}
   .fg3{grid-template-columns:1fr 1fr;}
-  .th,.tr{display:none;}
+  .txh,.txr{display:none;}
   .tmob{display:flex;}
+  .adm-sidebar{width:200px;}
 }
-@media(max-width:620px){
+@media(max-width:640px){
   .nl,.nc{display:none;}
   .ham{display:flex;}
   .hbtns{flex-direction:column;align-items:flex-start;}
@@ -263,70 +372,68 @@ footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56p
   .fbot{flex-direction:column;text-align:center;}
   #toast{bottom:14px;right:14px;left:14px;}
   .ti{max-width:100%;}
+  .adm-page{flex-direction:column;}
+  .adm-sidebar{width:100%;min-height:auto;height:auto;position:relative;flex-direction:row;padding:12px;}
+  .adm-nav{flex-direction:row;padding:0;gap:4px;flex-wrap:wrap;}
+  .adm-logo{padding:8px 12px;border-bottom:none;border-right:1px solid rgba(255,255,255,.08);}
+  .adm-logout{display:none;}
+  .adm-main{padding:16px;}
+  .adm-form-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<nav>
+<!-- ===== MAIN SITE ===== -->
+<div id="main-site">
+<nav id="main-nav">
   <div class="nav-in">
     <a href="#home" class="logo">OCROWN<em> PAY</em></a>
     <ul class="nl">
       <li><a href="#home">Home</a></li>
       <li><a href="#services">Services</a></li>
       <li><a href="#fund">Fund Wallet</a></li>
-      <li><a href="#transactions">Transactions</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nc">
       <button class="bo" onclick="openM('lm')">Login</button>
-      <button class="bs" onclick="openM('sm')">Sign Up</button>
+      <button class="bs" onclick="openM('regM')">Sign Up</button>
     </div>
-    <button class="ham" onclick="tM()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="ham" onclick="tMob()" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
-
 <div class="mob" id="mobmenu">
-  <a href="#home" onclick="cM()">Home</a>
-  <a href="#services" onclick="cM()">Services</a>
-  <a href="#fund" onclick="cM()">Fund Wallet</a>
-  <a href="#transactions" onclick="cM()">Transactions</a>
-  <a href="#contact" onclick="cM()">Contact</a>
-  <div class="mb2">
-    <button class="bo" style="flex:1" onclick="openM('lm');cM()">Login</button>
-    <button class="bs" style="flex:1" onclick="openM('sm');cM()">Sign Up</button>
+  <a href="#home" onclick="cMob()">Home</a>
+  <a href="#services" onclick="cMob()">Services</a>
+  <a href="#fund" onclick="cMob()">Fund Wallet</a>
+  <a href="#contact" onclick="cMob()">Contact</a>
+  <div class="mob-btns">
+    <button class="bo" style="flex:1" onclick="openM('lm');cMob()">Login</button>
+    <button class="bs" style="flex:1" onclick="openM('regM');cMob()">Sign Up</button>
   </div>
 </div>
 
+<!-- HERO -->
 <section class="hero" id="home">
-  <div class="hgrid">
+  <div class="hg">
     <div>
       <div class="hbadge"><span class="dot"></span>Nigeria's Trusted VTU Platform</div>
       <h1>Smart Digital<br>Bill Payments<br><span>Made Easy</span></h1>
-      <p>Buy airtime, purchase mobile data, pay electricity bills and manage your wallet in one secure platform. Fast, reliable, and available 24/7.</p>
+      <p>Buy airtime, data, pay electricity bills and manage your wallet — all in one secure platform. Fast, reliable, 24/7.</p>
       <div class="hbtns">
-        <button class="bh1" onclick="openM('sm')">Create Account</button>
+        <button class="bh1" onclick="openM('regM')">Create Account</button>
         <button class="bh2" onclick="openM('lm')">Login</button>
       </div>
       <div class="hstats">
-        <div><div class="stn">50K+</div><div class="stl">Active Users</div></div>
-        <div><div class="stn">N500M+</div><div class="stl">Transactions</div></div>
-        <div><div class="stn">99.9%</div><div class="stl">Uptime</div></div>
+        <div><div class="stn">24/7</div><div class="stl">Support</div></div>
+        <div><div class="stn">Fast</div><div class="stl">Delivery</div></div>
+        <div><div class="stn">Secure</div><div class="stl">Payments</div></div>
       </div>
     </div>
     <div class="hvis" style="display:flex;justify-content:center">
       <div class="mock">
-        <div class="mk-hd">
-          <div><div class="mk-gt">Good afternoon</div><div class="mk-nm">Welcome back!</div></div>
-          <div class="mk-av">O</div>
-        </div>
-        <div class="mk-bal">
-          <div class="mk-bl">Wallet Balance</div>
-          <div class="mk-ba">N12,450.00</div>
-          <div class="mk-bs">Last funded: Today, 2:14 PM</div>
-        </div>
+        <div class="mk-h"><div><div class="mk-gt">Good afternoon</div><div class="mk-nm">Welcome back!</div></div><div class="mk-av">O</div></div>
+        <div class="mk-bal"><div class="mk-bl">Wallet Balance</div><div class="mk-ba">&#8358;12,450.00</div><div class="mk-bs">Last funded: Today</div></div>
         <div class="mk-sv">
           <div class="mk-s"><div class="mk-si">&#128241;</div><div class="mk-sl">Airtime</div></div>
           <div class="mk-s"><div class="mk-si">&#128246;</div><div class="mk-sl">Data</div></div>
@@ -335,24 +442,15 @@ footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56p
         </div>
         <div class="mk-tx">
           <div class="mk-tt">Recent Transactions</div>
-          <div class="mk-ti">
-            <div class="mk-tl"><div class="mk-td" style="background:rgba(0,87,255,.25)">&#128241;</div><div><div class="mk-tn">MTN Airtime</div><div class="mk-dt">Today</div></div></div>
-            <div class="mk-am ar">-N500</div>
-          </div>
-          <div class="mk-ti">
-            <div class="mk-tl"><div class="mk-td" style="background:rgba(0,196,140,.18)">&#128176;</div><div><div class="mk-tn">Wallet Funded</div><div class="mk-dt">Today</div></div></div>
-            <div class="mk-am ag">+N5,000</div>
-          </div>
-          <div class="mk-ti">
-            <div class="mk-tl"><div class="mk-td" style="background:rgba(255,122,0,.18)">&#9889;</div><div><div class="mk-tn">EKEDC Bill</div><div class="mk-dt">Yesterday</div></div></div>
-            <div class="mk-am ar">-N2,000</div>
-          </div>
+          <div class="mk-ti"><div class="mk-tl"><div class="mk-td" style="background:rgba(0,87,255,.25)">&#128241;</div><div><div class="mk-tn">MTN Airtime</div><div class="mk-dt">Today</div></div></div><div class="mk-am ar">-&#8358;500</div></div>
+          <div class="mk-ti"><div class="mk-tl"><div class="mk-td" style="background:rgba(0,196,140,.18)">&#128176;</div><div><div class="mk-tn">Wallet Funded</div><div class="mk-dt">Today</div></div></div><div class="mk-am ag">+&#8358;5,000</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- SERVICES -->
 <section id="services">
   <div class="sm">
     <div class="sh">
@@ -361,162 +459,89 @@ footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56p
       <p class="ss">Fast and reliable digital services for every Nigerian. No queues, no hassle.</p>
     </div>
     <div class="sg">
-      <div class="sc">
-        <div class="si">&#128241;</div>
-        <h3>Buy Airtime</h3>
-        <p>Purchase airtime instantly for MTN, Airtel, Glo and 9mobile. Any amount, delivered in seconds to any number.</p>
-        <button class="sb" onclick="openSvc('airtime')">Buy Now &#8594;</button>
-      </div>
-      <div class="sc">
-        <div class="si">&#128246;</div>
-        <h3>Buy Data</h3>
-        <p>Subscribe to affordable mobile data plans across all networks. Daily, weekly, and monthly bundles available.</p>
-        <button class="sb" onclick="openSvc('data')">Buy Now &#8594;</button>
-      </div>
-      <div class="sc">
-        <div class="si">&#9889;</div>
-        <h3>Electricity Payment</h3>
-        <p>Pay electricity bills for EKEDC, IKEDC, AEDC, PHEDC and all supported DISCO providers across Nigeria.</p>
-        <button class="sb" onclick="openSvc('electricity')">Pay Now &#8594;</button>
-      </div>
-      <div class="sc">
-        <div class="si">&#128221;</div>
-        <h3>WAEC Result Checker</h3>
-        <p>Purchase WAEC result checker PIN instantly. Get your scratch card details delivered to your phone immediately.</p>
-        <button class="sb" onclick="openSvc('waec')">Buy Now &#8594;</button>
-      </div>
+      <div class="sc"><div class="si">&#128241;</div><h3>Buy Airtime</h3><p>Purchase airtime instantly for MTN, Airtel, Glo and 9mobile. Any amount, delivered in seconds.</p><button class="sb" onclick="requireAuth('airtime')">Buy Now &#8594;</button></div>
+      <div class="sc"><div class="si">&#128246;</div><h3>Buy Data</h3><p>Subscribe to affordable mobile data plans across all networks. Daily, weekly and monthly bundles.</p><button class="sb" onclick="requireAuth('data')">Buy Now &#8594;</button></div>
+      <div class="sc"><div class="si">&#9889;</div><h3>Electricity Payment</h3><p>Pay electricity bills for EKEDC, IKEDC, AEDC, PHEDC and all supported DISCO providers.</p><button class="sb" onclick="requireAuth('electricity')">Pay Now &#8594;</button></div>
+      <div class="sc"><div class="si">&#128221;</div><h3>WAEC Result Checker</h3><p>Purchase WAEC result checker PIN instantly. Delivered to your phone immediately.</p><button class="sb" onclick="requireAuth('waec')">Buy Now &#8594;</button></div>
     </div>
   </div>
 </section>
 
-<section id="how">
-  <div class="sm">
-    <div class="hwg">
-      <div>
-        <span class="sl">How It Works</span>
-        <h2 class="st">Simple. Fast.<br>Reliable.</h2>
-        <p class="ss" style="margin-bottom:32px">Getting started with OCROWN PAY takes less than 2 minutes.</p>
-        <div class="steps">
-          <div class="step"><div class="snum">1</div><div><h4>Create Your Account</h4><p>Sign up with your phone number and email. Verification is instant.</p></div></div>
-          <div class="step"><div class="snum">2</div><div><h4>Fund Your Wallet</h4><p>Transfer money to our bank account and submit your payment confirmation.</p></div></div>
-          <div class="step"><div class="snum">3</div><div><h4>Make Payments</h4><p>Buy airtime, data, pay bills and more instantly from your wallet balance.</p></div></div>
-          <div class="step"><div class="snum">4</div><div><h4>Track Everything</h4><p>View your full transaction history in your personal dashboard anytime.</p></div></div>
-        </div>
-      </div>
-      <div class="hwv">
-        <div class="hc"><div class="hci">&#128274;</div><div><strong>Bank-Level Security</strong><p>Your transactions and wallet are protected with advanced encryption.</p></div></div>
-        <div class="hc"><div class="hci">&#9889;</div><div><strong>Instant Delivery</strong><p>Airtime and data delivered to any Nigerian network in seconds.</p></div></div>
-        <div class="hc"><div class="hci">&#128336;</div><div><strong>24/7 Availability</strong><p>Platform is online round the clock. Make payments anytime, anywhere.</p></div></div>
-        <div class="hc"><div class="hci">&#128222;</div><div><strong>Dedicated Support</strong><p>Real human support via WhatsApp whenever you need help.</p></div></div>
-        <div class="hc"><div class="hci">&#128179;</div><div><strong>Wallet System</strong><p>Fund once, pay multiple times without repeating bank details.</p></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- FUND -->
 <section id="fund">
   <div class="sm">
     <div class="fg2">
       <div>
         <span class="sl">Fund Wallet</span>
         <h2 class="st">Top Up Your<br>Wallet Balance</h2>
-        <p class="ss">We use a secure manual bank transfer system. No card details required.</p>
-        <div class="fst" style="margin-top:24px">
-          <div class="fstep"><div class="fsn">1</div><div><h5>Make Bank Transfer</h5><p>Transfer the exact amount to the OCROWN PAY bank account shown below.</p></div></div>
-          <div class="fstep"><div class="fsn">2</div><div><h5>Submit Confirmation</h5><p>Fill the form with your transfer details and upload your payment receipt screenshot.</p></div></div>
-          <div class="fstep"><div class="fsn">3</div><div><h5>Wallet Credited</h5><p>Admin reviews and approves. Your wallet is credited within minutes.</p></div></div>
+        <p class="ss">Secure manual bank transfer. No card details required. Fund and get credited within minutes.</p>
+        <div class="fst" style="margin-top:22px">
+          <div class="fstep"><div class="fsn">1</div><div><h5>Make Bank Transfer</h5><p>Transfer exact amount to the OCROWN PAY bank account below.</p></div></div>
+          <div class="fstep"><div class="fsn">2</div><div><h5>Submit Confirmation</h5><p>Fill the form with your transfer details and upload receipt screenshot.</p></div></div>
+          <div class="fstep"><div class="fsn">3</div><div><h5>Wallet Credited</h5><p>Admin approves and your wallet is credited within minutes.</p></div></div>
         </div>
         <div class="bkbox">
           <h4>&#127970; Bank Account Details</h4>
-          <div class="br"><span>Bank Name</span><span>Opay / PalmPay</span></div>
-          <div class="br"><span>Account Number</span><span>07080951392 <button class="cpb" onclick="cpTxt('07080951392')">Copy</button></span></div>
-          <div class="br"><span>Account Name</span><span>OCROWN PAY</span></div>
-          <div class="br"><span>Minimum Amount</span><span>N500</span></div>
+          <div class="brow"><span>Bank Name</span><span>Opay / PalmPay</span></div>
+          <div class="brow"><span>Account Number</span><span>07080951392 <button class="cpb" onclick="cpTxt('07080951392')">Copy</button></span></div>
+          <div class="brow"><span>Account Name</span><span>OCROWN PAY</span></div>
+          <div class="brow"><span>Minimum</span><span>&#8358;500</span></div>
         </div>
       </div>
       <div class="ff">
         <h3>Submit Payment Confirmation</h3>
-        <span class="fsub">Already transferred? Fill this form to notify us.</span>
+        <span class="sub">Already transferred? Fill this form to notify admin.</span>
         <div class="fg"><label>Your Full Name</label><input type="text" id="fn_n" placeholder="e.g. Oladeji Opeyemi"></div>
         <div class="fg"><label>Phone Number</label><input type="tel" id="fn_p" placeholder="e.g. 08012345678"></div>
-        <div class="fg"><label>Amount Paid (N)</label><input type="number" id="fn_a" placeholder="e.g. 5000"></div>
+        <div class="fg"><label>Amount Paid (&#8358;)</label><input type="number" id="fn_a" placeholder="e.g. 5000" min="500"></div>
         <div class="fg"><label>Bank Name Used</label><input type="text" id="fn_b" placeholder="e.g. GTBank, Access Bank"></div>
         <div class="fg"><label>Transaction Reference</label><input type="text" id="fn_r" placeholder="e.g. TRF/2025001234"></div>
-        <div class="fg">
-          <label>Upload Payment Screenshot</label>
-          <div class="fla">
-            <input type="file" accept="image/*">
-            <p>&#128206; Tap to upload screenshot<br><span>JPEG, PNG supported</span></p>
-          </div>
-        </div>
-        <button class="bsub" onclick="subFund()">Submit Payment Confirmation</button>
+        <div class="fg"><label>Upload Screenshot (Optional)</label><div class="fla"><input type="file" accept="image/*" id="fn_f"><p>&#128206; Tap to upload screenshot<br><span>JPEG, PNG supported</span></p></div></div>
+        <button class="bsub" onclick="subFunding()">Submit Payment Confirmation</button>
       </div>
     </div>
   </div>
 </section>
 
-<section id="dashboard">
-  <div class="sm">
-    <div style="text-align:center">
-      <span class="sl">Dashboard</span>
-      <h2 class="st">Your Personal Dashboard</h2>
-      <p class="ss" style="margin:0 auto">Everything at a glance - balance, services, and transaction history in one clean view.</p>
-    </div>
-    <div class="dg">
-      <div class="dc bl"><div class="da">&#8594;</div><div class="di">&#128176;</div><div class="dl">Wallet Balance</div><div class="dv">N12,450.00</div><div class="dsb">Tap to fund wallet</div></div>
-      <div class="dc gn"><div class="da">&#8594;</div><div class="di">&#128241;</div><div class="dl">Buy Airtime</div><div class="dv">All Networks</div><div class="dsb">MTN Airtel Glo 9mobile</div></div>
-      <div class="dc og"><div class="da">&#8594;</div><div class="di">&#128246;</div><div class="dl">Buy Data</div><div class="dv">Data Plans</div><div class="dsb">From N200 per bundle</div></div>
-      <div class="dc pu"><div class="da">&#8594;</div><div class="di">&#9889;</div><div class="dl">Pay Bills</div><div class="dv">Electricity</div><div class="dsb">All DISCO providers</div></div>
-      <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#128221;</div><div class="dl">WAEC Checker</div><div class="dv">Result PIN</div><div class="dsb">Instant delivery</div></div>
-      <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#129534;</div><div class="dl">Transactions</div><div class="dv">History</div><div class="dsb">View all activity</div></div>
-    </div>
+<!-- DASHBOARD PREVIEW -->
+<section id="dashboard" style="background:var(--nv);padding:72px 4vw;">
+  <div class="sm" style="text-align:center">
+    <span class="sl" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.76)">Dashboard</span>
+    <h2 class="st" style="color:#fff">Your Personal Dashboard</h2>
+    <p class="ss" style="color:rgba(255,255,255,.56);margin:0 auto">Login to access your full dashboard with real-time wallet balance and transaction history.</p>
+  </div>
+  <div class="dg" style="max-width:1200px;margin:40px auto 0;">
+    <div class="dc bl"><div class="da">&#8594;</div><div class="di">&#128176;</div><div class="dl">Wallet Balance</div><div class="dv">Your Balance</div><div class="dsb">Login to view</div></div>
+    <div class="dc gn"><div class="da">&#8594;</div><div class="di">&#128241;</div><div class="dl">Buy Airtime</div><div class="dv">All Networks</div><div class="dsb">MTN Airtel Glo 9mobile</div></div>
+    <div class="dc og"><div class="da">&#8594;</div><div class="di">&#128246;</div><div class="dl">Buy Data</div><div class="dv">Data Plans</div><div class="dsb">From &#8358;200 per bundle</div></div>
+    <div class="dc pu"><div class="da">&#8594;</div><div class="di">&#9889;</div><div class="dl">Pay Bills</div><div class="dv">Electricity</div><div class="dsb">All DISCO providers</div></div>
+    <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#128221;</div><div class="dl">WAEC Checker</div><div class="dv">Result PIN</div><div class="dsb">Instant delivery</div></div>
+    <div class="dc dk"><div class="da">&#8594;</div><div class="di">&#129534;</div><div class="dl">Transactions</div><div class="dv">History</div><div class="dsb">Full activity log</div></div>
   </div>
 </section>
 
-<section id="transactions">
-  <div class="sm">
-    <span class="sl">Transaction History</span>
-    <h2 class="st">Recent Transactions</h2>
-    <p class="ss">Sample records. Your full history is available after login.</p>
-    <div class="tw">
-      <div class="th"><span>Service</span><span>Date &amp; Time</span><span>Amount</span><span>Status</span><span>Reference</span></div>
-      <div class="tr"><div class="tsv"><div class="tic" style="background:#EFF6FF">&#128241;</div><div><div class="tn">MTN Airtime</div><div class="tp">08012345678</div></div></div><div class="tc">Today, 2:14 PM</div><div class="ta" style="color:#FF3B3B">-N500</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00231</div></div>
-      <div class="tr"><div class="tsv"><div class="tic" style="background:#F0FFF4">&#128176;</div><div><div class="tn">Wallet Funded</div><div class="tp">Bank Transfer</div></div></div><div class="tc">Today, 1:50 PM</div><div class="ta" style="color:#00C48C">+N5,000</div><div><span class="badge ok">Approved</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00230</div></div>
-      <div class="tr"><div class="tsv"><div class="tic" style="background:#FFF7ED">&#9889;</div><div><div class="tn">EKEDC Electricity</div><div class="tp">04010012345</div></div></div><div class="tc">Yesterday, 4:22 PM</div><div class="ta" style="color:#FF3B3B">-N2,000</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00229</div></div>
-      <div class="tr"><div class="tsv"><div class="tic" style="background:#F5F3FF">&#128246;</div><div><div class="tn">Airtel 1GB Data</div><div class="tp">08098765432</div></div></div><div class="tc">Yesterday, 11:05 AM</div><div class="ta" style="color:#FF3B3B">-N350</div><div><span class="badge pn">Pending</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00228</div></div>
-      <div class="tr"><div class="tsv"><div class="tic" style="background:#FFF1F2">&#128221;</div><div><div class="tn">WAEC Result PIN</div><div class="tp">Single PIN</div></div></div><div class="tc">2 days ago</div><div class="ta" style="color:#FF3B3B">-N1,000</div><div><span class="badge ok">Success</span></div><div class="tc" style="font-size:.74rem;color:#6B7A9A">OCP-00227</div></div>
-      <div class="tmob">
-        <div class="tmi"><div class="tml"><div class="tic" style="background:#EFF6FF">&#128241;</div><div><h5>MTN Airtime</h5><p>Today, 2:14 PM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N500</span><span class="badge ok">Success</span></div></div>
-        <div class="tmi"><div class="tml"><div class="tic" style="background:#F0FFF4">&#128176;</div><div><h5>Wallet Funded</h5><p>Today, 1:50 PM</p></div></div><div class="tmr"><span class="ta" style="color:#00C48C">+N5,000</span><span class="badge ok">Approved</span></div></div>
-        <div class="tmi"><div class="tml"><div class="tic" style="background:#FFF7ED">&#9889;</div><div><h5>EKEDC Electricity</h5><p>Yesterday, 4:22 PM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N2,000</span><span class="badge ok">Success</span></div></div>
-        <div class="tmi"><div class="tml"><div class="tic" style="background:#F5F3FF">&#128246;</div><div><h5>Airtel 1GB Data</h5><p>Yesterday, 11:05 AM</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N350</span><span class="badge pn">Pending</span></div></div>
-        <div class="tmi"><div class="tml"><div class="tic" style="background:#FFF1F2">&#128221;</div><div><h5>WAEC Result PIN</h5><p>2 days ago</p></div></div><div class="tmr"><span class="ta" style="color:#FF3B3B">-N1,000</span><span class="badge ok">Success</span></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
+<!-- CONTACT -->
 <section id="contact">
   <div class="sm">
     <span class="sl">Support</span>
     <h2 class="st">We Are Here to Help</h2>
-    <p class="ss">Need help with your transaction or wallet funding? Contact our support team anytime via WhatsApp.</p>
+    <p class="ss">Need help with your transaction or wallet funding? Contact our support team anytime.</p>
     <div class="cg">
       <div>
         <div class="cc">
-          <div class="ccd"><div class="cci">&#128172;</div><div><h4>WhatsApp Support</h4><p>Chat with us directly for the fastest response to any issue.</p><a href="https://wa.me/2347080951392" target="_blank">07080951392</a></div></div>
-          <div class="ccd"><div class="cci">&#128222;</div><div><h4>Phone Support</h4><p>Call us directly for urgent transaction or wallet funding queries.</p><a href="tel:07080951392">07080951392</a></div></div>
-          <div class="ccd"><div class="cci">&#128336;</div><div><h4>24/7 Availability</h4><p>Our support team is available every day including weekends and public holidays.</p></div></div>
+          <div class="ccd"><div class="cci">&#128172;</div><div><h4>WhatsApp Support</h4><p>Chat directly for the fastest response to any issue.</p><a href="https://wa.me/2347080951392" target="_blank">07080951392</a></div></div>
+          <div class="ccd"><div class="cci">&#128222;</div><div><h4>Phone Support</h4><p>Call us directly for urgent transaction or wallet queries.</p><a href="tel:07080951392">07080951392</a></div></div>
+          <div class="ccd"><div class="cci">&#128336;</div><div><h4>24/7 Availability</h4><p>Support team available every day including weekends and public holidays.</p></div></div>
         </div>
         <a href="https://wa.me/2347080951392" target="_blank" class="wab">
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Chat on WhatsApp
         </a>
       </div>
       <div class="cfb">
         <h3>Send Us a Message</h3>
-        <span class="fsub" style="color:rgba(255,255,255,.58)">Fill the form and we will reply via WhatsApp.</span>
-        <div class="cfg"><label>Your Name</label><input type="text" id="cf_n" placeholder="Oladeji Opeyemi"></div>
+        <span class="sub" style="color:rgba(255,255,255,.56)">Fill the form — we reply via WhatsApp.</span>
+        <div class="cfg"><label>Your Name</label><input type="text" id="cf_n" placeholder="Your full name"></div>
         <div class="cfg"><label>Phone Number</label><input type="tel" id="cf_p" placeholder="08012345678"></div>
         <div class="cfg"><label>Subject</label><input type="text" id="cf_s" placeholder="e.g. Wallet not credited"></div>
         <div class="cfg"><label>Message</label><textarea id="cf_m" placeholder="Describe your issue..."></textarea></div>
@@ -526,188 +551,848 @@ footer{background:#0A1A3E;border-top:1px solid rgba(255,255,255,.07);padding:56p
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="fin">
     <div class="fg3">
       <div class="fb">
-        <a href="#home" class="logo" style="font-size:1.3rem">OCROWN<em style="color:#fff;font-style:normal"> PAY</em></a>
-        <p>Nigeria's trusted VTU and bill payment platform. Fast, secure, and available 24/7.</p>
-        <div class="fsp">
-          <span>Customer Support</span>
-          <strong>07080951392</strong>
-          <span style="color:#00C48C;margin-top:3px">&#9679; 24/7 Available</span>
-        </div>
+        <a href="#home" class="logo" style="font-size:1.2rem">OCROWN<em style="color:#fff;"> PAY</em></a>
+        <p>Nigeria's trusted VTU and bill payment platform. Fast, secure, 24/7.</p>
+        <div class="fsp"><span>Customer Support</span><strong>07080951392</strong><span style="color:var(--gn);margin-top:3px">&#9679; 24/7 Available</span></div>
       </div>
-      <div class="fc">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#services">Services</a></li>
-          <li><a href="#fund">Fund Wallet</a></li>
-          <li><a href="#transactions">Transactions</a></li>
-          <li><a href="#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div class="fc">
-        <h4>Services</h4>
-        <ul>
-          <li><a href="#services">Buy Airtime</a></li>
-          <li><a href="#services">Buy Data</a></li>
-          <li><a href="#services">Electricity Bill</a></li>
-          <li><a href="#services">WAEC Checker</a></li>
-        </ul>
-      </div>
-      <div class="fc">
-        <h4>Networks</h4>
-        <ul>
-          <li><a href="#">MTN Nigeria</a></li>
-          <li><a href="#">Airtel Nigeria</a></li>
-          <li><a href="#">Glo Mobile</a></li>
-          <li><a href="#">9mobile</a></li>
-        </ul>
-      </div>
+      <div class="fc"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#services">Services</a></li><li><a href="#fund">Fund Wallet</a></li><li><a href="#contact">Contact</a></li></ul></div>
+      <div class="fc"><h4>Services</h4><ul><li><a href="#services">Buy Airtime</a></li><li><a href="#services">Buy Data</a></li><li><a href="#services">Electricity Bill</a></li><li><a href="#services">WAEC Checker</a></li></ul></div>
+      <div class="fc"><h4>Networks</h4><ul><li><a href="#">MTN Nigeria</a></li><li><a href="#">Airtel Nigeria</a></li><li><a href="#">Glo Mobile</a></li><li><a href="#">9mobile</a></li></ul></div>
     </div>
     <div class="fbot">
       <p>&#169; 2025 OCROWN PAY. All rights reserved. Built with love in Nigeria.</p>
-      <div class="fbdg">
-        <span>&#128274; Secure</span>
-        <span>&#9889; Fast</span>
-        <span>&#127475;&#127468; Nigerian</span>
-      </div>
+      <div class="fbdg"><span>&#128274; Secure</span><span>&#9889; Fast</span><span>&#127475;&#127468; Nigerian</span></div>
     </div>
   </div>
 </footer>
+</div><!-- end main-site -->
 
-<div id="toast"></div>
-
-<!-- SERVICE MODAL -->
-<div class="ov" id="svcM">
-  <div class="mb">
-    <button class="mc" onclick="closeM('svcM')">&#10005;</button>
-    <div class="mico" id="si">&#128241;</div>
-    <h3 id="st2">Buy Airtime</h3>
-    <span class="fsub" id="sd">Purchase airtime for any Nigerian network instantly.</span>
-    <div id="sb2"></div>
-    <div class="mbtn">
-      <button class="mbc" onclick="closeM('svcM')">Cancel</button>
-      <button class="mbg" onclick="procSvc()">Proceed</button>
+<!-- ===== USER DASHBOARD PAGE ===== -->
+<div id="user-dash" class="page">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:900;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--br);">
+    <div class="nav-in">
+      <a href="#" class="logo" onclick="goHome()">OCROWN<em> PAY</em></a>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="ud-name" style="font-size:.88rem;font-weight:600;color:var(--nv)"></span>
+        <button class="logout-btn" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <div class="udash">
+    <div class="udash-head">
+      <div><h2 id="ud-greeting">Good day!</h2><p id="ud-email" style="color:var(--gr);font-size:.86rem"></p></div>
+      <button class="bs" onclick="openM('fundM')">+ Fund Wallet</button>
+    </div>
+    <div class="bal-card">
+      <div class="bal-l">
+        <div class="lbl">Wallet Balance</div>
+        <div class="amt" id="ud-balance">&#8358;0.00</div>
+        <div class="sub2">Updated in real-time</div>
+      </div>
+      <button class="fund-now-btn" onclick="openM('fundM')">Fund Wallet</button>
+    </div>
+    <div class="usvc-grid">
+      <div class="usvc" onclick="openSvc('airtime')"><div class="usvc-ic">&#128241;</div><div class="usvc-lb">Buy Airtime</div></div>
+      <div class="usvc" onclick="openSvc('data')"><div class="usvc-ic">&#128246;</div><div class="usvc-lb">Buy Data</div></div>
+      <div class="usvc" onclick="openSvc('electricity')"><div class="usvc-ic">&#9889;</div><div class="usvc-lb">Pay Bill</div></div>
+      <div class="usvc" onclick="openSvc('waec')"><div class="usvc-ic">&#128221;</div><div class="usvc-lb">WAEC PIN</div></div>
+      <div class="usvc" onclick="openM('fundM')"><div class="usvc-ic">&#128176;</div><div class="usvc-lb">Fund Wallet</div></div>
+    </div>
+    <div class="utxn-box">
+      <div class="utxn-head"><h4>Transaction History</h4><span style="font-size:.78rem;color:var(--gr)" id="ud-txn-count">Loading...</span></div>
+      <div class="utxn-list" id="ud-txn-list"><div class="empty-state">Loading transactions...</div></div>
     </div>
   </div>
 </div>
 
-<!-- LOGIN MODAL -->
+<!-- ===== ADMIN PANEL ===== -->
+<div id="adm-panel" class="adm-page">
+  <div class="adm-sidebar">
+    <div class="adm-logo">OCROWN<em> PAY</em><small>Admin Panel</small></div>
+    <div class="adm-nav">
+      <div class="anav on" onclick="admTab('overview')" id="at-overview"><span class="anav-ic">&#128202;</span>Overview</div>
+      <div class="anav" onclick="admTab('fundings')" id="at-fundings"><span class="anav-ic">&#128176;</span>Fund Requests</div>
+      <div class="anav" onclick="admTab('users')" id="at-users"><span class="anav-ic">&#128100;</span>Users</div>
+      <div class="anav" onclick="admTab('transactions')" id="at-transactions"><span class="anav-ic">&#129534;</span>Transactions</div>
+      <div class="anav" onclick="admTab('messages')" id="at-messages"><span class="anav-ic">&#128172;</span>Messages</div>
+    </div>
+    <button class="adm-logout" onclick="admLogout()"><span>&#128682;</span>Logout</button>
+  </div>
+  <div class="adm-main">
+    <!-- OVERVIEW -->
+    <div id="adm-overview">
+      <div class="adm-top"><div><h2>Overview</h2><p id="adm-date">Dashboard</p></div></div>
+      <div class="stats-grid" id="adm-stats">
+        <div class="stat-card"><div class="sc-ic">&#128100;</div><div class="sc-lbl">Total Users</div><div class="sc-val" id="s-users">0</div></div>
+        <div class="stat-card"><div class="sc-ic">&#128176;</div><div class="sc-lbl">Pending Fundings</div><div class="sc-val" id="s-pfund">0</div></div>
+        <div class="stat-card"><div class="sc-ic">&#9989;</div><div class="sc-lbl">Approved Fundings</div><div class="sc-val" id="s-afund">0</div></div>
+        <div class="stat-card"><div class="sc-ic">&#128172;</div><div class="sc-lbl">Messages</div><div class="sc-val" id="s-msgs">0</div></div>
+      </div>
+      <div class="adm-section">
+        <div class="adm-sec-head"><h4>Recent Fund Requests</h4><button class="act-btn view" onclick="admTab('fundings')">View All</button></div>
+        <div id="adm-recent-funds"><div style="padding:20px;text-align:center;color:var(--gr);font-size:.84rem">Loading...</div></div>
+      </div>
+    </div>
+    <!-- FUNDINGS -->
+    <div id="adm-fundings" style="display:none">
+      <div class="adm-top"><div><h2>Fund Requests</h2><p>Manage wallet funding submissions</p></div></div>
+      <div class="adm-section">
+        <div class="adm-sec-head"><h4>All Funding Requests</h4><span id="fund-count" style="font-size:.78rem;color:var(--gr)"></span></div>
+        <div style="overflow-x:auto"><table class="adm-table" id="fund-table">
+          <thead><tr><th>Name</th><th>Phone</th><th>Amount</th><th>Bank</th><th>Reference</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="fund-tbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- USERS -->
+    <div id="adm-users" style="display:none">
+      <div class="adm-top"><div><h2>Users</h2><p>Manage registered users and wallets</p></div></div>
+      <div class="adm-section">
+        <div class="adm-sec-head"><h4>Registered Users</h4><span id="user-count" style="font-size:.78rem;color:var(--gr)"></span></div>
+        <div style="overflow-x:auto"><table class="adm-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Balance</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody id="users-tbody"><tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- TRANSACTIONS -->
+    <div id="adm-transactions" style="display:none">
+      <div class="adm-top"><div><h2>Transactions</h2><p>All platform transactions</p></div></div>
+      <div class="adm-section">
+        <div class="adm-sec-head"><h4>All Transactions</h4><span id="txn-count" style="font-size:.78rem;color:var(--gr)"></span></div>
+        <div style="overflow-x:auto"><table class="adm-table">
+          <thead><tr><th>User</th><th>Service</th><th>Details</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="txn-tbody"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- MESSAGES -->
+    <div id="adm-messages" style="display:none">
+      <div class="adm-top"><div><h2>Support Messages</h2><p>Messages from users</p></div></div>
+      <div class="adm-section">
+        <div class="adm-sec-head"><h4>All Messages</h4></div>
+        <div style="overflow-x:auto"><table class="adm-table">
+          <thead><tr><th>Name</th><th>Phone</th><th>Subject</th><th>Message</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="msg-tbody"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- LOGIN -->
 <div class="ov" id="lm">
   <div class="mb">
     <button class="mc" onclick="closeM('lm')">&#10005;</button>
     <div class="mico">&#128272;</div>
-    <h3>Login to OCROWN PAY</h3>
-    <span class="fsub">Access your wallet and manage your transactions.</span>
-    <div class="mfg"><label>Phone Number or Email</label><input type="text" id="li" placeholder="08012345678 or email@example.com"></div>
-    <div class="mfg"><label>Password</label><input type="password" id="lp" placeholder="Enter your password"></div>
-    <div class="mbtn">
+    <h3>Login</h3>
+    <span class="sub">Access your OCROWN PAY wallet.</span>
+    <div class="mfg"><label>Email Address</label><input type="email" id="l-email" placeholder="your@email.com"></div>
+    <div class="mfg"><label>Password</label><input type="password" id="l-pass" placeholder="Your password"></div>
+    <div class="err" id="l-err">Invalid email or password.</div>
+    <div class="mbtn" style="margin-top:14px">
       <button class="mbc" onclick="closeM('lm')">Cancel</button>
-      <button class="mbg" onclick="doLogin()">Login</button>
+      <button class="mbg" onclick="doLogin()" id="l-btn">Login</button>
     </div>
-    <p class="mlink">No account? <a onclick="closeM('lm');openM('sm')">Sign Up</a></p>
+    <p class="mlink">No account? <a onclick="closeM('lm');openM('regM')">Sign Up</a> &nbsp;|&nbsp; <a onclick="closeM('lm');openPIN()">Admin</a></p>
   </div>
 </div>
 
-<!-- SIGNUP MODAL -->
-<div class="ov" id="sm">
+<!-- REGISTER -->
+<div class="ov" id="regM">
   <div class="mb">
-    <button class="mc" onclick="closeM('sm')">&#10005;</button>
+    <button class="mc" onclick="closeM('regM')">&#10005;</button>
     <div class="mico">&#128100;</div>
     <h3>Create Account</h3>
-    <span class="fsub">Join OCROWN PAY and start making payments in minutes.</span>
-    <div class="mfg"><label>Full Name</label><input type="text" id="sn2" placeholder="Oladeji Opeyemi"></div>
-    <div class="mfg"><label>Phone Number</label><input type="tel" id="sp" placeholder="08012345678"></div>
-    <div class="mfg"><label>Email Address</label><input type="email" id="se" placeholder="email@example.com"></div>
-    <div class="mfg"><label>Password</label><input type="password" id="sw" placeholder="Create a strong password"></div>
-    <div class="mbtn">
-      <button class="mbc" onclick="closeM('sm')">Cancel</button>
-      <button class="mbg" onclick="doSignup()">Create Account</button>
+    <span class="sub">Join OCROWN PAY — it only takes a minute.</span>
+    <div class="mfg"><label>Full Name</label><input type="text" id="r-name" placeholder="Your full name"></div>
+    <div class="mfg"><label>Email Address</label><input type="email" id="r-email" placeholder="your@email.com"></div>
+    <div class="mfg"><label>Phone Number</label><input type="tel" id="r-phone" placeholder="08012345678"></div>
+    <div class="mfg"><label>Password</label><input type="password" id="r-pass" placeholder="Min 6 characters"></div>
+    <div class="err" id="r-err">Please fill all fields correctly.</div>
+    <div class="mbtn" style="margin-top:14px">
+      <button class="mbc" onclick="closeM('regM')">Cancel</button>
+      <button class="mbg" onclick="doRegister()" id="r-btn">Create Account</button>
     </div>
-    <p class="mlink">Have an account? <a onclick="closeM('sm');openM('lm')">Login</a></p>
+    <p class="mlink">Have an account? <a onclick="closeM('regM');openM('lm')">Login</a></p>
   </div>
 </div>
 
-<script>
-function tM(){document.getElementById('mobmenu').classList.toggle('on');}
-function cM(){document.getElementById('mobmenu').classList.remove('on');}
-function openM(id){document.getElementById(id).classList.add('on');}
-function closeM(id){document.getElementById(id).classList.remove('on');}
-document.querySelectorAll('.ov').forEach(function(el){el.addEventListener('click',function(e){if(e.target===el)el.classList.remove('on');});});
-function toast(msg,t){
-  var c=document.getElementById('toast');
-  var d=document.createElement('div');
-  d.className='ti'+(t?' '+t:'');
-  d.textContent=msg;
-  c.appendChild(d);
-  setTimeout(function(){d.style.cssText='opacity:0;transform:translateX(110px);transition:.3s';setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},320);},3400);
-}
-var svcs={
-  airtime:{i:'&#128241;',t:'Buy Airtime',d:'Purchase airtime for any Nigerian network instantly.',
-    h:'<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div><div class="mfg"><label>Phone Number</label><input type="tel" placeholder="08012345678"></div><div class="mfg"><label>Amount (N)</label><input type="number" placeholder="e.g. 200"></div>'},
-  data:{i:'&#128246;',t:'Buy Data Bundle',d:'Choose your preferred network and data plan.',
-    h:'<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div><div class="mfg"><label>Phone Number</label><input type="tel" placeholder="08012345678"></div><div class="mfg"><label>Select Data Plan</label><select><option>500MB - N200 (1 Day)</option><option>1GB - N350 (1 Day)</option><option>2GB - N600 (7 Days)</option><option>5GB - N1,500 (30 Days)</option><option>10GB - N2,500 (30 Days)</option></select></div>'},
-  electricity:{i:'&#9889;',t:'Pay Electricity Bill',d:'Pay electricity bills for all DISCO providers in Nigeria.',
-    h:'<div class="mfg"><label>Select DISCO</label><select><option>EKEDC (Eko Electricity)</option><option>IKEDC (Ikeja Electricity)</option><option>AEDC (Abuja Electricity)</option><option>PHEDC (Port Harcourt)</option><option>KEDCO (Kano Electricity)</option><option>IBEDC (Ibadan Electricity)</option></select></div><div class="mfg"><label>Meter Number</label><input type="text" placeholder="04010012345"></div><div class="mfg"><label>Amount (N)</label><input type="number" placeholder="e.g. 2000"></div>'},
-  waec:{i:'&#128221;',t:'WAEC Result Checker',d:'Purchase WAEC result checker PIN instantly.',
-    h:'<div class="mfg"><label>Number of PINs</label><select><option>1 PIN - N1,000</option><option>2 PINs - N2,000</option><option>3 PINs - N3,000</option></select></div><div class="mfg"><label>Phone Number (to receive PIN)</label><input type="tel" placeholder="08012345678"></div>'}
+<!-- FUND WALLET (user) -->
+<div class="ov uw-modal" id="fundM">
+  <div class="mb">
+    <button class="mc" onclick="closeM('fundM')">&#10005;</button>
+    <div class="mico">&#128176;</div>
+    <h3>Fund Wallet</h3>
+    <span class="sub">Transfer to our account then submit confirmation below.</span>
+    <div style="background:var(--of);border-radius:10px;padding:14px;margin-bottom:16px;font-size:.82rem;">
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--gr)">Bank</span><strong>Opay / PalmPay</strong></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--gr)">Account</span><strong>07080951392 <button class="cpb" onclick="cpTxt('07080951392')">Copy</button></strong></div>
+      <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--gr)">Name</span><strong>OCROWN PAY</strong></div>
+    </div>
+    <div class="mfg"><label>Amount Paid (&#8358;)</label><input type="number" id="fm-amount" placeholder="e.g. 5000" min="500"></div>
+    <div class="mfg"><label>Bank Name Used</label><input type="text" id="fm-bank" placeholder="e.g. GTBank"></div>
+    <div class="mfg"><label>Transaction Reference</label><input type="text" id="fm-ref" placeholder="e.g. TRF/2025001234"></div>
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('fundM')">Cancel</button>
+      <button class="mbg" onclick="subWalletFund()" id="fm-btn">Submit Confirmation</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE MODALS -->
+<div class="ov" id="svcM">
+  <div class="mb">
+    <button class="mc" onclick="closeM('svcM')">&#10005;</button>
+    <div class="mico" id="svc-ico">&#128241;</div>
+    <h3 id="svc-title">Buy Airtime</h3>
+    <span class="sub" id="svc-desc">Purchase airtime instantly.</span>
+    <div id="svc-body"></div>
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('svcM')">Cancel</button>
+      <button class="mbg" onclick="procSvc()" id="svc-btn">Proceed</button>
+    </div>
+  </div>
+</div>
+
+<!-- WALLET ADJUST (admin) -->
+<div class="ov" id="walletAdjM">
+  <div class="mb">
+    <button class="mc" onclick="closeM('walletAdjM')">&#10005;</button>
+    <div class="mico">&#128179;</div>
+    <h3>Adjust Wallet</h3>
+    <span class="sub" id="wa-user-name">User wallet adjustment</span>
+    <div class="mfg"><label>Action</label>
+      <select id="wa-action">
+        <option value="credit">Credit (Add Money)</option>
+        <option value="debit">Debit (Remove Money)</option>
+        <option value="set">Set Balance</option>
+      </select>
+    </div>
+    <div class="mfg"><label>Amount (&#8358;)</label><input type="number" id="wa-amount" placeholder="e.g. 5000" min="1"></div>
+    <div class="mfg"><label>Note (Optional)</label><input type="text" id="wa-note" placeholder="e.g. Manual credit"></div>
+    <input type="hidden" id="wa-uid">
+    <div class="mbtn">
+      <button class="mbc" onclick="closeM('walletAdjM')">Cancel</button>
+      <button class="mbg" onclick="doWalletAdj()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PIN -->
+<div class="pin-overlay" id="pin-ov">
+  <div class="pin-box">
+    <div class="mico" style="margin:0 auto 14px">&#128274;</div>
+    <h3>Admin Access</h3>
+    <p>Enter your 4-digit admin PIN</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+      <div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pp-btn" onclick="pinKey('1')">1</button>
+      <button class="pp-btn" onclick="pinKey('2')">2</button>
+      <button class="pp-btn" onclick="pinKey('3')">3</button>
+      <button class="pp-btn" onclick="pinKey('4')">4</button>
+      <button class="pp-btn" onclick="pinKey('5')">5</button>
+      <button class="pp-btn" onclick="pinKey('6')">6</button>
+      <button class="pp-btn" onclick="pinKey('7')">7</button>
+      <button class="pp-btn" onclick="pinKey('8')">8</button>
+      <button class="pp-btn" onclick="pinKey('9')">9</button>
+      <button class="pp-btn del-k" onclick="pinKey('cancel')">&#10005;</button>
+      <button class="pp-btn" onclick="pinKey('0')">0</button>
+      <button class="pp-btn del-k" onclick="pinKey('del')">&#9003;</button>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+  </div>
+</div>
+
+<!-- ===== FIREBASE + LOGIC ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, orderBy, onSnapshot, getDocs, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAozsH2cIlpor-X9kCQIMsfCPIRNPRPosQ",
+  authDomain: "ocrownveterinary.firebaseapp.com",
+  databaseURL: "https://ocrownveterinary-default-rtdb.firebaseio.com",
+  projectId: "ocrownveterinary",
+  storageBucket: "ocrownveterinary.firebasestorage.app",
+  messagingSenderId: "946404927243",
+  appId: "1:946404927243:web:c0c873e6a3b5d0b18ea40e"
 };
-var curS='';
-function npk(el){document.querySelectorAll('.np').forEach(function(p){p.classList.remove('on');});el.classList.add('on');}
-function openSvc(type){
-  curS=type;var s=svcs[type];
-  document.getElementById('si').innerHTML=s.i;
-  document.getElementById('st2').textContent=s.t;
-  document.getElementById('sd').textContent=s.d;
-  document.getElementById('sb2').innerHTML=s.h;
-  openM('svcM');
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const ADMIN_PIN = "1990";
+let currentUser = null;
+let currentUserData = null;
+let isAdmin = false;
+let curSvc = '';
+let pinVal = '';
+let userListeners = {};
+
+// ── HELPERS ──
+function toast(msg, t) {
+  const c = document.getElementById('toast');
+  const d = document.createElement('div');
+  d.className = 'ti' + (t ? ' ' + t : '');
+  d.textContent = msg;
+  c.appendChild(d);
+  setTimeout(() => { d.style.cssText = 'opacity:0;transform:translateX(100px);transition:.3s'; setTimeout(() => d.remove(), 320); }, 3500);
 }
-function procSvc(){closeM('svcM');toast(svcs[curS].t+' request submitted! Login to complete.','g');}
-function doLogin(){
-  var i=document.getElementById('li').value.trim();
-  var p=document.getElementById('lp').value.trim();
-  if(!i||!p){toast('Please fill all fields.','r');return;}
-  closeM('lm');toast('Login successful! Welcome back.','g');
+function fmt(n) { return '₦' + Number(n || 0).toLocaleString('en-NG', { minimumFractionDigits: 2 }); }
+function fmtDate(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
-function doSignup(){
-  var n=document.getElementById('sn2').value.trim();
-  var p=document.getElementById('sp').value.trim();
-  var e=document.getElementById('se').value.trim();
-  var w=document.getElementById('sw').value.trim();
-  if(!n||!p||!e||!w){toast('Please fill all fields.','r');return;}
-  closeM('sm');toast('Account created for '+n+'! Fund your wallet to get started.','g');
-}
-function subFund(){
-  var n=document.getElementById('fn_n').value.trim();
-  var p=document.getElementById('fn_p').value.trim();
-  var a=document.getElementById('fn_a').value.trim();
-  var b=document.getElementById('fn_b').value.trim();
-  var r=document.getElementById('fn_r').value.trim();
-  if(!n||!p||!a||!b||!r){toast('Please fill all required fields.','r');return;}
-  toast('Confirmation of N'+Number(a).toLocaleString()+' submitted! Admin will credit your wallet shortly.','g');
-  ['fn_n','fn_p','fn_a','fn_b','fn_r'].forEach(function(id){document.getElementById(id).value='';});
-}
-function subContact(){
-  var n=document.getElementById('cf_n').value.trim();
-  var p=document.getElementById('cf_p').value.trim();
-  var m=document.getElementById('cf_m').value.trim();
-  if(!n||!p||!m){toast('Please fill all fields.','r');return;}
-  toast('Message sent! Support team will reply via WhatsApp.','g');
-  ['cf_n','cf_p','cf_s','cf_m'].forEach(function(id){document.getElementById(id).value='';});
-}
-function cpTxt(t){
-  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast('Account number copied!','g');});}
-  else{toast('Account: '+t);}
-}
-window.addEventListener('scroll',function(){
-  var c='';
-  document.querySelectorAll('section[id]').forEach(function(s){if(window.scrollY>=s.offsetTop-90)c=s.id;});
-  document.querySelectorAll('.nl a').forEach(function(a){a.style.color=a.getAttribute('href')==='#'+c?'#0057FF':'';});
+
+// Expose to global
+window.toast = toast;
+window.openM = (id) => document.getElementById(id).classList.add('on');
+window.closeM = (id) => document.getElementById(id).classList.remove('on');
+window.tMob = () => document.getElementById('mobmenu').classList.toggle('on');
+window.cMob = () => document.getElementById('mobmenu').classList.remove('on');
+window.cpTxt = (t) => { navigator.clipboard && navigator.clipboard.writeText(t).then(() => toast('Copied!', 'g')); };
+
+document.querySelectorAll('.ov').forEach(el => el.addEventListener('click', e => { if (e.target === el) el.classList.remove('on'); }));
+
+// ── AUTH STATE ──
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    currentUser = user;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) {
+      currentUserData = snap.data();
+      showUserDash();
+      listenUserData(user.uid);
+    }
+  } else {
+    currentUser = null;
+    currentUserData = null;
+    if (!isAdmin) showMainSite();
+  }
 });
-setTimeout(function(){toast('Welcome to OCROWN PAY! Fast and Secure Payments.');},1500);
+
+// ── SHOW/HIDE PAGES ──
+function showMainSite() {
+  document.getElementById('main-site').style.display = '';
+  document.getElementById('user-dash').classList.remove('on');
+  document.getElementById('adm-panel').classList.remove('on');
+}
+function showUserDash() {
+  document.getElementById('main-site').style.display = 'none';
+  document.getElementById('user-dash').classList.add('on');
+  document.getElementById('adm-panel').classList.remove('on');
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('ud-greeting').textContent = greet + ', ' + (currentUserData?.name || '');
+  document.getElementById('ud-email').textContent = currentUser?.email || '';
+  document.getElementById('ud-name').textContent = currentUserData?.name || '';
+}
+function showAdminPanel() {
+  isAdmin = true;
+  document.getElementById('main-site').style.display = 'none';
+  document.getElementById('user-dash').classList.remove('on');
+  document.getElementById('adm-panel').classList.add('on');
+  document.getElementById('adm-date').textContent = new Date().toDateString();
+  loadAdminData();
+}
+window.goHome = () => { if (currentUser) showUserDash(); else showMainSite(); };
+
+// ── REGISTER ──
+window.doRegister = async () => {
+  const name = document.getElementById('r-name').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  const err = document.getElementById('r-err');
+  const btn = document.getElementById('r-btn');
+  if (!name || !email || !phone || pass.length < 6) { err.textContent = 'Please fill all fields (password min 6 chars).'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  btn.textContent = 'Creating...'; btn.disabled = true;
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(cred.user, { displayName: name });
+    await setDoc(doc(db, 'users', cred.user.uid), {
+      uid: cred.user.uid, name, email, phone,
+      balance: 0, createdAt: serverTimestamp()
+    });
+    window.closeM('regM');
+    toast('Account created! Welcome to OCROWN PAY.', 'g');
+  } catch (e) {
+    err.textContent = e.code === 'auth/email-already-in-use' ? 'Email already registered. Please login.' : e.message;
+    err.style.display = 'block';
+  }
+  btn.textContent = 'Create Account'; btn.disabled = false;
+};
+
+// ── LOGIN ──
+window.doLogin = async () => {
+  const email = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  const err = document.getElementById('l-err');
+  const btn = document.getElementById('l-btn');
+  if (!email || !pass) { err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  btn.textContent = 'Logging in...'; btn.disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    window.closeM('lm');
+    toast('Login successful!', 'g');
+  } catch (e) {
+    err.style.display = 'block';
+  }
+  btn.textContent = 'Login'; btn.disabled = false;
+};
+
+// ── LOGOUT ──
+window.doLogout = async () => {
+  await signOut(auth);
+  currentUser = null; currentUserData = null;
+  showMainSite();
+  toast('Logged out.', 'g');
+};
+
+// ── LISTEN USER DATA REALTIME ──
+function listenUserData(uid) {
+  if (userListeners.userData) userListeners.userData();
+  userListeners.userData = onSnapshot(doc(db, 'users', uid), snap => {
+    if (snap.exists()) {
+      currentUserData = snap.data();
+      document.getElementById('ud-balance').textContent = fmt(currentUserData.balance);
+    }
+  });
+  // transactions
+  const txQ = query(collection(db, 'transactions'), where('uid', '==', uid), orderBy('createdAt', 'desc'));
+  if (userListeners.txns) userListeners.txns();
+  userListeners.txns = onSnapshot(txQ, snap => {
+    const list = document.getElementById('ud-txn-list');
+    const count = document.getElementById('ud-txn-count');
+    if (snap.empty) { list.innerHTML = '<div class="empty-state">No transactions yet. Start by funding your wallet!</div>'; count.textContent = '0 transactions'; return; }
+    count.textContent = snap.size + ' transaction' + (snap.size !== 1 ? 's' : '');
+    list.innerHTML = snap.docs.map(d => {
+      const t = d.data();
+      const isDebit = t.type === 'debit';
+      const color = isDebit ? 'var(--rd)' : 'var(--gn)';
+      const sign = isDebit ? '-' : '+';
+      const icons = { airtime: '#EFF6FF', data: '#F5F3FF', electricity: '#FFF7ED', waec: '#FFF1F2', fund: '#F0FFF4', credit: '#F0FFF4', debit: '#FFF1F2' };
+      const emojis = { airtime: '📱', data: '📶', electricity: '⚡', waec: '📝', fund: '💰', credit: '💰', debit: '💸' };
+      const bg = icons[t.service] || '#EFF6FF';
+      const em = emojis[t.service] || '💳';
+      const stBadge = t.status === 'completed' ? '<span class="badge ok">Success</span>' : t.status === 'pending' ? '<span class="badge pn">Pending</span>' : '<span class="badge fl">Failed</span>';
+      return `<div class="utx-item">
+        <div class="utx-l"><div class="utx-ic" style="background:${bg}">${em}</div>
+        <div><div class="utx-nm">${t.description || t.service}</div><div class="utx-dt">${fmtDate(t.createdAt)}</div></div></div>
+        <div class="utx-r"><div class="utx-amt" style="color:${color}">${sign}${fmt(t.amount)}</div>${stBadge}</div></div>`;
+    }).join('');
+  });
+}
+
+// ── FUND WALLET (public form) ──
+window.subFunding = async () => {
+  const n = document.getElementById('fn_n').value.trim();
+  const p = document.getElementById('fn_p').value.trim();
+  const a = document.getElementById('fn_a').value.trim();
+  const b = document.getElementById('fn_b').value.trim();
+  const r = document.getElementById('fn_r').value.trim();
+  if (!n || !p || !a || !b || !r) { toast('Please fill all required fields.', 'r'); return; }
+  try {
+    await addDoc(collection(db, 'fundings'), {
+      name: n, phone: p, amount: Number(a), bank: b, ref: r,
+      uid: currentUser?.uid || null, email: currentUser?.email || null,
+      status: 'pending', createdAt: serverTimestamp()
+    });
+    toast('Payment confirmation submitted! Admin will credit your wallet shortly.', 'g');
+    ['fn_n', 'fn_p', 'fn_a', 'fn_b', 'fn_r'].forEach(id => document.getElementById(id).value = '');
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+};
+
+// ── FUND WALLET (user dashboard modal) ──
+window.subWalletFund = async () => {
+  if (!currentUser) { toast('Please login first.', 'r'); return; }
+  const a = document.getElementById('fm-amount').value.trim();
+  const b = document.getElementById('fm-bank').value.trim();
+  const r = document.getElementById('fm-ref').value.trim();
+  if (!a || !b || !r) { toast('Please fill all fields.', 'r'); return; }
+  const btn = document.getElementById('fm-btn');
+  btn.textContent = 'Submitting...'; btn.disabled = true;
+  try {
+    await addDoc(collection(db, 'fundings'), {
+      name: currentUserData?.name || '', phone: currentUserData?.phone || '',
+      amount: Number(a), bank: b, ref: r,
+      uid: currentUser.uid, email: currentUser.email,
+      status: 'pending', createdAt: serverTimestamp()
+    });
+    window.closeM('fundM');
+    toast('Funding request submitted! Admin will credit your wallet shortly.', 'g');
+    ['fm-amount', 'fm-bank', 'fm-ref'].forEach(id => document.getElementById(id).value = '');
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+  btn.textContent = 'Submit Confirmation'; btn.disabled = false;
+};
+
+// ── REQUIRE AUTH ──
+window.requireAuth = (svc) => {
+  if (!currentUser) { window.openM('lm'); toast('Please login to use this service.'); return; }
+  window.openSvc(svc);
+};
+
+// ── SERVICES ──
+const svcData = {
+  airtime: {
+    i: '📱', t: 'Buy Airtime', d: 'Purchase airtime for any Nigerian network instantly.',
+    h: `<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div>
+        <div class="mfg"><label>Phone Number</label><input type="tel" id="sv-ph" placeholder="08012345678"></div>
+        <div class="mfg"><label>Amount (₦)</label><input type="number" id="sv-am" placeholder="e.g. 200" min="50"></div>`,
+    getAmt: () => Number(document.getElementById('sv-am')?.value || 0),
+    getDesc: () => { const net = document.querySelector('.np.on')?.textContent || 'MTN'; const ph = document.getElementById('sv-ph')?.value || ''; return `${net} Airtime → ${ph}`; }
+  },
+  data: {
+    i: '📶', t: 'Buy Data Bundle', d: 'Choose your preferred network and data plan.',
+    h: `<div class="nps"><button class="np on" onclick="npk(this)">MTN</button><button class="np" onclick="npk(this)">Airtel</button><button class="np" onclick="npk(this)">Glo</button><button class="np" onclick="npk(this)">9mobile</button></div>
+        <div class="mfg"><label>Phone Number</label><input type="tel" id="sv-ph" placeholder="08012345678"></div>
+        <div class="mfg"><label>Select Data Plan</label><select id="sv-plan" onchange="setDataAmt(this)">
+          <option value="200">500MB - ₦200 (1 Day)</option><option value="350">1GB - ₦350 (1 Day)</option>
+          <option value="600">2GB - ₦600 (7 Days)</option><option value="1500">5GB - ₦1,500 (30 Days)</option>
+          <option value="2500">10GB - ₦2,500 (30 Days)</option></select></div>
+        <input type="hidden" id="sv-am" value="200">`,
+    getAmt: () => Number(document.getElementById('sv-am')?.value || 0),
+    getDesc: () => { const net = document.querySelector('.np.on')?.textContent || 'MTN'; const pl = document.getElementById('sv-plan')?.options[document.getElementById('sv-plan')?.selectedIndex]?.text || ''; const ph = document.getElementById('sv-ph')?.value || ''; return `${net} ${pl} → ${ph}`; }
+  },
+  electricity: {
+    i: '⚡', t: 'Pay Electricity Bill', d: 'Pay electricity bills for all DISCOs in Nigeria.',
+    h: `<div class="mfg"><label>Select DISCO</label><select id="sv-disco">
+          <option>EKEDC (Eko Electricity)</option><option>IKEDC (Ikeja Electricity)</option>
+          <option>AEDC (Abuja Electricity)</option><option>PHEDC (Port Harcourt)</option>
+          <option>KEDCO (Kano Electricity)</option><option>IBEDC (Ibadan Electricity)</option></select></div>
+        <div class="mfg"><label>Meter Number</label><input type="text" id="sv-meter" placeholder="04010012345"></div>
+        <div class="mfg"><label>Amount (₦)</label><input type="number" id="sv-am" placeholder="e.g. 2000" min="500"></div>`,
+    getAmt: () => Number(document.getElementById('sv-am')?.value || 0),
+    getDesc: () => { const dc = document.getElementById('sv-disco')?.value || ''; const mt = document.getElementById('sv-meter')?.value || ''; return `${dc} → Meter: ${mt}`; }
+  },
+  waec: {
+    i: '📝', t: 'WAEC Result Checker', d: 'Purchase WAEC result checker PIN — delivered instantly.',
+    h: `<div class="mfg"><label>Number of PINs</label><select id="sv-qty" onchange="setWaecAmt(this)">
+          <option value="1000">1 PIN - ₦1,000</option><option value="2000">2 PINs - ₦2,000</option>
+          <option value="3000">3 PINs - ₦3,000</option></select></div>
+        <div class="mfg"><label>Phone Number (to receive PIN)</label><input type="tel" id="sv-ph" placeholder="08012345678"></div>
+        <input type="hidden" id="sv-am" value="1000">`,
+    getAmt: () => Number(document.getElementById('sv-am')?.value || 0),
+    getDesc: () => { const q = document.getElementById('sv-qty')?.options[document.getElementById('sv-qty')?.selectedIndex]?.text || ''; const ph = document.getElementById('sv-ph')?.value || ''; return `WAEC ${q} → ${ph}`; }
+  }
+};
+
+window.npk = (el) => { document.querySelectorAll('.np').forEach(p => p.classList.remove('on')); el.classList.add('on'); };
+window.setDataAmt = (sel) => { const v = sel.value; document.getElementById('sv-am').value = v; };
+window.setWaecAmt = (sel) => { document.getElementById('sv-am').value = sel.value; };
+
+window.openSvc = (type) => {
+  curSvc = type;
+  const s = svcData[type];
+  document.getElementById('svc-ico').textContent = s.i;
+  document.getElementById('svc-title').textContent = s.t;
+  document.getElementById('svc-desc').textContent = s.d;
+  document.getElementById('svc-body').innerHTML = s.h;
+  window.openM('svcM');
+};
+
+window.procSvc = async () => {
+  if (!currentUser || !currentUserData) { toast('Please login first.', 'r'); return; }
+  const s = svcData[curSvc];
+  const amt = s.getAmt();
+  const desc = s.getDesc();
+  if (!amt || amt <= 0) { toast('Please enter a valid amount.', 'r'); return; }
+  if ((currentUserData.balance || 0) < amt) { toast('Insufficient wallet balance. Please fund your wallet.', 'r'); return; }
+  const btn = document.getElementById('svc-btn');
+  btn.textContent = 'Processing...'; btn.disabled = true;
+  try {
+    const txRef = await addDoc(collection(db, 'transactions'), {
+      uid: currentUser.uid, email: currentUser.email, name: currentUserData.name,
+      service: curSvc, description: desc, amount: amt, type: 'debit',
+      status: 'pending', createdAt: serverTimestamp()
+    });
+    await updateDoc(doc(db, 'users', currentUser.uid), { balance: increment(-amt) });
+    await updateDoc(doc(db, 'transactions', txRef.id), { status: 'completed' });
+    window.closeM('svcM');
+    toast(s.t + ' processed successfully!', 'g');
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+  btn.textContent = 'Proceed'; btn.disabled = false;
+};
+
+// ── PUBLIC FUND FORM ──
+// (Already handled by subFunding above)
+
+// ── CONTACT ──
+window.subContact = async () => {
+  const n = document.getElementById('cf_n').value.trim();
+  const p = document.getElementById('cf_p').value.trim();
+  const s = document.getElementById('cf_s').value.trim();
+  const m = document.getElementById('cf_m').value.trim();
+  if (!n || !p || !m) { toast('Please fill all fields.', 'r'); return; }
+  try {
+    await addDoc(collection(db, 'messages'), { name: n, phone: p, subject: s, message: m, createdAt: serverTimestamp(), read: false });
+    toast('Message sent! We will reply via WhatsApp.', 'g');
+    ['cf_n', 'cf_p', 'cf_s', 'cf_m'].forEach(id => document.getElementById(id).value = '');
+  } catch (e) { toast('Error sending message.', 'r'); }
+};
+
+// ── ADMIN PIN ──
+window.openPIN = () => {
+  pinVal = '';
+  updatePinDots();
+  document.getElementById('pin-err').textContent = '';
+  document.getElementById('pin-ov').classList.add('on');
+};
+window.pinKey = (k) => {
+  if (k === 'cancel') { document.getElementById('pin-ov').classList.remove('on'); pinVal = ''; return; }
+  if (k === 'del') { pinVal = pinVal.slice(0, -1); updatePinDots(); return; }
+  if (pinVal.length >= 4) return;
+  pinVal += k;
+  updatePinDots();
+  if (pinVal.length === 4) {
+    if (pinVal === ADMIN_PIN) {
+      document.getElementById('pin-ov').classList.remove('on');
+      pinVal = '';
+      showAdminPanel();
+    } else {
+      document.getElementById('pin-err').textContent = 'Wrong PIN. Try again.';
+      pinVal = '';
+      updatePinDots();
+    }
+  }
+};
+function updatePinDots() {
+  document.querySelectorAll('.pin-dot').forEach((d, i) => {
+    d.classList.toggle('filled', i < pinVal.length);
+  });
+}
+window.admLogout = () => {
+  isAdmin = false;
+  showMainSite();
+};
+
+// ── ADMIN TABS ──
+window.admTab = (tab) => {
+  ['overview', 'fundings', 'users', 'transactions', 'messages'].forEach(t => {
+    document.getElementById('adm-' + t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('at-' + t).classList.toggle('on', t === tab);
+  });
+  if (tab === 'fundings') loadFundings();
+  if (tab === 'users') loadUsers();
+  if (tab === 'transactions') loadAllTxns();
+  if (tab === 'messages') loadMessages();
+};
+
+// ── ADMIN LOAD DATA ──
+async function loadAdminData() {
+  // stats
+  try {
+    const usersSnap = await getDocs(collection(db, 'users'));
+    document.getElementById('s-users').textContent = usersSnap.size;
+    document.getElementById('user-count').textContent = usersSnap.size + ' users';
+
+    const fundSnap = await getDocs(collection(db, 'fundings'));
+    let pending = 0, approved = 0;
+    const recent = [];
+    fundSnap.forEach(d => {
+      const fd = d.data();
+      if (fd.status === 'pending') pending++;
+      if (fd.status === 'approved') approved++;
+      recent.push({ id: d.id, ...fd });
+    });
+    document.getElementById('s-pfund').textContent = pending;
+    document.getElementById('s-afund').textContent = approved;
+
+    const msgSnap = await getDocs(collection(db, 'messages'));
+    document.getElementById('s-msgs').textContent = msgSnap.size;
+
+    // recent fundings table
+    recent.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    const recentEl = document.getElementById('adm-recent-funds');
+    if (recent.length === 0) { recentEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--gr);font-size:.84rem">No funding requests yet.</div>'; return; }
+    recentEl.innerHTML = `<div style="overflow-x:auto"><table class="adm-table"><thead><tr><th>Name</th><th>Amount</th><th>Bank</th><th>Status</th><th>Date</th><th>Action</th></tr></thead><tbody>
+      ${recent.slice(0, 5).map(f => `<tr>
+        <td><strong>${f.name}</strong><br><span style="font-size:.72rem;color:var(--gr)">${f.phone}</span></td>
+        <td><strong style="color:var(--gn)">${fmt(f.amount)}</strong></td>
+        <td>${f.bank}</td>
+        <td><span class="badge ${f.status === 'approved' ? 'ok' : f.status === 'rejected' ? 'fl' : 'pn'}">${f.status}</span></td>
+        <td style="font-size:.76rem;color:var(--gr)">${fmtDate(f.createdAt)}</td>
+        <td>${f.status === 'pending' ? `<button class="act-btn approve" onclick="approveFunding('${f.id}','${f.uid}',${f.amount})">Approve</button> <button class="act-btn reject" onclick="rejectFunding('${f.id}')">Reject</button>` : '<span style="color:var(--gr);font-size:.78rem">Done</span>'}</td>
+      </tr>`).join('')}
+    </tbody></table></div>`;
+  } catch (e) { console.error(e); }
+}
+
+async function loadFundings() {
+  const tbody = document.getElementById('fund-tbody');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr>';
+  try {
+    const snap = await getDocs(collection(db, 'fundings'));
+    document.getElementById('fund-count').textContent = snap.size + ' requests';
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--gr)">No funding requests yet.</td></tr>'; return; }
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    tbody.innerHTML = docs.map(f => `<tr>
+      <td><strong>${f.name}</strong></td>
+      <td>${f.phone}</td>
+      <td><strong style="color:var(--gn)">${fmt(f.amount)}</strong></td>
+      <td>${f.bank}</td>
+      <td style="font-size:.76rem">${f.ref}</td>
+      <td style="font-size:.74rem;color:var(--gr)">${fmtDate(f.createdAt)}</td>
+      <td><span class="badge ${f.status === 'approved' ? 'ok' : f.status === 'rejected' ? 'fl' : 'pn'}">${f.status}</span></td>
+      <td>${f.status === 'pending'
+        ? `<button class="act-btn approve" onclick="approveFunding('${f.id}','${f.uid}',${f.amount})">Approve</button> <button class="act-btn reject" onclick="rejectFunding('${f.id}')">Reject</button>`
+        : '<span style="color:var(--gr);font-size:.76rem">Done</span>'}</td>
+    </tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--rd)">Error loading data.</td></tr>'; }
+}
+
+async function loadUsers() {
+  const tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr>';
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    document.getElementById('user-count').textContent = snap.size + ' users';
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--gr)">No users yet.</td></tr>'; return; }
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    tbody.innerHTML = docs.map(u => `<tr>
+      <td><strong>${u.name}</strong><br><span style="font-size:.72rem;color:var(--gr)">${u.phone || ''}</span></td>
+      <td style="font-size:.82rem">${u.email}</td>
+      <td><strong style="color:${(u.balance || 0) > 0 ? 'var(--gn)' : 'var(--gr)'}">${fmt(u.balance)}</strong></td>
+      <td style="font-size:.74rem;color:var(--gr)">${fmtDate(u.createdAt)}</td>
+      <td><button class="act-btn cr" onclick="openWalletAdj('${u.id}','${u.name}')">Adjust Wallet</button></td>
+    </tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--rd)">Error loading users.</td></tr>'; }
+}
+
+async function loadAllTxns() {
+  const tbody = document.getElementById('txn-tbody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr>';
+  try {
+    const snap = await getDocs(collection(db, 'transactions'));
+    document.getElementById('txn-count').textContent = snap.size + ' transactions';
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">No transactions yet.</td></tr>'; return; }
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    tbody.innerHTML = docs.map(t => `<tr>
+      <td><strong style="font-size:.82rem">${t.name || ''}</strong><br><span style="font-size:.7rem;color:var(--gr)">${t.email || ''}</span></td>
+      <td style="text-transform:capitalize">${t.service}</td>
+      <td style="font-size:.78rem;color:var(--gr);max-width:160px">${t.description || ''}</td>
+      <td><strong style="color:${t.type === 'debit' ? 'var(--rd)' : 'var(--gn)'}">${t.type === 'debit' ? '-' : '+'}${fmt(t.amount)}</strong></td>
+      <td><span class="badge ${t.status === 'completed' ? 'ok' : t.status === 'pending' ? 'pn' : 'fl'}">${t.status}</span></td>
+      <td style="font-size:.74rem;color:var(--gr)">${fmtDate(t.createdAt)}</td>
+    </tr>`).join('');
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--rd)">Error loading transactions.</td></tr>'; }
+}
+
+async function loadMessages() {
+  const tbody = document.getElementById('msg-tbody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">Loading...</td></tr>';
+  try {
+    const snap = await getDocs(collection(db, 'messages'));
+    if (snap.empty) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--gr)">No messages yet.</td></tr>'; return; }
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    docs.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    tbody.innerHTML = docs.map(m => `<tr>
+      <td><strong>${m.name}</strong></td>
+      <td>${m.phone}</td>
+      <td style="font-size:.82rem">${m.subject || '-'}</td>
+      <td style="font-size:.80rem;max-width:200px">${m.message}</td>
+      <td style="font-size:.74rem;color:var(--gr)">${fmtDate(m.createdAt)}</td>
+      <td><a href="https://wa.me/234${m.phone?.replace(/^0/, '')}" target="_blank" class="act-btn approve">Reply WA</a></td>
+    </tr>`).join('');
+  } catch (e) { }
+}
+
+// ── APPROVE / REJECT FUNDING ──
+window.approveFunding = async (fid, uid, amount) => {
+  if (!confirm('Approve this funding of ' + fmt(amount) + '?')) return;
+  try {
+    await updateDoc(doc(db, 'fundings', fid), { status: 'approved', approvedAt: serverTimestamp() });
+    if (uid) {
+      await updateDoc(doc(db, 'users', uid), { balance: increment(amount) });
+      await addDoc(collection(db, 'transactions'), {
+        uid, amount, type: 'credit', service: 'fund',
+        description: 'Wallet Funding Approved', status: 'completed', createdAt: serverTimestamp()
+      });
+    }
+    toast('Funding approved! Wallet credited.', 'g');
+    loadFundings(); loadAdminData();
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+};
+window.rejectFunding = async (fid) => {
+  if (!confirm('Reject this funding request?')) return;
+  try {
+    await updateDoc(doc(db, 'fundings', fid), { status: 'rejected' });
+    toast('Funding request rejected.', 'r');
+    loadFundings(); loadAdminData();
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+};
+
+// ── WALLET ADJUSTMENT ──
+window.openWalletAdj = (uid, name) => {
+  document.getElementById('wa-uid').value = uid;
+  document.getElementById('wa-user-name').textContent = 'Adjusting wallet for: ' + name;
+  document.getElementById('wa-amount').value = '';
+  document.getElementById('wa-note').value = '';
+  window.openM('walletAdjM');
+};
+window.doWalletAdj = async () => {
+  const uid = document.getElementById('wa-uid').value;
+  const action = document.getElementById('wa-action').value;
+  const amount = Number(document.getElementById('wa-amount').value);
+  const note = document.getElementById('wa-note').value;
+  if (!amount || amount <= 0) { toast('Enter a valid amount.', 'r'); return; }
+  try {
+    const userRef = doc(db, 'users', uid);
+    if (action === 'credit') {
+      await updateDoc(userRef, { balance: increment(amount) });
+      await addDoc(collection(db, 'transactions'), { uid, amount, type: 'credit', service: 'credit', description: note || 'Admin Credit', status: 'completed', createdAt: serverTimestamp() });
+      toast('Wallet credited ' + fmt(amount), 'g');
+    } else if (action === 'debit') {
+      await updateDoc(userRef, { balance: increment(-amount) });
+      await addDoc(collection(db, 'transactions'), { uid, amount, type: 'debit', service: 'debit', description: note || 'Admin Debit', status: 'completed', createdAt: serverTimestamp() });
+      toast('Wallet debited ' + fmt(amount), 'g');
+    } else {
+      const snap = await getDoc(userRef);
+      const cur = snap.data()?.balance || 0;
+      const diff = amount - cur;
+      await updateDoc(userRef, { balance: amount });
+      if (diff !== 0) await addDoc(collection(db, 'transactions'), { uid, amount: Math.abs(diff), type: diff > 0 ? 'credit' : 'debit', service: diff > 0 ? 'credit' : 'debit', description: note || 'Admin Balance Set', status: 'completed', createdAt: serverTimestamp() });
+      toast('Balance set to ' + fmt(amount), 'g');
+    }
+    window.closeM('walletAdjM');
+    loadUsers();
+  } catch (e) { toast('Error: ' + e.message, 'r'); }
+};
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  let c = '';
+  document.querySelectorAll('section[id]').forEach(s => { if (window.scrollY >= s.offsetTop - 80) c = s.id; });
+  document.querySelectorAll('.nl a').forEach(a => { a.style.color = a.getAttribute('href') === '#' + c ? 'var(--b)' : ''; });
+});
+
+// Welcome
+setTimeout(() => toast('Welcome to OCROWN PAY! 🇳🇬'), 1200);
 </script>
 </body>
 </html>
